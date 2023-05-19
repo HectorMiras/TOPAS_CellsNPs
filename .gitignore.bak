@@ -1,5 +1,5 @@
-# ignore all .bak files
- *.bak
+# ignore all .txt files
+ *bak
 
 # ignore all files in the docs directory
 supportFiles/positions*
