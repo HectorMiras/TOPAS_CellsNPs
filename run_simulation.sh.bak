@@ -4,7 +4,7 @@ CURRENTPATH=`pwd`
 RUNDIR="${CURRENTPATH}/work/${1:-TestRunDir}"
 mkdir -p $RUNDIR
 
-python3 pythonscripts/run_simulation.py $CURRENTPATH
+python3 /pythonscripts/run_simulation.py $CURRENTPATH
 
 cp -r ./runFiles/* $RUNDIR
 cp -r ./supportFiles $RUNDIR
