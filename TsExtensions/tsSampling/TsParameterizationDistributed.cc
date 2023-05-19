@@ -11,24 +11,23 @@
 
 #include "TsParameterizationDistributed.hh"
 
-TsParameterizationDistributed::TsParameterizationDistributed(G4double radius, std::vector<G4ThreeVector> positionList)
-	: G4VPVParameterisation()
+TsParameterizationDistributed::TsParameterizationDistributed(std::vector<Nanoparticle> particles)
+    : G4VPVParameterisation()
 {
-	fPositionList = positionList;
-	fRadius = radius;
+    fParticles = particles;
 }
 
-TsParameterizationDistributed::~TsParameterizationDistributed() { }
-
-G4VSolid* TsParameterizationDistributed::ComputeSolid(const G4int, G4VPhysicalVolume*)
+G4VSolid* TsParameterizationDistributed::ComputeSolid(const G4int copyNo, G4VPhysicalVolume*)
 {
-	G4Orb* sphere = new G4Orb("Sphere", fRadius);
-	return sphere;
+    G4Orb* sphere = new G4Orb("Sphere", fParticles[copyNo].radius);
+    return sphere;
 }
+
 
 
 void TsParameterizationDistributed::ComputeTransformation(const G4int copyNo, G4VPhysicalVolume* physVol) const
 {
-	G4ThreeVector trans = fPositionList[copyNo];
-	physVol->SetTranslation(trans);
+    G4ThreeVector trans = fParticles[copyNo].position;
+    physVol->SetTranslation(trans);
 }
+

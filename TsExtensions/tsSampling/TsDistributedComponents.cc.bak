@@ -64,9 +64,7 @@ G4VPhysicalVolume* TsDistributedComponents::Construct()
 	fEnvelopePhys = CreatePhysicalVolume(fEnvelopeLog);
 
 	// Parameterization
-	std::vector<Nanoparticle> particleList = ReadPositionsFile();
-	fParam = new TsParameterizationDistributed(particleList);
-
+	fParam = new TsParameterizationDistributed(fElementRadius, positionList);
 
 	// Subelements
 	G4String name = "SubcompSolid";
@@ -82,43 +80,36 @@ G4VPhysicalVolume* TsDistributedComponents::Construct()
 	return fEnvelopePhys;
 }
 
-struct Nanoparticle
+std::vector<G4ThreeVector> TsDistributedComponents::ReadPositionsFile()
 {
-    G4ThreeVector position;
-    G4double radius;
-};
+	std::vector<G4ThreeVector> positions;
 
-std::vector<Nanoparticle> TsDistributedComponents::ReadPositionsFile()
-{
-    std::vector<Nanoparticle> particles;
+	  // Open the file for reading.
+	  std::ifstream file(fPositionsFileName);
+	  if (!file)
+	  {
+	    std::cerr << "Error: Unable to open file '" << fPositionsFileName << "'." << std::endl;
+	    return positions;
+	  }
 
-    // Open the file for reading.
-    std::ifstream file(fPositionsFileName);
-    if (!file)
-    {
-        std::cerr << "Error: Unable to open file '" << fPositionsFileName << "'." << std::endl;
-        return particles;
-    }
-
-    // Read each line of the file, which should contain a 3D position and a radius
-    // in the format "x y z radius".
-    std::string line;
-    while (std::getline(file, line))
-    {
-        std::istringstream lineStream(line);
-        double x, y, z, radius;
-        if (lineStream >> x >> y >> z >> radius)
-        {
-            // If the line could be parsed as a 3D position and a radius, add it to the vector.
-            particles.push_back(Nanoparticle{ G4ThreeVector(x*nm, y*nm, z*nm), radius*nm });
-        }
-        else
-        {
-            // Otherwise, print an error message.
-            std::cerr << "Error: Invalid line '" << line << "'." << std::endl;
-        }
-    }
-    return particles;
+	  // Read each line of the file, which should contain a 3D position in the
+	  // format "x y z".
+	  std::string line;
+	  while (std::getline(file, line))
+	  {
+	    std::istringstream lineStream(line);
+	    double x, y, z;
+	    if (lineStream >> x >> y >> z)
+	    {
+	      // If the line could be parsed as a 3D position, add it to the vector.
+	      positions.push_back(G4ThreeVector(x*nm, y*nm, z*nm));
+	    }
+	    else
+	    {
+	      // Otherwise, print an error message.
+	      std::cerr << "Error: Invalid position '" << line << "'." << std::endl;
+	    }
+	  }
+	  return positions;
 }
-
 ;

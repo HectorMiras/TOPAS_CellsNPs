@@ -18,14 +18,15 @@
 class TsParameterizationDistributed : public G4VPVParameterisation
 {
 public:
-    TsParameterizationDistributed(std::vector<Nanoparticle> particles);
-    virtual ~TsParameterizationDistributed();
+	TsParameterizationDistributed(G4double radius, std::vector<G4ThreeVector> positionList);
+	virtual ~TsParameterizationDistributed();
 
-    G4VSolid* ComputeSolid(const G4int copyNo, G4VPhysicalVolume* );
-    void ComputeTransformation(const G4int, G4VPhysicalVolume*) const;
+	G4VSolid* ComputeSolid(const G4int copyNo, G4VPhysicalVolume* );
+	void ComputeTransformation(const G4int, G4VPhysicalVolume*) const;
 
 private:
-    std::vector<Nanoparticle> fParticles;
+	G4double fRadius;
+	std::vector<G4ThreeVector> fPositionList;
 };
 
 #endif
