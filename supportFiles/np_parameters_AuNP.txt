@@ -1,0 +1,18 @@
+d:Ge/RNP                       = 7.5 nm     # AGuIX: 1.5 nm, AuNP: 7.5 nm
+s:Ma/NPMaterial                = "G4_Au"    # AGuIX: "AGuIX", AuNP: "G4_Au", Water: "G4_WATER"
+#s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_5000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP  
+#s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs  (values corresponding to 1 mg/ml)
+s:Ge/MediumMaterial            = "MediumGold_1mgml"  # MediumAGuIX_1mgml, MediumGold_1mgml, G4_WATER
+
+
+sv:Ma/goldmat/Components = 1 "gold"
+uv:Ma/goldmat/Fractions = 1 1.0
+d:Ma/goldmat/Density = 19.3 g/cm3
+
+b:Ma/MediumGold_1mgml/BuildFromMaterials = "True"
+sv:Ma/MediumGold_1mgml/Components = 2 "G4_WATER" "goldmat"
+uv:Ma/MediumGold_1mgml/Fractions = 2 0.999000999 0.00099900099 # use corresponding concentration of NPs
+d:Ma/MediumGold_1mgml/Density = 1.001 g/cm3
+s:Ma/MediumGold_1mgml/DefaultColor="yellow"
+
+

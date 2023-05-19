@@ -1,0 +1,8 @@
+d:Ge/RNP                       = 1.5 nm     # AGuIX: 1.5 nm, AuNP: 7.5 nm
+s:Ma/NPMaterial                = "G4_WATER"    # AGuIX: "AGuIX", AuNP: "G4_Au", Water: "G4_WATER"
+#s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_1NP.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP  
+#s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1_NP.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs  (values corresponding to 1 mg/ml)
+s:Ge/MediumMaterial            = "G4_WATER"  # MediumAGuIX_1mgml, MediumGold_1mgml, G4_WATER
+
+
+

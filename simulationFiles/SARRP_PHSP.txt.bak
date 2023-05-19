@@ -1,0 +1,152 @@
+# ------ Include Files ------
+includeFile = ./supportFiles/cell_parameters.txt
+includeFile = ./supportFiles/np_parameters_AGuIX.txt
+#includeFile = ./supportFiles/source_parameters_SARRP.txt
+
+s:Ge/CellPHSPName    = "SARRP_CellPHSP"
+d:Ge/MaxElectronRange                   = 500 um # 6 MV: 3000 um, 220 kVp: 500 um
+d:Ge/ElectronRangeAboveCell             = 1 um # 6 MV: 10 um, 220 kVp: 1 um
+d:Ph/ElectronLowEnergyLimit             = 5000 eV # 6 MV: 22000 eV, 220 kVp: 5000 eV
+
+###########
+# Sources #
+###########
+
+# ----- Beam -----
+
+includeFile = ./supportFiles/topas_220kVp_SARRP_spectra.txt
+
+s:So/SARRPbeam/Type = "Beam" # Beam, Isotropic, Emittance or PhaseSpace
+s:So/SARRPbeam/Component = "BeamPosition"
+s:So/SARRPbeam/BeamParticle = "gamma"
+s:So/SARRPbeam/BeamPositionDistribution = "Flat" # None, Flat or Gaussian
+s:So/SARRPbeam/BeamPositionCutoffShape = "Ellipse" # Point, Ellipse, Rectangle or Isotropic
+d:So/SARRPbeam/BeamPositionCutoffX = Ge/Rbeam um # approximate max range for secondary electrons
+d:So/SARRPbeam/BeamPositionCutoffY = Ge/Rbeam um
+s:So/SARRPbeam/BeamAngularDistribution = "None" # None, Flat or Gaussian
+
+############
+# Geometry #
+############
+
+d:Ge/Rbeam = Ge/WellRadius um
+
+# ---- World ----
+s:Ge/World/Material    = "G4_AIR"
+d:Ge/World/HLX         = 1.01 * Ge/Rbeam um
+d:Ge/World/HLY         = 1.01 * Ge/Rbeam um
+d:Ge/World/HLZ         = 2500 um
+b:Ge/World/Invisible   = "F"
+
+# ---- Beam ----
+s:Ge/BeamPosition/Parent = "World"
+s:Ge/BeamPosition/Type = "Group"
+d:Ge/BeamPosition/TransZ = Ge/World/HLZ um
+d:Ge/BeamPosition/RotX = 180. deg
+
+
+# ---- Polystirene cell plate ----
+s:Ge/CellPlate/Parent = "World"
+s:Ge/CellPlate/Type = "TsCylinder"
+s:Ge/CellPlate/Material    = "G4_POLYSTYRENE"
+d:Ge/CellPlate/RMax         = Ge/WellRadius um
+d:Ge/CellPlateThickness           = 2000 um
+d:Ge/CellPlate/HL           = 0.5 * Ge/CellPlateThickness um
+d:Ge/CellPlateNegHL          = -1 * Ge/CellPlate/HL um
+d:Ge/CellPlate/TransZ          = Ge/CellPlateNegHL - Ge/HLCell um
+s:Ge/CellPlate/Color = "grey"
+
+# ---- Cell Layer ----
+s:Ge/CellLayer/Parent = "World"
+s:Ge/CellLayer/Type = "TsCylinder"
+s:Ge/CellLayer/Material    = "G4_WATER"
+d:Ge/CellLayer/RMax         = Ge/WellRadius um
+d:Ge/CellLayer/HL           = Ge/HLCell um
+
+# ---- Incubation medium with material mixture ----
+s:Ge/MediumVol/Parent      = "World"
+s:Ge/MediumVol/Type        = "TsCylinder"
+s:Ge/MediumVol/Material    = Ge/MediumMaterial
+d:Ge/MediumVol/RMax        = Ge/WellRadius um
+d:Ge/MediumVol/HL          = 0.5 * Ge/MediumThickness um
+d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/HLCell um
+
+# ---- Cylinder for PHSP scoring -----
+d:Ge/CylinderForPHSPHL = 0.5 * Ge/ElectronRangeAboveCell um
+s:Ge/CylinderForPHSP/Parent = "World"
+s:Ge/CylinderForPHSP/Type = "TsCylinder"
+d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/RCell um
+d:Ge/CylinderForPHSP/HL   = Ge/CylinderForPHSPHL + Ge/HLCell um
+d:Ge/CylinderForPHSP/TransZ = Ge/CylinderForPHSP/HL - Ge/HLCell um
+b:Ge/CylinderForPHSP/IsParallel = "True"
+
+# ---- Cylinder for Dose scoring -----
+s:Ge/CylinderForDose/Parent = "World"
+s:Ge/CylinderForDose/Type = "TsCylinder"
+d:Ge/CylinderForDose/Rmax = 1000 * Ge/RCell um
+d:Ge/CylinderForDose/HL   = 10 * Ge/HLCell um
+d:Ge/CylinderForDose/TransZ = Ge/CylinderForDose/HL - Ge/HLCell um
+b:Ge/CylinderForDose/IsParallel = "True"
+
+
+###########
+# Scorers #
+###########
+
+s:Sc/SARRP_PHSP/Quantity									    = "PhaseSpace"
+s:Sc/SARRP_PHSP/Component									    = "CylinderForPHSP"
+s:Sc/SARRP_PHSP/Surface										    = "CylinderForPHSP/AnySurface"
+s:Sc/SARRP_PHSP/OutputType									    = "ASCII"
+s:Sc/SARRP_PHSP/OutputFile									    = Ge/CellPHSPName
+s:Sc/SARRP_PHSP/IfOutputFileAlreadyExists					    = "Overwrite"
+s:Sc/SARRP_PHSP/OnlyIncludeParticlesGoing 					    = "In"
+b:Sc/SARRP_PHSP/KillAfterPhaseSpace 						    = "False"
+sv:Sc/SARRP_PHSP/OnlyIncludeParticlesNamed 					    = 2 "gamma" "e-"
+s:Sc/SARRP_PHSP/IncludeEmptyHistories                           = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
+
+b:Sc/DoseCell/Active                                   = "True"
+s:Sc/DoseCell/Quantity                               = "DoseToMedium"
+s:Sc/DoseCell/Component                              = "CylinderForDose"
+sv:Sc/DoseCell/Report                                 = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseCell/IfOutputFileAlreadyExists              = "Overwrite"
+s:Sc/DoseCell/OutputType                             = "csv"
+s:Sc/DoseCell/OutputFile                 		    = "./DoseToCell"
+b:Sc/DoseCell/PropagateToChildren		            = "False"
+
+###########
+# Physics #
+###########
+
+Ph/Default/Modules = 1 "g4em-livermore"
+b:Ph/ListProcesses = "False"
+
+#d:Ph/Default/SetProductionCutLowerEdge  					= Ph/Default/ElectronLowEnergyLimit eV  
+d:Ph/Default/CutForAllParticles  							= 100 nm
+b:Ph/Default/Fluorescence  									= "False" # Set to true to turn on Fluorescence
+b:Ph/Default/Auger 											= "False" # Set to true to turn on Auger
+b:Ph/Default/AugerCascade 									= "False" # Set to true to turn on AugerCascade
+b:Ph/Default/DeexcitationIgnoreCut 							= "False" # Set to true to implement DeexcitationIgnoreCut
+b:Ph/Default/PIXE 											= "False" # Set to true to turn on PIXE"
+d:Ph/Default/LowestElectronEnergy 							= Ph/ElectronLowEnergyLimit eV 
+
+###########
+# Graphics #
+###########
+b:Gr/View/IncludeAxes = "F"
+d:Gr/View/AxesSize    = 5 mm
+b:Gr/Enable          = "F"
+b:Ts/UseQt = "F"
+sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
+
+s:Gr/View/Type        = "OpenGL"
+
+i:So/SARRPbeam/NumberOfHistoriesInRun = 7600000 # 19000000 histories correspond to 1 Gy if no phsp recycles
+i:Ts/ShowHistoryCountAtInterval = 1000000
+
+i:Ts/NumberOfThreads = 1 # defaults to 1
+#i:Ts/Seed = 1 # default is 1
+b:Ts/PauseBeforeQuit = "F"
+
+b:Ts/ShowCPUTime = "True"
+
+
