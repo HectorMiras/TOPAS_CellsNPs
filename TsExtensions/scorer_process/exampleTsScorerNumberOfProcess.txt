@@ -1,0 +1,69 @@
+#########
+# World #
+#########
+
+s:Ge/World/Type 		          = "TsBox"
+d:Ge/World/HLX		              = 2 m
+d:Ge/World/HLY		              = 2 m
+d:Ge/World/HLZ		          	  = 2 m
+s:Ge/World/Material		          = "Vacuum"
+
+############
+# Geometry #
+############
+
+s:Ge/SourceBox/Type 			  = "TsBox"
+s:Ge/SourceBox/Parent			  = "World"
+s:Ge/SourceBox/Material        	  = "Vacuum"
+d:Ge/SourceBox/HLX                = 2 um
+d:Ge/SourceBox/HLY                = 2 um
+d:Ge/SourceBox/HLZ                = 2 um
+
+s:Ge/Phantom/Type                 = "TsBox"
+s:Ge/Phantom/Material             = "G4_Gd"
+s:Ge/Phantom/Parent               = "World"
+d:Ge/Phantom/HLX                  = 0.2 m 
+d:Ge/Phantom/HLY                  = 0.2 m
+d:Ge/Phantom/HLZ                  = 0.2 m
+d:Ge/Phantom/TransX               = 0. m
+d:Ge/Phantom/TransY               = 0. m
+d:Ge/Phantom/TransZ               = 1 m
+
+
+########
+# Beam #
+########
+s:So/Example/Type                        = "Beam"
+s:So/Example/BeamParticle                = "gamma"
+d:So/Example/BeamEnergy                  = 50. keV
+s:So/Example/Component                   = "SourceBox"
+s:So/Example/BeamPositionDistribution    = "None"
+s:So/Example/BeamAngularDistribution     = "None"
+i:So/Example/NumberOfHistoriesInRun      = 1000
+##########
+# Scorer #
+##########
+
+s:Sc/Test/Quantity		            = "TrackingProcess"
+s:Sc/Test/Component			    	= "Phantom"
+s:Sc/Test/OutputType 		    	= "ASCII"
+s:Sc/Test/OutputFile                = "Trackig_Processes"
+
+s:Sc/Test2/Quantity		       		= "NumberOfPhotonsProcess"
+s:Sc/Test2/Component			   	= "Phantom"
+s:Sc/Test2/OutputType 		    	= "ASCII"
+s:Sc/Test2/OutputFile          		= "NumberOfProcess"
+################
+# Physics list #
+################
+
+Ph/Default/Modules 	          = 1 "g4em-standard_opt0"
+
+#################
+# Visualization #
+#################
+
+s:Gr/ViewA/Type 				  = "OpenGL"
+s:Gr/ViewA/ColorBy 			      = "ParticleType"
+
+

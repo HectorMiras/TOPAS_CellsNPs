@@ -1,0 +1,21 @@
+s:Ge/World/Type 		= "TsCylinder"
+d:Ge/World/RMax			= 8.1 um
+d:Ge/World/HL			= 5.1 um
+s:Ge/World/Material		= "Vacuum"
+
+# ---- Cell ----
+s:Ge/Cell/Type                        = "TsDistributedComponents"
+s:Ge/Cell/Parent                      = "CellLayer"
+s:Ge/Cell/ComponentType               = "G4Tubs"
+s:Ge/Cell/Material                    = "G4_WATER"
+d:Ge/Cell/ComponentRadius             = 8 um
+d:Ge/Cell/ComponentHL                 = 5 um
+d:Ge/Cell/ElementRadius	              = 150 nm
+s:Ge/Cell/ElementMaterial             = "G4_Au"
+s:Ge/Cell/PositionsFile 	          = "positions_in_cell_100.txt"
+
+
+s:Gr/ViewA/Type 					= "OpenGL"
+s:Gr/ViewA/ColorBy 					= "ParticleType"
+b:Gr/Enable          = "T"
+b:Ts/UseQt = "T"

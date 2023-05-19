@@ -1,0 +1,21 @@
+s:Ge/World/Type 		= "TsSphere"
+d:Ge/World/RMax			= 20 um
+s:Ge/World/Material		= "Vacuum"
+
+s:Ge/Sampling/Type 					= "TsDistributedComponents"
+s:Ge/Sampling/Material 				= "G4_WATER"
+s:Ge/Sampling/Parent 				= "World"
+s:Ge/Sampling/ComponentType 		= "G4Box"
+#d:Ge/Sampling/ComponentRadius 		= 6 um
+d:Ge/Sampling/ComponentHLX  		= 6 um
+d:Ge/Sampling/ComponentHLY  		= 6 um
+d:Ge/Sampling/ComponentHLZ  		= 6 um
+d:Ge/Sampling/ElementRadius			= 0.5 um  
+s:Ge/Sampling/ElementMaterial 		= "Vacuum"
+s:Ge/Sampling/PositionsFile 		= "positionsexample.txt"
+
+
+s:Gr/ViewA/Type 					= "OpenGL"
+s:Gr/ViewA/ColorBy 					= "ParticleType"
+b:Gr/Enable          = "T"
+b:Ts/UseQt = "T"
