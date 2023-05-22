@@ -6,12 +6,12 @@
 	"NPsInMedium": true,
 	"NPsInCell": false,
 	"NPType": "AuNP",
-	"NPConcInMedium": 0.5,
-	"NPNumberInCell": 0,
+	"NPConcInMedium": 1.0,
+	"NPNumberInCell": 5000,
 	"NPNumberInMedium": 1179,
 	"sortNPPositions": false,
 	"simScriptFile": "run_local_script.sh",
 	"cellParametersFile": "cell_parameters.txt",
-	"njobs": 3,
-	"nhistories": 100000
+	"njobs": 2,
+	"nhistories": 10000
 }

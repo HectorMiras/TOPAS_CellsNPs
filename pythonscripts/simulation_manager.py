@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import shutil
 import os
+from get_NP_positions import get_positions
 
 class Simulation_manager:
 
@@ -105,6 +106,10 @@ class Simulation_manager:
                 if "s:Sc/DoseCell/OutputFile" in line:
                     old_file_name = line.split("= ")[-1].strip()
                     lines[i] = line.replace(old_file_name, f"\"DoseToCell_{self.BeamSource}\"")
+                if "s:Ge/MediumVol/Material" in line:
+                    if not self.NPsInMedium:
+                        old_file_name = line.split("= ")[-1].strip()
+                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
 
         # write the file
         with open(os.path.join(self.runFilesDir, self.Phase1File), 'w') as file:
@@ -148,12 +153,25 @@ class Simulation_manager:
                     lines[i] = line.replace(old_file_name, new_file_name)
                 if "s:Ge/MediumNPPositionsFile" in line:
                     old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f'\"./supporFiles/{self.np_positions_in_medium_file}\"'
+                    new_file_name = f'\"./supportFiles/{self.np_positions_in_medium_file}\"'
                     lines[i] = line.replace(old_file_name, new_file_name)
                 if "s:Ge/CellNPPositionsFile" in line:
                     old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f'\"./supporFiles/{self.np_positions_in_cell_file}\"'
+                    new_file_name = f'\"./supportFiles/{self.np_positions_in_cell_file}\"'
                     lines[i] = line.replace(old_file_name, new_file_name)
+                if "s:Ge/MediumVol/Material" in line:
+                    if not self.NPsInMedium:
+                        old_file_name = line.split("= ")[-1].strip()
+                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
+                if "s:Ge/MediumDetailed/ElementMaterial" in line:
+                    if not self.NPsInMedium:
+                        old_file_name = line.split("= ")[-1].strip()
+                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
+                if "s:Ge/Cell/ElementMaterial" in line:
+                    if not self.NPsInCell:
+                        old_file_name = line.split("= ")[-1].strip()
+                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
+
 
         # write the file
         with open(os.path.join(self.runFilesDir, self.Phase2File), 'w') as file:
@@ -213,3 +231,11 @@ class Simulation_manager:
         # write the file
         with open(os.path.join(self.runFilesDir, "submit_script.sh"), 'w') as file:
             file.writelines(lines)
+
+        # Generate NP positions files if necessary
+        #if self.NPsInMedium:
+        #    positions_file = os.path.join(self.runFilesDir,"supportFiles", self.np_positions_in_medium_file)
+        #    get_positions(self.NPNumberInMedium, 1250*cell.Rnucl, 200, 0, np.Rnp, positions_file)
+
+
+        

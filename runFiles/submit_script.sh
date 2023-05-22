@@ -6,7 +6,7 @@ INFILE3="None"
 PYFILE="get_NP_positions.py"
 DELFILE="SARRP_CellPHSP.phsp"
 
-ITER=3 
+ITER=2 
 ADDITION=0
 
 USER=`whoami`

@@ -68,7 +68,7 @@ s:Ge/nucleus/Color = "blue"
 # ---- Incubation medium with material mixture ----
 s:Ge/MediumVol/Parent      = "World"
 s:Ge/MediumVol/Type        = "TsCylinder"
-s:Ge/MediumVol/Material    = Ge/MediumMaterial
+s:Ge/MediumVol/Material    = "MediumMaterial"
 d:Ge/MediumVol/RMax        = Ge/SourceRMax um
 d:Ge/MediumVol/HL          = 0.5 * Ge/ElectronRangeAboveCell um 
 d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/HLCell um
@@ -85,6 +85,16 @@ d:Ge/MediumDetailed/ElementRadius	  = Ge/RNP nm
 s:Ge/MediumDetailed/ElementMaterial   = Ma/NPMaterial
 s:Ge/MediumDetailed/PositionsFile 	  = Ge/MediumNPPositionsFile
 d:Ge/MediumDetailed/TransZ            = Ge/MediumDetailed/ComponentHL - Ge/MediumVol/HL um
+
+#############
+# Materials #
+#############
+
+b:Ma/MediumMaterial/BuildFromMaterials  = "True"
+sv:Ma/MediumMaterial/Components         = 2 "G4_WATER" Ma/NPMaterial   
+uv:Ma/MediumMaterial/Fractions          = 2 0.999000999 0.00099900099 # use corresponding concentration of NPs
+d:Ma/MediumMaterial/Density             = 1.001 g/cm3
+s:Ma/MediumMaterial/DefaultColor        = "yellow"
 
 
 ###########
@@ -167,7 +177,7 @@ i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 5
 
 Tf/NumberOfSequentialTimes = 1
 
-i:Ts/NumberOfThreads = 2 # defaults to 1
+i:Ts/NumberOfThreads = 1 # defaults to 1
 #i:Ts/Seed = 1 # default is 1
 b:Ts/PauseBeforeQuit = "F"
 
