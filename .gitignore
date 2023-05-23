@@ -5,6 +5,7 @@
 supportFiles/positions*
 work/
 sourcePHSPFiles/
+runFiles/
 
 # ignore foo.txt at the root (but not other foo.txt files)
 # /foo.txt
