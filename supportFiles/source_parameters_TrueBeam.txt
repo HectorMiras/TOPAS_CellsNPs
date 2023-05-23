@@ -1,4 +1,0 @@
-d:Ge/MaxElectronRange                   = 30000 um # 6 MV: 3000 um, 220 kVp: 500 um
-d:Ge/ElectronRangePH1                   = 10 um # 6 MV: 10 um, 220 kVp: 1 um
-d:Ph/ElectronLowEnergyLimitPH1            = 22000 eV # 6 MV: 22000 eV, 220 kVp: 5000 eV
-
