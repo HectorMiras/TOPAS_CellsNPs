@@ -1,0 +1,9 @@
+d:Ge/RNP                       = 1.5 nm     # AGuIX: 1.5 nm, AuNP: 7.5 nm
+s:Ma/NPMaterial                = "AGuIX"    # AGuIX: "AGuIX", AuNP: "goldmat", Water: "G4_WATER"
+d:Ma/NPDensity                 = 1.223068672 g/cm3
+
+sv:Ma/AGuIX/Components         = 6 "Hydrogen" "Carbon" "Nitrogen" "Oxygen" "Silicon" "Gadolinium" 
+uv:Ma/AGuIX/Fractions          = 6 0.2129 0.2306 0.0672 0.2304 0.1079 0.1510 # fractions of elements
+d:Ma/AGuIX/Density             = Ma/NPDensity g/cm3
+
+

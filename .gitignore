@@ -3,6 +3,7 @@
 
 # ignore all files in the docs directory
 supportFiles/positions*
+supportFiles/*.phsp
 /work/
 /sourcePHSPFiles/
 /runFiles/
