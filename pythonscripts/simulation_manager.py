@@ -4,6 +4,8 @@ import sys
 import shutil
 import os
 from get_NP_positions import get_positions
+from cell import Cell_class
+from nanoparticles import NP_class
 
 class Simulation_manager:
 
@@ -17,7 +19,8 @@ class Simulation_manager:
         self.bashScriptsDir = os.path.join(workingDir, "bashscripts")
         self.simulationFilesDir = os.path.join(workingDir, "simulationFiles")
         self.runFilesDir = os.path.join(workingDir, "runFiles")
-        self.read_config(workingDir, config_file)
+        self.pythonScripts = os.path.join(workingDir, "pythonscripts")
+
         self.NPFilesDict = {
             "AGuIX": "np_parameters_AGuIX.txt",
             "AuNP": "np_parameters_AuNP.txt",
@@ -28,6 +31,24 @@ class Simulation_manager:
             "TrueBeam": "source_parameters_TrueBeam.txt",
             "I125": "source_parameters_I125.txt"
         }
+
+        self.read_config(workingDir, config_file)
+        self.cell = Cell_class()
+        self.cell.read_file_parameters(os.path.join(self.supportFilesDir,self.cellParametersFile))
+        self.np = NP_class()
+        self.np.read_file_parameters(os.path.join(self.supportFilesDir, self.NPParametersFile))
+
+        print("Simulation manager parameters:")
+        for attr_name, attr_value in self.__dict__.items():
+            print(f"{attr_name}: {attr_value}")
+        print("")
+        print("Cell parameters:")
+        for attr_name, attr_value in self.cell.__dict__.items():
+            print(f"{attr_name}: {attr_value}")
+        print("")
+        print("Nanoparticles parameters:")
+        for attr_name, attr_value in self.np.__dict__.items():
+            print(f"{attr_name}: {attr_value}")
 
     def read_config(self, workingDir, config_file):
         
@@ -79,105 +100,200 @@ class Simulation_manager:
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
 
+        # Create supportFiles dir and copy files
+        destination_dir = os.path.join(self.runFilesDir, 'supportFiles')
+        os.makedirs(destination_dir, exist_ok=True)
+        for file in [self.NPParametersFile, self.SourceParametersFile, self.cellParametersFile]:
+            source_file_path = os.path.join(self.supportFilesDir, file)
+            destination_file_path = os.path.join(self.runFilesDir, 'supportFiles', file)
+            shutil.copyfile(source_file_path, destination_file_path)
+        for file in ["get_NP_positions.py", "sample_positions_in_cell.py", "sample_positions_in_medium.py"]:
+            source_file_path = os.path.join(self.pythonScripts, file)
+            destination_file_path = os.path.join(self.runFilesDir, 'supportFiles', file)
+            shutil.copyfile(source_file_path, destination_file_path)
+
         # Map the Phase1File
         # check if the file path exists
         if self.simulatePhase1:
-            # read the file Phase1 File
-            with open(os.path.join(self.simulationFilesDir,self.Phase1File), 'r') as file:
-                lines = file.readlines()
+            self.map_phase1_file()
 
-            for i in range(len(lines)):
-                line = lines[i]
-                # check if the line contains the keywords
-                if "NumberOfHistoriesInRun" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    lines[i] = line.replace(old_file_name, f'{self.nhistories}')
-                if "includeFile" in line and "source_parameters_" in line:
-                    # get the old file name
-                    old_file_name = line.split("/")[-1].strip()
-                    # replace the old file name with the new one
-                    lines[i] = line.replace(old_file_name, self.SourceParametersFile)
-                if "includeFile" in line and "np_parameters_" in line:
-                    old_file_name = line.split("/")[-1].strip()
-                    lines[i] = line.replace(old_file_name, self.NPParametersFile)
-                if "s:Ge/CellPHSPName" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    lines[i] = line.replace(old_file_name, f'\"{self.PHSP1Name}\"')
-                if "s:Sc/DoseCell/OutputFile" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    lines[i] = line.replace(old_file_name, f"\"DoseToCell_{self.BeamSource}\"")
-                if "s:Ge/MediumVol/Material" in line:
-                    if not self.NPsInMedium:
-                        old_file_name = line.split("= ")[-1].strip()
-                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
+        # Map the Phase2File
+        # check if the file path exists
+        if self.simulatePhase2:
+            self.map_phase2_file()
+
+        # Process self.simScriptFile
+        self.map_simScriptFile()
+
+        # Map python scripts for generating np positions
+        with open(os.path.join(self.pythonScripts, "sample_positions_in_medium.py"), 'r') as file:
+            lines = file.readlines()
+
+        for i in range(len(lines)):
+            line = lines[i]
+            if "positions_file =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'\"{self.np_positions_in_medium_file}\"')
+            if "Rmax =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'1.25*{1000*self.cell.rNucl}')
+            if "Rnp =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{self.np.rNP}')
+            if "N =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{self.NPNumberInMedium}')
+
+        # write the file
+        with open(os.path.join(self.runFilesDir,"supportFiles", "sample_positions_in_medium.py"), 'w') as file:
+            file.writelines(lines)
+
+
+        with open(os.path.join(self.pythonScripts, "sample_positions_in_cell.py"), 'r') as file:
+            lines = file.readlines()
+
+        for i in range(len(lines)):
+            line = lines[i]
+            if "positions_file =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'\"{self.np_positions_in_cell_file}\"')
+            if "Rmax =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{1000*self.cell.rCell}')
+            if "Rmin =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{1000*self.cell.rNucl}')
+            if "H =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{1000*self.cell.height}')
+            if "Rnp =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{self.np.rNP}')
+            if "N =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{self.NPNumberInCell}')
+
+        # write the file
+        with open(os.path.join(self.runFilesDir, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
+            file.writelines(lines)
+
+
+    def map_phase1_file(self):
+        # read the file Phase1 File
+        with open(os.path.join(self.simulationFilesDir, self.Phase1File), 'r') as file:
+            lines = file.readlines()
+
+        for i in range(len(lines)):
+            line = lines[i]
+            # check if the line contains the keywords
+            if "NumberOfHistoriesInRun" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_file_name, f'{self.nhistories}')
+            if "includeFile" in line and "source_parameters_" in line:
+                # get the old file name
+                old_file_name = line.split("/")[-1].strip()
+                # replace the old file name with the new one
+                lines[i] = line.replace(old_file_name, self.SourceParametersFile)
+            if "includeFile" in line and "np_parameters_" in line:
+                old_file_name = line.split("/")[-1].strip()
+                lines[i] = line.replace(old_file_name, self.NPParametersFile)
+            if "s:Ge/CellPHSPName" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_file_name, f'\"{self.PHSP1Name}\"')
+            if "s:Sc/DoseCell/OutputFile" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_file_name, f"\"DoseToCell_{self.BeamSource}\"")
+            if "s:Ge/MediumVol/Material" in line:
+                if not self.NPsInMedium:
+                    old_values = line.split("= ")[-1].strip()
+                    lines[i] = line.replace(old_values, f"\"G4_WATER\"")
+
+            # update medium composition and density values from NPs concentration
+            w_water, w_np, dens_tot = self.np.get_relweights_and_dens_from_conc(self.NPConcInMedium)
+            if "Ma/MediumMaterial/Fractions" in line:
+                old_values = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_values, f"2 {w_water} {w_np}")
+            if "Ma/MediumMaterial/Density" in line:
+                old_values = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_values, f"{dens_tot} g/cm3")
 
         # write the file
         with open(os.path.join(self.runFilesDir, self.Phase1File), 'w') as file:
             file.writelines(lines)
 
-        # Map the Phase2File
-        # check if the file path exists
-        if self.simulatePhase2:
-            # read the file Phase1 File
-            with open(os.path.join(self.simulationFilesDir, self.Phase2File), 'r') as file:
-                lines = file.readlines()
+    def map_phase2_file(self):
+        # read the file Phase2 File
+        with open(os.path.join(self.simulationFilesDir, self.Phase2File), 'r') as file:
+            lines = file.readlines()
 
-            conc_str = str(self.NPConcInMedium)
-            conc_str = conc_str.replace(".", "p")
+        conc_str = str(self.NPConcInMedium)
+        conc_str = conc_str.replace(".", "p")
 
-            for i in range(len(lines)):
-                line = lines[i]
-                # check if the line contains the keywords
-                if "includeFile" in line and "source_parameters_" in line:
-                    # get the old file name
-                    old_file_name = line.split("/")[-1].strip()
-                    # replace the old file name with the new one
-                    lines[i] = line.replace(old_file_name, self.SourceParametersFile)
-                if "includeFile" in line and "np_parameters_" in line:
-                    old_file_name = line.split("/")[-1].strip()
-                    lines[i] = line.replace(old_file_name, self.NPParametersFile)
-                if "s:Ge/CellPHSPName" in line:
+        for i in range(len(lines)):
+            line = lines[i]
+            # check if the line contains the keywords
+            if "includeFile" in line and "source_parameters_" in line:
+                # get the old file name
+                old_file_name = line.split("/")[-1].strip()
+                # replace the old file name with the new one
+                lines[i] = line.replace(old_file_name, self.SourceParametersFile)
+            if "includeFile" in line and "np_parameters_" in line:
+                old_file_name = line.split("/")[-1].strip()
+                lines[i] = line.replace(old_file_name, self.NPParametersFile)
+            if "s:Ge/CellPHSPName" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_file_name, f"\"{self.PHSP1Name}\"")
+            if "s:Sc/NucleusPHSP/OutputFile" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
+                lines[i] = line.replace(old_file_name, new_file_name)
+            if "s:Sc/DoseNucleus_e/OutputFile" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f"\"DoseToNucleus_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
+                lines[i] = line.replace(old_file_name, new_file_name)
+            if "s:Sc/DoseNucleus_g/OutputFile" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f"\"DoseToNucleus_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_gammas\""
+                lines[i] = line.replace(old_file_name, new_file_name)
+            if "s:Ge/MediumNPPositionsFile" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f'\"./supportFiles/{self.np_positions_in_medium_file}\"'
+                lines[i] = line.replace(old_file_name, new_file_name)
+            if "s:Ge/CellNPPositionsFile" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f'\"./supportFiles/{self.np_positions_in_cell_file}\"'
+                lines[i] = line.replace(old_file_name, new_file_name)
+            if "s:Ge/MediumVol/Material" in line:
+                if not self.NPsInMedium:
                     old_file_name = line.split("= ")[-1].strip()
-                    lines[i] = line.replace(old_file_name, f"\"{self.PHSP1Name}\"")
-                if "s:Sc/NucleusPHSP/OutputFile" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
-                    lines[i] = line.replace(old_file_name, new_file_name)
-                if "s:Sc/DoseNucleus_e/OutputFile" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f"\"DoseToNucleus_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
-                    lines[i] = line.replace(old_file_name, new_file_name)
-                if "s:Sc/DoseNucleus_g/OutputFile" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f"\"DoseToNucleus_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_gammas\""
-                    lines[i] = line.replace(old_file_name, new_file_name)
-                if "s:Ge/MediumNPPositionsFile" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f'\"./supportFiles/{self.np_positions_in_medium_file}\"'
-                    lines[i] = line.replace(old_file_name, new_file_name)
-                if "s:Ge/CellNPPositionsFile" in line:
-                    old_file_name = line.split("= ")[-1].strip()
-                    new_file_name = f'\"./supportFiles/{self.np_positions_in_cell_file}\"'
-                    lines[i] = line.replace(old_file_name, new_file_name)
-                if "s:Ge/MediumVol/Material" in line:
-                    if not self.NPsInMedium:
-                        old_file_name = line.split("= ")[-1].strip()
-                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
-                if "s:Ge/MediumDetailed/ElementMaterial" in line:
-                    if not self.NPsInMedium:
-                        old_file_name = line.split("= ")[-1].strip()
-                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
-                if "s:Ge/Cell/ElementMaterial" in line:
-                    if not self.NPsInCell:
-                        old_file_name = line.split("= ")[-1].strip()
-                        lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
+                    lines[i] = line.replace(old_file_name, f"\"G4_WATER\"")
+            if "s:Ge/MediumDetailed/ElementMaterial" in line:
+                if not self.NPsInMedium:
+                    old_values = line.split("= ")[-1].strip()
+                    lines[i] = line.replace(old_values, f"\"G4_WATER\"")
+            if "s:Ge/Cell/ElementMaterial" in line:
+                if not self.NPsInCell:
+                    old_values = line.split("= ")[-1].strip()
+                    lines[i] = line.replace(old_values, f"\"G4_WATER\"")
+            if "Ge/CellLayer/Material" in line:
+                if not self.NPsInMedium:
+                    old_values = line.split("= ")[-1].strip()
+                    lines[i] = line.replace(old_values, f"\"G4_WATER\"")
 
+            # update medium composition and density values from NPs concentration
+            w_water, w_np, dens_tot = self.np.get_relweights_and_dens_from_conc(self.NPConcInMedium)
+            if "Ma/MediumMaterial/Fractions" in line:
+                old_values = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_values, f"2 {w_water} {w_np}")
+            if "Ma/MediumMaterial/Density" in line:
+                old_values = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_values, f"{dens_tot} g/cm3")
 
         # write the file
         with open(os.path.join(self.runFilesDir, self.Phase2File), 'w') as file:
             file.writelines(lines)
 
-        # Process self.simScriptFile
+    def map_simScriptFile(self):
         with open(os.path.join(self.bashScriptsDir, self.simScriptFile), 'r') as file:
             lines = file.readlines()
 
@@ -194,7 +310,7 @@ class Simulation_manager:
                     lines[i] = "#"+line
                 if "cp $INFILE1 $DIR" in line:
                     lines[i] = "#"+line
-                if "$SEED >> $DIR/$INFILE1" in line:
+                if "sed -i" and "$DIR/$INFILE1" in line:
                     lines[i] = "#"+line
 
             if line.startswith("INFILE2="):
@@ -204,7 +320,7 @@ class Simulation_manager:
                     lines[i] = "#"+line
                 if "cp $INFILE2 $DIR" in line:
                     lines[i] = "#"+line
-                if "$SEED >> $DIR/$INFILE2" in line:
+                if "sed -i" and "$DIR/$INFILE2" in line:
                     lines[i] = "#"+line
 
             if line.startswith("INFILE3="):
@@ -214,7 +330,7 @@ class Simulation_manager:
                     lines[i] = "#"+line
                 if "cp $INFILE3 $DIR" in line:
                     lines[i] = "#"+line
-                if "$SEED >> $DIR/$INFILE3" in line:
+                if "sed -i" and "$DIR/$INFILE3" in line:
                     lines[i] = "#"+line
 
             if line.startswith("DELFILE="):
@@ -222,20 +338,14 @@ class Simulation_manager:
                 new_file_name = f'\"{self.PHSP1Name}.phsp\"'
                 lines[i] = line.replace(old_file_name, new_file_name)
 
-            if not self.sortNPPositions:
-                if "python $PYFILE" in line:
-                    lines[i] = "#"+line
-                if "cp $PYFILE $DIR" in line:
-                    lines[i] = "#"+line
+            if self.sortNPPositions:
+                if "DOSAMPLE=" in line:
+                    lines[i] = "DOSAMPLE=true"
+            else:
+                if "DOSAMPLE=" in line:
+                    lines[i] = "DOSAMPLE=false"
 
-        # write the file
+        # write the bash file
         with open(os.path.join(self.runFilesDir, "submit_script.sh"), 'w') as file:
             file.writelines(lines)
-
-        # Generate NP positions files if necessary
-        #if self.NPsInMedium:
-        #    positions_file = os.path.join(self.runFilesDir,"supportFiles", self.np_positions_in_medium_file)
-        #    get_positions(self.NPNumberInMedium, 1250*cell.Rnucl, 200, 0, np.Rnp, positions_file)
-
-
         

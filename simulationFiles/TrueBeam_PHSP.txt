@@ -12,11 +12,11 @@ s:Ge/CellPHSPName    = "TrueBeam_CellPHSP"
 # --- Phase Space ----
 
 s:So/PhSpSource/Type 									    = "PhaseSpace"
-s:So/PhSpSource/PhaseSpaceFileName						    = "TrueBeam6FFF_10x10"
+s:So/PhSpSource/PhaseSpaceFileName						    = "./sourcePHSPFiles/TrueBeam_SourcePHSP"
 s:So/PhSpSource/Component								    = "BeamPosition"
 b:So/PhSpSource/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
 b:So/PhSpSource/PhaseSpacePreCheck                          = "False" # defaults to true
-i:So/PhSpSource/PhaseSpaceMultipleUse                       = 10
+i:So/PhSpSource/PhaseSpaceMultipleUse                       = 1
 #i:So/PhSpSource/NumberOfHistoriesInRun                      = 100
 #b:So/PhSpSource/LimitedAssumeFirstParticleIsNewHistory     = "true"
 #b:So/PhSpSource/LimitedAssumeEveryParticleIsNewHistory     = "true"
@@ -78,7 +78,7 @@ d:Ge/MediumVol/HL          = 0.5 * Ge/MediumThickness um
 d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/HLCell um
 
 # ---- Cylinder for PHSP scoring -----
-d:Ge/CylinderForPHSPHL = 0.5 * Ge/ElectronRangeAboveCell um
+d:Ge/CylinderForPHSPHL = 0.5 * Ge/ElectronRangePH1 um
 s:Ge/CylinderForPHSP/Parent = "World"
 s:Ge/CylinderForPHSP/Type = "TsCylinder"
 d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/RCell um
@@ -142,7 +142,7 @@ b:Ph/Default/Auger 											= "False" # Set to true to turn on Auger
 b:Ph/Default/AugerCascade 									= "False" # Set to true to turn on AugerCascade
 b:Ph/Default/DeexcitationIgnoreCut 							= "False" # Set to true to implement DeexcitationIgnoreCut
 b:Ph/Default/PIXE 											= "False" # Set to true to turn on PIXE"
-d:Ph/Default/LowestElectronEnergy 							= Ph/ElectronLowEnergyLimit eV 
+d:Ph/Default/LowestElectronEnergy 							= Ph/ElectronLowEnergyLimitPH1 eV 
 
 ###########
 # Graphics #
@@ -158,7 +158,7 @@ s:Gr/View/Type        = "OpenGL"
 i:Ts/ShowHistoryCountAtInterval = 1000
 
 i:Ts/NumberOfThreads = 1 # defaults to 1
-i:Ts/Seed = 1 # default is 1
+i:Ts/Seed = 1 
 b:Ts/PauseBeforeQuit = "F"
 
 b:Ts/ShowCPUTime = "True"

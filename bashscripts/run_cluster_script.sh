@@ -9,15 +9,17 @@ module load python
 INFILE1="SARRP_PHSP.txt"
 INFILE2="Cell_AGuIX.txt"
 INFILE3="nucleus_nBIO.txt"
-PYFILE="get_NP_positions.py"
+PYFILE1="sample_positions_in_medium.py"
+PYFILE2="sample_positions_in_cell.py"
 DELFILE="SARRP_PHSP.phsp"
+DOSAMPLE=true 
 
-ITER=$1
-if [[ $ITER -eq "" ]]
-then
-    ITER=1
-fi
-ADDITION=$2
+ITER=1
+ADDITION=0
+
+USER=`whoami`
+CURRENTPATH=`pwd`
+COUNT=0
 
 if [[ -z $ADDITION ]]; then
     COUNT=0
@@ -27,6 +29,13 @@ fi
 
 USER=`whoami`
 CURRENTPATH=`pwd`
+
+if [ ! $DOSAMPLE ]; then
+	cd ./supportFiles
+	python $PYFILE1
+	python $PYFILE2
+	cd $CURRENTPATH
+fi
 
 while [[ $COUNT -lt $((ITER + ADDITION)) ]]
 do
@@ -54,16 +63,18 @@ do
     cp $INFILE1 $DIR
     cp $INFILE2 $DIR
     cp $INFILE3 $DIR    
-    cp $PYFILE $DIR
+
 
     SEED=`bash -c 'echo $RANDOM'`
-    echo i:Ts/Seed = $SEED >> $DIR/$INFILE1
-    echo i:Ts/Seed = $SEED >> $DIR/$INFILE2
-	echo i:Ts/Seed = $SEED >> $DIR/$INFILE3
+    sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE1
+    sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE2
+	sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE3
+
     
     SCRIPT=$DIR/$INFILE1-$COUNT".csh"
 
     cp -r ./supportFiles $DIR
+	cp -r sourcePHSPFiles $DIR
     
     cat - << EOF > $SCRIPT
 #!/bin/bash
@@ -75,9 +86,14 @@ do
 #BSUB -R "rusage[mem=2500]"
 #BSUB -Q "140"
 #BSUB -u nobody
-cd $DIR
 
-python $PYFILE
+if $DOSAMPLE; then
+cd "${DIR}/supportFiles"
+python $PYFILE1
+python $PYFILE2
+fi
+
+cd $DIR
 time ~/topas/bin/topas $INFILE1
 time ~/topas/bin/topas $INFILE2
 time ~/topas/bin/topas $INFILE3

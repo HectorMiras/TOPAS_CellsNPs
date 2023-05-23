@@ -7,7 +7,9 @@ mkdir -p $RUNDIR
 python3 pythonscripts/run_simulation.py $CURRENTPATH
 
 cp -r ./runFiles/* $RUNDIR
-cp -r ./supportFiles $RUNDIR
+cp -r sourcePHSPFiles $RUNDIR
+
+#cp -r ./supportFiles/* "${RUNDIR}/supportFiles"
 cd $RUNDIR
 
 dos2unix submit_script.sh

@@ -1,14 +1,13 @@
 #!/bin/bash
 
-INFILE1="SARRP_PHSP.txt"
-INFILE2="Cell_AGuIX.txt"
-INFILE3="nucleus_nBIO.txt"
+INFILE1="TrueBeam_PHSP.txt" 
+INFILE2="Cell_and_medium_NPs.txt" 
+INFILE3="None" 
 PYFILE1="sample_positions_in_medium.py"
 PYFILE2="sample_positions_in_cell.py"
-DELFILE="SARRP_PHSP.phsp"
-DOSAMPLE=true 
-
-ITER=1
+DELFILE="TrueBeam_CellPHSP.phsp"
+DOSAMPLE=true
+ITER=2 
 ADDITION=0
 
 USER=`whoami`
@@ -54,12 +53,12 @@ do
     
     cp $INFILE1 $DIR
     cp $INFILE2 $DIR
-    cp $INFILE3 $DIR    
+#    cp $INFILE3 $DIR    
 
     SEED=`bash -c 'echo $RANDOM'`
     sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE1
     sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE2
-	sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE3
+#	sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE3
     
 
     cp -r ./supportFiles $DIR
@@ -75,7 +74,7 @@ do
 	cd $DIR
 	time ~/topas/bin/topas $INFILE1
 	time ~/topas/bin/topas $INFILE2
-	time ~/topas/bin/topas $INFILE3
+#	time ~/topas/bin/topas $INFILE3
 	rm $DELFILE
 
     
