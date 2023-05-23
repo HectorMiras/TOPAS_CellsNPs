@@ -4,8 +4,8 @@
 # ignore all files in the docs directory
 supportFiles/positions*
 work/
-sourcePHSPFiles/*
-runFiles/*
+sourcePHSPFiles/
+runFiles/
 
 # ignore foo.txt at the root (but not other foo.txt files)
 # /foo.txt
