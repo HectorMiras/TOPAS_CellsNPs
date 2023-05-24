@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import shutil
 import os
+import configparser
 from get_NP_positions import get_positions
 from cell import Cell_class
 from nanoparticles import NP_class
@@ -11,8 +12,8 @@ class Simulation_manager:
 
     def __init__(self, workingDir, config_file):
 
-        with open(config_file, 'r') as file:
-            json_data = json.load(file)
+        #with open(config_file, 'r') as file:
+            #json_data = json.load(file)
         
         self.workingDir = workingDir
         self.supportFilesDir = os.path.join(workingDir,"supportFiles")
@@ -32,7 +33,7 @@ class Simulation_manager:
             "I125": "source_parameters_I125.txt"
         }
 
-        self.read_config(workingDir, config_file)
+        self.read_pyconfig(workingDir, config_file)
         self.cell = Cell_class()
         self.cell.read_file_parameters(os.path.join(self.supportFilesDir,self.cellParametersFile))
         self.np = NP_class()
@@ -65,7 +66,36 @@ class Simulation_manager:
         for attr_name, attr_value in self.np.__dict__.items():
             print(f"{attr_name}: {attr_value}")
 
-    def read_config(self, workingDir, config_file):
+    def read_pyconfig(self, workingDir, config_file):
+        config = configparser.ConfigParser()
+        config.read(os.path.join(workingDir, config_file))
+
+        # Assumes the section name in your INI file is 'Simulation'
+        simulation = config['Simulation']
+
+        self.simulatePhase1 = simulation.getboolean('simulatePhase1')
+        self.simulatePhase2 = simulation.getboolean('simulatePhase2')
+        self.simulatePhase3 = simulation.getboolean('simulatePhase3')
+        self.BeamSource = simulation["BeamSource"]
+        self.NPsInMedium = simulation.getboolean("NPsInMedium")
+        self.NPsInCell = simulation.getboolean("NPsInCell")
+        self.NPType = simulation["NPType"]
+        self.NPConcInMedium = simulation.getfloat("NPConcInMedium")
+        self.NPNumberInCell = simulation.getint("NPNumberInCell")
+        self.NPNumberInMedium = simulation.getint("NPNumberInMedium")
+        self.sortNPPositions = simulation.getboolean("sortNPPositions")
+        self.simScriptFile = simulation["simScriptFile"]
+        self.cellParametersFile = simulation["cellParametersFile"]
+        self.njobs = simulation.getint("njobs")
+        self.nhistories = simulation.getint("nhistories")
+        self.Phase1File = self.BeamSource + "_PHSP.txt"
+        self.Phase2File = "Cell_and_medium_NPs.txt"
+        self.Phase3File = None
+        self.PHSP1Name = self.BeamSource + "_CellPHSP"
+        self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
+        self.SourceParametersFile = "source_parameters_" + self.BeamSource + ".txt"
+
+    def read_json_config(self, workingDir, config_file):
         
         with open(os.path.join(workingDir,config_file), 'r') as file:
             json_data = json.load(file)

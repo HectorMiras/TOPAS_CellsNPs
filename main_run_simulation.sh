@@ -2,7 +2,7 @@
 
 CURRENTPATH=`pwd`
 RUNDIR="${CURRENTPATH}/work/${1:-TestRunDir}"
-CONFIGFILE="simulation_config.json"
+CONFIGFILE="SimulationConfigFile.txt"
 mkdir -p $RUNDIR
 
 python3 pythonscripts/run_simulation.py $CURRENTPATH
