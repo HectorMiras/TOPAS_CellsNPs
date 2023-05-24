@@ -43,7 +43,7 @@ def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
         #zbins = N // 100000
         #zbinheight = Hcyl / zbins
         # the zbin must has the height of 10 np diameters
-        zbins = int(Hcyl // (200*Rnp))
+        zbins = int(Hcyl // (20*Rnp))
         zbinheight = Hcyl / zbins
 
     print(f'Number of z bins: {zbins}. Height of zbins: {zbinheight}.')

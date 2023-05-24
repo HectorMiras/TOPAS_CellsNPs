@@ -38,6 +38,21 @@ class Simulation_manager:
         self.np = NP_class()
         self.np.read_file_parameters(os.path.join(self.supportFilesDir, self.NPParametersFile))
 
+        if self.NPsInMedium:
+            # Get the number of NPs from the concentration
+            vol_medium = 3.1415926 * 0.2 * np.power(1.25 * self.cell.rNucl, 2)
+            npart = self.np.number_from_conc_volume(self.NPConcInMedium, vol_medium)
+            self.NPNumberInMedium = npart
+            self.np_positions_in_medium_file = "positions_in_medium_" + \
+                                               str(self.NPNumberInMedium) + "_" + self.NPType + ".txt"
+        else:
+            self.np_positions_in_medium_file = "positions_in_medium_1_NP.txt"
+        if self.NPsInCell:
+            self.np_positions_in_cell_file = "positions_in_cell_" + \
+                                             str(self.NPNumberInCell) + "_" + self.NPType + ".txt"
+        else:
+            self.np_positions_in_cell_file = "positions_in_cell_1_NP.txt"
+
         print("Simulation manager parameters:")
         for attr_name, attr_value in self.__dict__.items():
             print(f"{attr_name}: {attr_value}")
@@ -76,16 +91,6 @@ class Simulation_manager:
         self.PHSP1Name = self.BeamSource + "_CellPHSP"
         self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
         self.SourceParametersFile = "source_parameters_" + self.BeamSource + ".txt"
-        if self.NPsInMedium:
-            self.np_positions_in_medium_file = "positions_in_medium_" + \
-                                               str(self.NPNumberInMedium) + "_" + self.NPType + ".txt"
-        else:
-            self.np_positions_in_medium_file = "positions_in_medium_1_NP.txt"
-        if self.NPsInCell:
-            self.np_positions_in_cell_file = "positions_in_cell_" + \
-                                             str(self.NPNumberInCell) + "_" + self.NPType + ".txt"
-        else:
-            self.np_positions_in_cell_file = "positions_in_cell_1_NP.txt"
 
 
     def map_files(self):
@@ -125,6 +130,12 @@ class Simulation_manager:
         # Process self.simScriptFile
         self.map_simScriptFile()
 
+        # map python scripts for sampling NPs
+        self.map_sample_positions_pyscripts()
+
+
+
+    def map_sample_positions_pyscripts(self):
         # Map python scripts for generating np positions
         with open(os.path.join(self.pythonScripts, "sample_positions_in_medium.py"), 'r') as file:
             lines = file.readlines()
@@ -136,7 +147,7 @@ class Simulation_manager:
                 lines[i] = line.replace(old_value, f'\"{self.np_positions_in_medium_file}\"')
             if "Rmax =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'1.25*{1000*self.cell.rNucl}')
+                lines[i] = line.replace(old_value, f'1.25*{1000 * self.cell.rNucl}')
             if "Rnp =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{self.np.rNP}')
@@ -144,10 +155,10 @@ class Simulation_manager:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{self.NPNumberInMedium}')
 
-        # write the file
-        with open(os.path.join(self.runFilesDir,"supportFiles", "sample_positions_in_medium.py"), 'w') as file:
-            file.writelines(lines)
 
+        # write the file
+        with open(os.path.join(self.runFilesDir, "supportFiles", "sample_positions_in_medium.py"), 'w') as file:
+            file.writelines(lines)
 
         with open(os.path.join(self.pythonScripts, "sample_positions_in_cell.py"), 'r') as file:
             lines = file.readlines()
@@ -159,13 +170,13 @@ class Simulation_manager:
                 lines[i] = line.replace(old_value, f'\"{self.np_positions_in_cell_file}\"')
             if "Rmax =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'{1000*self.cell.rCell}')
+                lines[i] = line.replace(old_value, f'{1000 * self.cell.rCell}')
             if "Rmin =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'{1000*self.cell.rNucl}')
+                lines[i] = line.replace(old_value, f'{1000 * self.cell.rNucl}')
             if "H =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'{1000*self.cell.height}')
+                lines[i] = line.replace(old_value, f'{1000 * self.cell.height}')
             if "Rnp =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{self.np.rNP}')
@@ -176,7 +187,6 @@ class Simulation_manager:
         # write the file
         with open(os.path.join(self.runFilesDir, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
             file.writelines(lines)
-
 
     def map_phase1_file(self):
         # read the file Phase1 File

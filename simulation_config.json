@@ -2,16 +2,16 @@
 	"simulatePhase1": true,
     "simulatePhase2": true,
     "simulatePhase3": false,
-	"BeamSource": "TrueBeam",
+	"BeamSource": "SARRP",
 	"NPsInMedium": true,
 	"NPsInCell": true,
-	"NPType": "AuNP",
-	"NPConcInMedium": 0.5,
-	"NPNumberInCell": 3000,
+	"NPType": "AGuIX",
+	"NPConcInMedium": 1.0,
+	"NPNumberInCell": 400000,
 	"NPNumberInMedium": 2000,
 	"sortNPPositions": true,
 	"simScriptFile": "run_local_script.sh",
 	"cellParametersFile": "cell_parameters.txt",
-	"njobs": 2,
-	"nhistories": 100000
+	"njobs": 1,
+	"nhistories": 1000
 }

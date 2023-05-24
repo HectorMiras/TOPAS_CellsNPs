@@ -1,13 +1,13 @@
 #!/bin/bash
 
-INFILE1="TrueBeam_PHSP.txt" 
+INFILE1="SARRP_PHSP.txt" 
 INFILE2="Cell_and_medium_NPs.txt" 
 INFILE3="None" 
 PYFILE1="sample_positions_in_medium.py"
 PYFILE2="sample_positions_in_cell.py"
-DELFILE="TrueBeam_CellPHSP.phsp"
+DELFILE="SARRP_CellPHSP.phsp"
 DOSAMPLE=true
-ITER=2 
+ITER=1 
 ADDITION=0
 
 USER=`whoami`

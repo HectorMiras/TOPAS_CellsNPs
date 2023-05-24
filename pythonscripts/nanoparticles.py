@@ -42,17 +42,19 @@ class NP_class:
                         self.density = value
                         
 
-    def volume(self,):
-        return (4/3) * math.pi * np.power(self.rNP, 3)
+    def volume_um3(self,):
+        # get volume in um3
+        return (4/3) * math.pi * np.power(0.001*self.rNP, 3)
 
     def mass_mg(self,):
         # um3 to cm3 and g to mg
-        return np.power(1e-4,3) * self.volume() * 1000 * self.density
+        return np.power(1e-4,3) * self.volume_um3() * 1000 * self.density
     
     def number_from_conc_volume(self, conc, vol):
         # volume in um3
         # conc in mg/cm3
-        return conc * vol * np.power(1e-4,3) / self.mass_mg()
+        print(f'con: {conc}, vol: {vol}, mass: {self.mass_mg()}')
+        return int(conc * vol * np.power(1e-4,3) / self.mass_mg())
 
     def get_relweights_and_dens_from_conc(self, conc):
         # return relative mass weights of water and nanoparticles from the concentration given in mg/cm3
