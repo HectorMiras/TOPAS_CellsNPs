@@ -1,3 +1,8 @@
+# ------ Include Files ------
+includeFile = ./supportFiles/cell_parameters_A549.txt
+
+s:Ge/SourcePHSPName    = "nucleus_PHSP_electrons"
+
 # -- Geometry
 # World
 d:Ge/World/HLX                          = 10.01 um
@@ -12,7 +17,7 @@ s:Ge/Nucleus/Parent                     = "World"
 s:Ge/Nucleus/Material                   = "G4_WATER"
 s:Ge/Nucleus/Color                      = "White"
 s:Ge/Nucleus/DNAModel					= "Sphere"
-d:Ge/Nucleus/NucleusRadius              = 4.65 um
+d:Ge/Nucleus/NucleusRadius              = Ge/RNucleus um
 i:Ge/Nucleus/HilbertCurveLayer          = 4
 i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
 s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
@@ -52,7 +57,7 @@ b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
 
 # -- Source and runs
 s:So/PhSpSo/Type 									= "PhaseSpace"
-s:So/PhSpSo/PhaseSpaceFileName						= "PhaseSpaceInNucleus"
+s:So/PhSpSo/PhaseSpaceFileName						= Ge/SourcePHSPName
 s:So/PhSpSo/Component								= "World"
 b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
@@ -70,7 +75,7 @@ sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_Backbone
 sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
 s:Sc/DNADamageScorer/PrimaryParticle		= "gamma"
 d:Sc/DNADamageScorer/MeanEnergy				= 250 keV
-d:Sc/DNADamageScorer/StopTrackingAtDose		= 1.0 gray
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 1.0 gray
 d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
 d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Nucleus/NucleusRadius um
 d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Nucleus/NucleusRadius

@@ -73,7 +73,7 @@ class Simulation_manager:
         # Generates file and directory names from previous parameters
         self.Phase1File = f'Phase1_{self.BeamSource}.txt'
         self.Phase2File = "Phase2_Cell.txt"
-        self.Phase3File = None
+        self.Phase3File = "Phase3_dnaDamage.txt"
         self.PHSP1Name = self.BeamSource + "_PHSP"
         self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
         self.cellParametersFile = f"cell_parameters_{self.CellType}.txt"
@@ -333,6 +333,29 @@ class Simulation_manager:
         # write the file
         with open(os.path.join(self.runDirectoryName, self.Phase2File), 'w') as file:
             file.writelines(lines)
+
+
+    def map_phase3_file(self):
+        # read the file Phase3 File
+        with open(os.path.join(self.simulationFilesDir, self.Phase3File), 'r') as file:
+            lines = file.readlines()
+
+        for i in range(len(lines)):
+            line = lines[i]
+            # check if the line contains the keywords
+            if "includeFile" in line and "cell_parameters" in line:
+                # get the old file name
+                old_file_name = line.split("/")[-1].strip()
+                lines[i] = line.replace(old_file_name, self.cellParametersFile)
+            if "s:Ge/SourcePHSPName" in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
+                lines[i] = line.replace(old_file_name, new_file_name)
+
+        # write the file
+        with open(os.path.join(self.runDirectoryName, self.Phase3File), 'w') as file:
+            file.writelines(lines)
+
 
     def map_simScriptFile(self):
         with open(os.path.join(self.bashScriptsDir, self.simScriptFile), 'r') as file:
