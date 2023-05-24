@@ -7,7 +7,7 @@ PYFILE1="sample_positions_in_medium.py"
 PYFILE2="sample_positions_in_cell.py"
 DELFILE="SARRP_CellPHSP.phsp"
 DOSAMPLE=true
-ITER=1 
+ITER=10 
 ADDITION=0
 
 USER=`whoami`

@@ -1,13 +1,13 @@
 # ------ Include Files ------
 includeFile = ./supportFiles/cell_parameters.txt
-includeFile = ./supportFiles/np_parameters_AGuIX.txt
+includeFile = ./supportFiles/np_parameters_AuNP.txt
 includeFile = ./supportFiles/source_parameters_SARRP.txt
 
-s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_1p0mgml_400000_AGuIX_electrons"
-s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_1p0mgml_400000_AGuIX_electrons"
-s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_1p0mgml_400000_AGuIX_gammas"
-s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1308184_AGuIX.txt"
-s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_400000_AGuIX.txt"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_1p0mgml_5000_AuNP_electrons"
+s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_1p0mgml_5000_AuNP_electrons"
+s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_1p0mgml_5000_AuNP_gammas"
+s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_663_AuNP.txt"
+s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_5000_AuNP.txt"
 
 s:Ge/CellPHSPName    = "SARRP_CellPHSP"
 
@@ -93,7 +93,7 @@ d:Ge/MediumDetailed/TransZ            = Ge/MediumDetailed/ComponentHL - Ge/Mediu
 b:Ma/MediumMaterial/BuildFromMaterials  = "True"
 sv:Ma/MediumMaterial/Components         = 2 "G4_WATER" Ma/NPMaterial   
 uv:Ma/MediumMaterial/Fractions          = 2 0.9990009990009991 0.0009990009990009992
-d:Ma/MediumMaterial/Density             = 1.0001822354228178 g/cm3
+d:Ma/MediumMaterial/Density             = 1.000948137402207 g/cm3
 s:Ma/MediumMaterial/DefaultColor        = "yellow"
 
 
@@ -106,7 +106,7 @@ s:Sc/NucleusPHSP/Quantity						  = "PhaseSpace"
 s:Sc/NucleusPHSP/Component					      = "nucleus"
 s:Sc/NucleusPHSP/Surface						  = "nucleus/AnySurface"
 s:Sc/NucleusPHSP/OutputType					      = "ASCII"
-#s:Sc/NucleusPHSP/OutputFile					  = "nucleus_PHSP_1p0mgml_400000_AGuIX_electrons"
+#s:Sc/NucleusPHSP/OutputFile					  = "nucleus_PHSP_1p0mgml_5000_AuNP_electrons"
 s:Sc/NucleusPHSP/IfOutputFileAlreadyExists		  = "Overwrite"
 s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 		  = "In"
 b:Sc/NucleusPHSP/KillAfterPhaseSpace 			  = "False"
@@ -120,7 +120,7 @@ s:Sc/DoseNucleus_e/Component                      = "nucleus"
 sv:Sc/DoseNucleus_e/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/DoseNucleus_e/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseNucleus_e/OutputType                     = "csv"
-#s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_1p0mgml_400000_AGuIX_electrons"
+#s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_1p0mgml_5000_AuNP_electrons"
 b:Sc/DoseNucleus_e/PropagateToChildren		      = "False"
 sv:Sc/DoseNucleus_e/OnlyIncludeParticlesNamed     = 1 "e-"
 
@@ -130,7 +130,7 @@ s:Sc/DoseNucleus_g/Component                      = "nucleus"
 sv:Sc/DoseNucleus_g/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/DoseNucleus_g/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseNucleus_g/OutputType                     = "csv"
-#s:Sc/DoseNucleus_g/OutputFile                    = "DoseToNucleus_1p0mgml_400000_AGuIX_gammas"
+#s:Sc/DoseNucleus_g/OutputFile                    = "DoseToNucleus_1p0mgml_5000_AuNP_gammas"
 b:Sc/DoseNucleus_g/PropagateToChildren            = "False"
 sv:Sc/DoseNucleus_g/OnlyIncludeParticlesNamed     = 1 "gamma"
 

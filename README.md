@@ -13,24 +13,25 @@ DIRECTORY STRUCTURE
 
 IMPORTANT FILES DESCRIPTION
 
-- simulation_config.json
+- SimulationConfigFile.txt
 This is the input file for the multiscale simulation.
 It contains the following parameters, with the following possible values:
-	"simulatePhase1": true, false   # Phase1 simulation. Generates a phasespace from a primary source
-    "simulatePhase2": true, false   # Phase2 simulation. Cell with nanoparticles. Scores dose and electron phasespace to nucleus
-    "simulatePhase3": true, false   # Phase3 simulation. TOPAS-nBio simulations of electrons in nucleus.
-	"BeamSource": "SARRP", "TrueBeam", "I125"
-	"NPsInMedium": true, false
-	"NPsInCell": true, false
-	"NPType": "AuNP", "AGuIX", "water"
-	"NPConcInMedium": 1.0, # mg of nanoparticles in ml of water
-	"NPNumberInCell": 5000,  # number on NPs to be sampled in the cytoplasm of the cell
-	"NPNumberInMedium": 1179,  # number of NPs to be sampled in the detailed region of the medium above the cell
-	"sortNPPositions": true, false  # true to sample the NPs positions in each cell, false to use the same distribution for all cells 
-	"simScriptFile": "run_local_script.sh",   # specify the script that will distribute and run the simulations
-	"cellParametersFile": "cell_parameters.txt",  # file that contains the geometric parameters of the cell model
-	"njobs": 2,   # number of jobs to be executed
-	"nhistories": 10000  # number of histories to be simulated per job. Only applies 
+[Simulation]
+simulatePhase1 = True                            # Phase1 simulation. Generates a phasespace from a primary source
+simulatePhase2 = True                            # Phase2 simulation. Cell with nanoparticles. Scores dose and electron phasespace to nucleus
+simulatePhase3 = False                           # Phase3 simulation. TOPAS-nBio simulations of electrons in nucleus.
+BeamSource = SARRP                               # Name of the TOPAS radiation source: SARRP, TrueBeam, I125
+NPsInMedium = True                               # 
+NPsInCell = True                                 # 
+NPType = AuNP                                   # Types: AGuIX, AuNP, water, AGuIXBi
+NPConcInMedium = 1.0                             # mg of NPs in ml of water
+NPNumberInCell = 5000                          # Number of NPs in the cytoplasm
+NPNumberInMedium = 2000                          # number of NPs to be sampled in the detailed region of the medium above the cell. Overridden by NPConcInMedium
+sortNPPositions = True                           # If true, the positions of NPs are resampled in each job to simulate different cells
+simScriptFile = run_local_script.sh              # specify the script that will distribute and run the simulations
+cellParametersFile = cell_parameters.txt         # file that contains the geometric parameters of the cell model
+njobs = 10                                        # number of jobs to be executed
+nhistories = 100000                                # number of histories to be simulated per job. Doesn't apply to PhaseSpace sources.
 
 - _main_run_simulation.sh
 Creates the execution directory ($RUNDIR), inside the work directory, where the different jobs will be executed.
@@ -39,7 +40,7 @@ Finally, calls the submit_script.sh, which contains the commands to execute the 
 The name of the $RUNDIR is given as an input of the run_simulation.sh script.
 
 - ./submit_script.sh
-Shell script that is created by simulation_manager.py from the simScriptFile specified in the simulation_config.json (located in bashscripts directory).
+Shell script that is created by simulation_manager.py from the simScriptFile specified in the SimulationConfigFile.txt (located in bashscripts directory).
 It is initially placed at runFiles directory and then copyed to ./work/$RUNDIR. 
 
 - bashscripts files
@@ -53,13 +54,13 @@ All these scripts must follow the following structure:
 	- Generate initial seeds for the random number generator and change it in the simulation files.
 	- Execute python script (optional).
 	- Execute topas simulations.
-The value of the variables INFILE#, PYFILE will be modified by the run_simulation.py script according to the information specified in the simulation_config.json file
+The value of the variables INFILE#, PYFILE will be modified by the run_simulation.py script according to the information specified in the SimulationConfigFile.txt file
 
 
 INSTRUCTIONS
 Steps to execute a simulation:
 
-1. Edit the simulation_config.json file to specify the parameters for your simulation.
+1. Edit the SimulationConfigFile.txt file to specify the parameters for your simulation.
 2. run the main_run_simulation.sh script as:
          ./main_run_simulation.sh MySimDir
 		 
