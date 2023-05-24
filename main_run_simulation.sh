@@ -2,10 +2,12 @@
 
 CURRENTPATH=`pwd`
 RUNDIR="${CURRENTPATH}/work/${1:-TestRunDir}"
+CONFIGFILE="simulation_config.json"
 mkdir -p $RUNDIR
 
 python3 pythonscripts/run_simulation.py $CURRENTPATH
 
+cp $CONFIGFILE $RUNDIR
 cp -r ./runFiles/* $RUNDIR
 cp -r sourcePHSPFiles $RUNDIR
 
