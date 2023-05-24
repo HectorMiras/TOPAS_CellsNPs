@@ -4,6 +4,7 @@ import sys
 import shutil
 import os
 import configparser
+import re
 from get_NP_positions import get_positions
 from cell import Cell_class
 from nanoparticles import NP_class
@@ -67,8 +68,14 @@ class Simulation_manager:
             print(f"{attr_name}: {attr_value}")
 
     def read_pyconfig(self, workingDir, config_file):
-        config = configparser.ConfigParser()
-        config.read(os.path.join(workingDir, config_file))
+        config = configparser.ConfigParser(allow_no_value=True)
+        with open(os.path.join(workingDir, config_file), 'r') as file:
+            config_string = '[simulation]\n' + file.read()
+
+        # Remove inline comments
+        config_string = re.sub(r'\s*#.*', '', config_string)
+
+        config.read_string(config_string)
 
         # Assumes the section name in your INI file is 'Simulation'
         simulation = config['Simulation']
