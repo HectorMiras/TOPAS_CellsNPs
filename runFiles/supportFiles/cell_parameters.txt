@@ -1,8 +1,0 @@
-d:Ge/RCell            = 7.2909 um
-d:Ge/HLCell            = 5 um
-d:Ge/RNucleus         = 4.8 um
-#d:Ge/HLNucleus         = 4.2 um
-d:Ge/CellMembrane     = 10 nm
-
-d:Ge/WellRadius = 15250 um # Well diameter is 3.5 cm
-d:Ge/MediumThickness           = 2080 um  # 2 mL of medium correspond to a height of 2.08 mm

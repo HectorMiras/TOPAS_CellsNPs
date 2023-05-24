@@ -20,21 +20,12 @@ class Simulation_manager:
         self.supportFilesDir = os.path.join(workingDir,"supportFiles")
         self.bashScriptsDir = os.path.join(workingDir, "bashscripts")
         self.simulationFilesDir = os.path.join(workingDir, "simulationFiles")
-        self.runFilesDir = os.path.join(workingDir, "runFiles")
         self.pythonScripts = os.path.join(workingDir, "pythonscripts")
-
-        self.NPFilesDict = {
-            "AGuIX": "np_parameters_AGuIX.txt",
-            "AuNP": "np_parameters_AuNP.txt",
-            "AGuIX_Bi": "np_parameters_AGuIX_Bi.txt"
-        }
-        self.SourceFilesDict = {
-            "SARRP": "source_parameters_SARRP.txt",
-            "TrueBeam": "source_parameters_TrueBeam.txt",
-            "I125": "source_parameters_I125.txt"
-        }
+        self.sourcePHSPFiles = os.path.join(workingDir, "sourcePHSPFiles")
 
         self.read_pyconfig(workingDir, config_file)
+
+        self.read_support_files()
 
         print("Simulation manager parameters:")
         for attr_name, attr_value in self.__dict__.items():
@@ -49,6 +40,7 @@ class Simulation_manager:
             print(f"{attr_name}: {attr_value}")
 
     def read_pyconfig(self, workingDir, config_file):
+        self.ConfigFile = config_file
         config = configparser.ConfigParser(allow_no_value=True)
         with open(os.path.join(workingDir, config_file), 'r') as file:
             config_string = '[simulation]\n' + file.read()
@@ -58,31 +50,41 @@ class Simulation_manager:
 
         config.read_string(config_string)
 
-        # Assumes the section name in your INI file is 'Simulation'
         simulation = config['Simulation']
 
         self.simulatePhase1 = simulation.getboolean('simulatePhase1')
         self.simulatePhase2 = simulation.getboolean('simulatePhase2')
         self.simulatePhase3 = simulation.getboolean('simulatePhase3')
         self.BeamSource = simulation["BeamSource"]
+        self.HasSourcePHSP = simulation.getboolean("HasSourcePHSP")
         self.NPsInMedium = simulation.getboolean("NPsInMedium")
         self.NPsInCell = simulation.getboolean("NPsInCell")
         self.NPType = simulation["NPType"]
+        self.CellType = simulation["CellType"]
         self.NPConcInMedium = simulation.getfloat("NPConcInMedium")
         self.NPNumberInCell = simulation.getint("NPNumberInCell")
         self.NPNumberInMedium = simulation.getint("NPNumberInMedium")
         self.sortNPPositions = simulation.getboolean("sortNPPositions")
         self.simScriptFile = simulation["simScriptFile"]
-        self.cellParametersFile = simulation["cellParametersFile"]
         self.njobs = simulation.getint("njobs")
         self.nhistories = simulation.getint("nhistories")
-        self.Phase1File = self.BeamSource + "_PHSP.txt"
-        self.Phase2File = "Cell_and_medium_NPs.txt"
-        self.Phase3File = None
-        self.PHSP1Name = self.BeamSource + "_CellPHSP"
-        self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
-        self.SourceParametersFile = "source_parameters_" + self.BeamSource + ".txt"
+        self.runDirectoryName = simulation["runDirectoryName"]
 
+        # Generates file and directory names from previous parameters
+        self.Phase1File = f'Phase1_{self.BeamSource}.txt'
+        self.Phase2File = "Phase2_Cell.txt"
+        self.Phase3File = None
+        self.PHSP1Name = self.BeamSource + "_PHSP"
+        self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
+        self.cellParametersFile = f"cell_parameters_{self.CellType}.txt"
+        self.SourceParametersFile = "source_parameters_" + self.BeamSource + ".txt"
+        #conc_str = str(self.NPConcInMedium)
+        #conc_str = conc_str.replace(".", "p")
+        #self.runDirectoryName = f"work/{self.BeamSource}_{self.CellType}_{conc_str}_{self.NPNumberInCell}_{self.NPType}_{self.runDirectoryName}"
+        #self.runDirectoryName = os.path.join(workingDir, self.runDirectoryName)
+        self.runDirectoryName = os.path.join(workingDir,"work", self.runDirectoryName)
+
+    def read_support_files(self):
         self.cell = Cell_class()
         self.cell.read_file_parameters(os.path.join(self.supportFilesDir, self.cellParametersFile))
         self.np = NP_class()
@@ -103,56 +105,29 @@ class Simulation_manager:
         else:
             self.np_positions_in_cell_file = "positions_in_cell_1_NP.txt"
 
-    def read_json_config(self, workingDir, config_file):
-        
-        with open(os.path.join(workingDir,config_file), 'r') as file:
-            json_data = json.load(file)
-
-        self.simulatePhase1 = json_data['simulatePhase1']
-        self.simulatePhase2 = json_data['simulatePhase2']
-        self.simulatePhase3 = json_data['simulatePhase3']
-        self.BeamSource = json_data["BeamSource"]
-        self.NPsInMedium = json_data["NPsInMedium"]
-        self.NPsInCell = json_data["NPsInCell"]
-        self.NPType = json_data["NPType"]
-        self.NPConcInMedium = json_data["NPConcInMedium"]
-        self.NPNumberInCell = json_data["NPNumberInCell"]
-        self.NPNumberInMedium = json_data["NPNumberInMedium"]
-        self.sortNPPositions = json_data["sortNPPositions"]
-        self.simScriptFile = json_data["simScriptFile"]
-        self.cellParametersFile = json_data["cellParametersFile"]
-        self.njobs = json_data["njobs"]
-        self.nhistories = json_data["nhistories"]
-        self.Phase1File = self.BeamSource + "_PHSP.txt"
-        self.Phase2File = "Cell_and_medium_NPs.txt"
-        self.Phase3File = None
-        self.PHSP1Name = self.BeamSource + "_CellPHSP"
-        self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
-        self.SourceParametersFile = "source_parameters_" + self.BeamSource + ".txt"
-
 
     def map_files(self):
 
-        # Empty runFilesDir
-        runfiles = os.listdir(self.runFilesDir)
-        for file in runfiles:
-            file_path = os.path.join(self.runFilesDir, file)
-            # Check if it's a file or directory
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
+        # Create run directory if it does not exist
+        os.makedirs(self.runDirectoryName, exist_ok=True)
 
+        # Copy config file to run directory
+        source = os.path.join(self.workingDir, self.ConfigFile)
+        destination = os.path.join(self.runDirectoryName, self.ConfigFile)
+        shutil.copy(source, destination)
+        
         # Create supportFiles dir and copy files
-        destination_dir = os.path.join(self.runFilesDir, 'supportFiles')
+        destination_dir = os.path.join(self.runDirectoryName, 'supportFiles')
         os.makedirs(destination_dir, exist_ok=True)
-        for file in [self.NPParametersFile, self.SourceParametersFile, self.cellParametersFile]:
-            source_file_path = os.path.join(self.supportFilesDir, file)
-            destination_file_path = os.path.join(self.runFilesDir, 'supportFiles', file)
-            shutil.copyfile(source_file_path, destination_file_path)
+        for file_name in os.listdir(self.supportFilesDir):
+            source = os.path.join(self.supportFilesDir, file_name)
+            destination = os.path.join(destination_dir, file_name)
+            if os.path.isfile(source):
+                shutil.copy(source, destination)
+        # Copy the python scripts for NP sampling to runDirectoryName/supportFiles
         for file in ["get_NP_positions.py", "sample_positions_in_cell.py", "sample_positions_in_medium.py"]:
             source_file_path = os.path.join(self.pythonScripts, file)
-            destination_file_path = os.path.join(self.runFilesDir, 'supportFiles', file)
+            destination_file_path = os.path.join(self.runDirectoryName, 'supportFiles', file)
             shutil.copyfile(source_file_path, destination_file_path)
 
         # Map the Phase1File
@@ -170,6 +145,18 @@ class Simulation_manager:
 
         # map python scripts for sampling NPs
         self.map_sample_positions_pyscripts()
+
+        # If phase1 is using source phase space, copy phsp files directory
+        if self.HasSourcePHSP:
+            # Create supportFiles dir and copy files
+            destination_dir = os.path.join(self.runDirectoryName, 'sourcePHSPFiles')
+            os.makedirs(destination_dir, exist_ok=True)
+            for file_name in os.listdir(self.sourcePHSPFiles):
+                source = os.path.join(self.sourcePHSPFiles, file_name)
+                destination = os.path.join(destination_dir, file_name)
+                if os.path.isfile(source):
+                    shutil.copy(source, destination)
+
 
 
 
@@ -195,7 +182,7 @@ class Simulation_manager:
 
 
         # write the file
-        with open(os.path.join(self.runFilesDir, "supportFiles", "sample_positions_in_medium.py"), 'w') as file:
+        with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_medium.py"), 'w') as file:
             file.writelines(lines)
 
         with open(os.path.join(self.pythonScripts, "sample_positions_in_cell.py"), 'r') as file:
@@ -223,7 +210,7 @@ class Simulation_manager:
                 lines[i] = line.replace(old_value, f'{self.NPNumberInCell}')
 
         # write the file
-        with open(os.path.join(self.runFilesDir, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
+        with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
             file.writelines(lines)
 
     def map_phase1_file(self):
@@ -237,10 +224,12 @@ class Simulation_manager:
             if "NumberOfHistoriesInRun" in line:
                 old_file_name = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_file_name, f'{self.nhistories}')
-            if "includeFile" in line and "source_parameters_" in line:
+            if "includeFile" in line and "cell_parameters" in line:
                 # get the old file name
                 old_file_name = line.split("/")[-1].strip()
-                # replace the old file name with the new one
+                lines[i] = line.replace(old_file_name, self.cellParametersFile)
+            if "includeFile" in line and "source_parameters_" in line:
+                old_file_name = line.split("/")[-1].strip()
                 lines[i] = line.replace(old_file_name, self.SourceParametersFile)
             if "includeFile" in line and "np_parameters_" in line:
                 old_file_name = line.split("/")[-1].strip()
@@ -266,7 +255,7 @@ class Simulation_manager:
                 lines[i] = line.replace(old_values, f"{dens_tot} g/cm3")
 
         # write the file
-        with open(os.path.join(self.runFilesDir, self.Phase1File), 'w') as file:
+        with open(os.path.join(self.runDirectoryName, self.Phase1File), 'w') as file:
             file.writelines(lines)
 
     def map_phase2_file(self):
@@ -280,6 +269,10 @@ class Simulation_manager:
         for i in range(len(lines)):
             line = lines[i]
             # check if the line contains the keywords
+            if "includeFile" in line and "cell_parameters" in line:
+                # get the old file name
+                old_file_name = line.split("/")[-1].strip()
+                lines[i] = line.replace(old_file_name, self.cellParametersFile)
             if "includeFile" in line and "source_parameters_" in line:
                 # get the old file name
                 old_file_name = line.split("/")[-1].strip()
@@ -338,7 +331,7 @@ class Simulation_manager:
                 lines[i] = line.replace(old_values, f"{dens_tot} g/cm3")
 
         # write the file
-        with open(os.path.join(self.runFilesDir, self.Phase2File), 'w') as file:
+        with open(os.path.join(self.runDirectoryName, self.Phase2File), 'w') as file:
             file.writelines(lines)
 
     def map_simScriptFile(self):
@@ -394,6 +387,6 @@ class Simulation_manager:
                     lines[i] = "DOSAMPLE=false"
 
         # write the bash file
-        with open(os.path.join(self.runFilesDir, "submit_script.sh"), 'w') as file:
+        with open(os.path.join(self.runDirectoryName, "submit_script.sh"), 'w') as file:
             file.writelines(lines)
         
