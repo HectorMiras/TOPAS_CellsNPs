@@ -15,25 +15,26 @@ class NP_class:
         parameters = {}
         with open(np_parameter_file, 'r') as file:
             for line in file:
-                if line.startswith('d:Ge/') or line.startswith('d:Ma/') and not line.startswith('#'):
+                if ("Ge/" in line) or ("Ma/" in line):
                     # remove newline character and any leading/trailing whitespace
                     line = line.strip()
-
+                    print(line)
                     # split the line into parameter name and value
                     parameter, value = line.split('=')
-                    parameter = parameter.strip()
-                    if "#" in value:
-                        value, comment = value.split('#')
-                    value = value.strip()
+                    value = value.strip().split(' ')[0]
+                    #parameter = parameter.strip()
+                    #if "#" in value:
+                    #    value, comment = value.split('#')
+                    #value = value.strip()
 
                     # separate the value and its unit
-                    value, unit = value.split(' ')
+                    #value, unit = value.split(' ')
 
                     # if the value ends with a digit, convert it to a float
                     if value[-1].isdigit():
                         value = float(value)
 
-                    parameters[parameter] = {'value': value, 'unit': unit}
+                    #parameters[parameter] = {'value': value, 'unit': unit}
                     if "RNP" in parameter:
                         self.rNP = value
                     if "NPMaterial" in parameter:

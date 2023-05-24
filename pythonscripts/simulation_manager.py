@@ -35,25 +35,6 @@ class Simulation_manager:
         }
 
         self.read_pyconfig(workingDir, config_file)
-        self.cell = Cell_class()
-        self.cell.read_file_parameters(os.path.join(self.supportFilesDir,self.cellParametersFile))
-        self.np = NP_class()
-        self.np.read_file_parameters(os.path.join(self.supportFilesDir, self.NPParametersFile))
-
-        if self.NPsInMedium:
-            # Get the number of NPs from the concentration
-            vol_medium = 3.1415926 * 0.2 * np.power(1.25 * self.cell.rNucl, 2)
-            npart = self.np.number_from_conc_volume(self.NPConcInMedium, vol_medium)
-            self.NPNumberInMedium = npart
-            self.np_positions_in_medium_file = "positions_in_medium_" + \
-                                               str(self.NPNumberInMedium) + "_" + self.NPType + ".txt"
-        else:
-            self.np_positions_in_medium_file = "positions_in_medium_1_NP.txt"
-        if self.NPsInCell:
-            self.np_positions_in_cell_file = "positions_in_cell_" + \
-                                             str(self.NPNumberInCell) + "_" + self.NPType + ".txt"
-        else:
-            self.np_positions_in_cell_file = "positions_in_cell_1_NP.txt"
 
         print("Simulation manager parameters:")
         for attr_name, attr_value in self.__dict__.items():
@@ -101,6 +82,26 @@ class Simulation_manager:
         self.PHSP1Name = self.BeamSource + "_CellPHSP"
         self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
         self.SourceParametersFile = "source_parameters_" + self.BeamSource + ".txt"
+
+        self.cell = Cell_class()
+        self.cell.read_file_parameters(os.path.join(self.supportFilesDir, self.cellParametersFile))
+        self.np = NP_class()
+        self.np.read_file_parameters(os.path.join(self.supportFilesDir, self.NPParametersFile))
+
+        if self.NPsInMedium:
+            # Get the number of NPs from the concentration
+            vol_medium = 3.1415926 * 0.2 * np.power(1.25 * self.cell.rNucl, 2)
+            npart = self.np.number_from_conc_volume(self.NPConcInMedium, vol_medium)
+            self.NPNumberInMedium = npart
+            self.np_positions_in_medium_file = "positions_in_medium_" + \
+                                               str(self.NPNumberInMedium) + "_" + self.NPType + ".txt"
+        else:
+            self.np_positions_in_medium_file = "positions_in_medium_1_NP.txt"
+        if self.NPsInCell:
+            self.np_positions_in_cell_file = "positions_in_cell_" + \
+                                             str(self.NPNumberInCell) + "_" + self.NPType + ".txt"
+        else:
+            self.np_positions_in_cell_file = "positions_in_cell_1_NP.txt"
 
     def read_json_config(self, workingDir, config_file):
         
