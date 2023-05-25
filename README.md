@@ -39,7 +39,7 @@ Phase1 simulation file name: Phase1_{BeamSource}.txt
 Parameters files: cell_parameters_{CellType}.txt, np_parameters_{NPType}.txt, source_parameters_{BeamSource}.txt
 
 
-- _main_run_simulation.sh
+- main_run_simulation.sh
 Creates the execution directory ($RUNDIR), inside the work directory, where the different jobs will be executed.
 Executes the run_simulation python script that creates the topas simulation input files in the $RUNDIR.
 Finally, calls the submit_script.sh, which contains the commands to execute the simulations locally or on a cluster.
@@ -61,6 +61,9 @@ All these scripts must follow the following structure:
 	- Execute python script (optional).
 	- Execute topas simulations.
 The value of the variables INFILE#, PYFILE will be modified by the run_simulation.py script according to the information specified in the SimulationConfigFile.txt file
+
+- merge_results.sh
+Bash script that calls python scripts to merge the dose results from the different runs. Place the result files in runDirectoryName/results.
 
 
 INSTRUCTIONS
