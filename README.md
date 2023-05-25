@@ -64,14 +64,14 @@ The value of the variables INFILE#, PYFILE will be modified by the run_simulatio
 
 - merge_results.sh
 Bash script that calls python scripts to merge the dose results from the different runs. Place the result files in runDirectoryName/results.
-
+		./merge_results.sh SimulationConfigFile.txt
 
 INSTRUCTIONS
 Steps to execute a simulation:
 
 1. Edit the SimulationConfigFile.txt file to specify the parameters for your simulation.
 2. run the main_run_simulation.sh script as:
-         ./main_run_simulation.sh MySimDir SimulationConfigFile.txt
+         ./main_run_simulation.sh SimulationConfigFile.txt
 		 
 This will create a "{runDirectoryName}" directory inside the "work" directory where the simulation in the n jobs will be executed.
 
