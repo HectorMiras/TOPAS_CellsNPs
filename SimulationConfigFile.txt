@@ -1,7 +1,7 @@
 [Simulation]
 simulatePhase1 = True 							# Phase1 simulation. Generates a phasespace from a primary source
 simulatePhase2 = True 							# Phase2 simulation. Cell with nanoparticles. Scores dose and electron phasespace to nucleus
-simulatePhase3 = True 							# Phase3 simulation. TOPAS-nBio simulations of electrons in nucleus.
+simulatePhase3 = False 							# Phase3 simulation. TOPAS-nBio simulations of electrons in nucleus.
 BeamSource = SARRP 								# Name of the TOPAS radiation source: SARRP, TrueBeam, I125
 HasSourcePHSP = True                            # If True, will copy the sourcePHSPFiles dir to the execution dir
 NPsInMedium = True 								# Presence of NPs in medium. If "False", medium is considered water.
@@ -13,6 +13,6 @@ NPNumberInCell = 5000 							# Number of NPs in the cytoplasm.
 NPNumberInMedium = 2000 						# number of NPs to be sampled in the detailed region of the medium above the cell. Overridden by NPConcInMedium.
 sortNPPositions = True 							# If true, the positions of NPs are resampled in each job to simulate different cells.
 simScriptFile = run_local_script.sh 			# specify the script from the bashscripts directory that will distribute and run the simulations.
-njobs = 20 					 					# number of jobs to be executed
-nhistories = 1000000 							# number of histories to be simulated per job. Doesn't apply to PhaseSpace sources.
-runDirectoryName = RunDir    			    # The name of the directory that will be created in work/ directory, where the simulations will be executed.
+njobs = 10 					 					# number of jobs to be executed
+nhistories = 100000 								# number of histories to be simulated per job. Doesn't apply to PhaseSpace sources.
+runDirectoryName = TenRunsTest					# The name of the directory that will be created in work/ directory, where the simulations will be executed.
