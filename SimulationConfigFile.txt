@@ -1,8 +1,8 @@
 [Simulation]
 simulatePhase1 = True 							# Phase1 simulation. Generates a phasespace from a primary source
 simulatePhase2 = True 							# Phase2 simulation. Cell with nanoparticles. Scores dose and electron phasespace to nucleus
-simulatePhase3 = False 							# Phase3 simulation. TOPAS-nBio simulations of electrons in nucleus.
-BeamSource = TrueBeam 								# Name of the TOPAS radiation source: SARRP, TrueBeam, I125
+simulatePhase3 = True 							# Phase3 simulation. TOPAS-nBio simulations of electrons in nucleus.
+BeamSource = SARRP 								# Name of the TOPAS radiation source: SARRP, TrueBeam, I125
 HasSourcePHSP = True                            # If True, will copy the sourcePHSPFiles dir to the execution dir
 NPsInMedium = True 								# 
 NPsInCell = True  								# 
@@ -14,5 +14,5 @@ NPNumberInMedium = 2000 						# number of NPs to be sampled in the detailed regi
 sortNPPositions = True 							# If true, the positions of NPs are resampled in each job to simulate different cells
 simScriptFile = run_local_script.sh 			# specify the script that will distribute and run the simulations
 njobs = 2 					 					# number of jobs to be executed
-nhistories = 100000 							# number of histories to be simulated per job. Doesn't apply to PhaseSpace sources.
-runDirectoryName = testTrueBeam2    							# The name 
+nhistories = 1000000 							# number of histories to be simulated per job. Doesn't apply to PhaseSpace sources.
+runDirectoryName = testPhase3    							# The name 

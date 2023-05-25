@@ -131,14 +131,16 @@ class Simulation_manager:
             shutil.copyfile(source_file_path, destination_file_path)
 
         # Map the Phase1File
-        # check if the file path exists
         if self.simulatePhase1:
             self.map_phase1_file()
 
         # Map the Phase2File
-        # check if the file path exists
         if self.simulatePhase2:
             self.map_phase2_file()
+
+        # Map the Phase3File
+        if self.simulatePhase3:
+            self.map_phase3_file()
 
         # Process self.simScriptFile
         self.map_simScriptFile()
@@ -349,6 +351,8 @@ class Simulation_manager:
                 lines[i] = line.replace(old_file_name, self.cellParametersFile)
             if "s:Ge/SourcePHSPName" in line:
                 old_file_name = line.split("= ")[-1].strip()
+                conc_str = str(self.NPConcInMedium)
+                conc_str = conc_str.replace(".", "p")
                 new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
                 lines[i] = line.replace(old_file_name, new_file_name)
 
