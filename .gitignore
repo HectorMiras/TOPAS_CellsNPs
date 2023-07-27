@@ -7,6 +7,7 @@ supportFiles/*.phsp
 /work/
 /sourcePHSPFiles/
 /runFiles/
+/venv/
 
 # ignore foo.txt at the root (but not other foo.txt files)
 # /foo.txt
