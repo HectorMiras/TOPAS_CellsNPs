@@ -10,7 +10,7 @@ python3 pythonscripts/run_simulation.py $CURRENTPATH
 
 cp $CONFIGFILE $RUNDIR
 cp -r ./runFiles/* $RUNDIR
-cp -r sourcePHSPFiles $RUNDIR
+#cp -r sourcePHSPFiles $RUNDIR
 
 #cp -r ./supportFiles/* "${RUNDIR}/supportFiles"
 cd $RUNDIR
