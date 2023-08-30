@@ -13,6 +13,6 @@ cp -r ./runFiles/* $RUNDIR
 
 cd $RUNDIR
 
-chmod +x submit_script.sh $NODE_ID
-./submit_script.sh
+chmod +x submit_script.sh
+./submit_script.sh $NODE_ID
 
