@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script ignores the njobs value in the configfile and will create only one run directory in the container
+# Other simulation runs will be executed in the other containers, managed by the batch script
+
 INFILE1="SARRP_PHSP.txt"
 INFILE2="Cell_AGuIX.txt"
 INFILE3="nucleus_nBIO.txt"
@@ -23,7 +26,8 @@ if [ ! $DOSAMPLE ]; then
 	cd $CURRENTPATH
 fi
 
-DIR="${CURRENTPATH}/run${COUNT}"
+#DIR="${CURRENTPATH}/run${COUNT}"
+DIR="${CURRENTPATH}/run"
 echo $COUNT
 echo $DIR
 mkdir -p $DIR

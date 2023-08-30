@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Argument 1 is the computing node ID number
+# Argument 2, if given, is the name of the run dir
+
 CURRENTPATH=`pwd`
 NODE_ID=$1
 RUNDIR="${CURRENTPATH}/work/${2:-RunDir}"
