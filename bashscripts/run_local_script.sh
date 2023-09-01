@@ -21,8 +21,9 @@ else
     COUNT=$ADDITION
 fi
 
-if [ ! $DOSAMPLE ]; then
+if [ "$DOSAMPLE" == false ]; then
 	cd ./supportFiles
+	echo 'Sample NPs only once'
 	python $PYFILE1
 	python $PYFILE2
 	cd $CURRENTPATH
@@ -65,17 +66,18 @@ do
     cp -r ./supportFiles $DIR
 	cp -r sourcePHSPFiles $DIR
 	
-	if $DOSAMPLE; then
+	if [ "$DOSAMPLE" == true ]; then
 		cd "${DIR}/supportFiles"
+		echo 'Sample NPs in each run.'
 		python3 $PYFILE1
 		python3 $PYFILE2
 	fi
 	#read -p "Press any key to continue..."
 	
 	cd $DIR
-	time ~/topas/bin/topas $INFILE1
-	time ~/topas/bin/topas $INFILE2
-	time ~/topas/bin/topas $INFILE3
+	#time ~/topas/bin/topas $INFILE1
+	#time ~/topas/bin/topas $INFILE2
+	#time ~/topas/bin/topas $INFILE3
 	rm $DELFILE
 
     

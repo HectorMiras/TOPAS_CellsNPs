@@ -30,8 +30,13 @@ def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     # correct the number of particles by the nucleus/cell volume fraction
     # At the end of the function the positions are filtered to exclude those that fall inside the Rsph sphere.
     # This correction allows to mantain the original number of positions N after the filter.
-    N = int(N / (1.0 - 4 * np.power((Rsph+Rnp),3) / (3 * Hcyl * np.power(Rcyl-Rnp,2))))
-    print(f'N corrected: {N}')
+    Naux = N
+    if N > 1:
+        Naux = int(N / (1.0 - 4 * np.power((Rsph+Rnp),3) / (3 * Hcyl * np.power(Rcyl-Rnp,2))))
+        print(f'N corrected: {N}')
+    else:
+        Naux = 10
+        print(f'N corrected: {N}')
 
     min_distance = 2*Rnp + 0.001
     Rmax = Rcyl - min_distance / 2
@@ -55,7 +60,7 @@ def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     positions1 = np.empty((0, 3), dtype=float)
     positions = np.empty((0, 3), dtype=float)
     n_part = 0
-    while n_part < int(N / (4 * zbins)):
+    while n_part < int(Naux / (4 * zbins)):
         # Generate random point inside the cylinder
         x = (Rmax * np.random.random())
         y = (Rmax * np.random.random())
@@ -102,6 +107,8 @@ def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     # Print the positions of the small spheres
     f = open(positions_file, 'w')
     for i, p in enumerate(filtered_points):
+        if N == 1 and i > 0:
+            break
         # print(f"Small sphere {i+1}: x={p[0]:.2f}, y={p[1]:.2f}, z={p[2]:.2f}")
         f.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + "\n")
     f.close()

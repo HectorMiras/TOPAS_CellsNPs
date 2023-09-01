@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ./venv/bin/activate
+
 CURRENTPATH=`pwd`
 CONFIGFILE="${1:-SimulationConfigFile.txt}"
 

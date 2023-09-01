@@ -64,8 +64,14 @@ class Simulation_manager:
         self.NPType = simulation["NPType"]
         self.CellType = simulation["CellType"]
         self.NPConcInMedium = simulation.getfloat("NPConcInMedium")
-        self.NPNumberInCell = simulation.getint("NPNumberInCell")
-        self.NPNumberInMedium = simulation.getint("NPNumberInMedium")
+        if self.NPsInCell:
+            self.NPNumberInCell = simulation.getint("NPNumberInCell")
+        else:
+            self.NPNumberInCell = 1
+        if self.NPsInMedium:
+            self.NPNumberInMedium = simulation.getint("NPNumberInMedium")
+        else:
+            self.NPNumberInMedium = 1
         self.sortNPPositions = simulation.getboolean("sortNPPositions")
         self.simScriptFile = simulation["simScriptFile"]
         self.njobs = simulation.getint("njobs")
