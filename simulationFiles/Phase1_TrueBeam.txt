@@ -17,7 +17,7 @@ s:So/PhSpSource/Component								    = "BeamPosition"
 b:So/PhSpSource/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
 b:So/PhSpSource/PhaseSpacePreCheck                          = "False" # defaults to true
 i:So/PhSpSource/PhaseSpaceMultipleUse                       = 1
-#i:So/PhSpSource/NumberOfHistoriesInRun                      = 100
+i:So/PhSpSource/NumberOfHistoriesInRun                      = 100
 #b:So/PhSpSource/LimitedAssumeFirstParticleIsNewHistory     = "true"
 #b:So/PhSpSource/LimitedAssumeEveryParticleIsNewHistory     = "true"
 #b:So/PhSpSource/LimitedAssumePhotonIsNewHistory            = "true"
@@ -81,7 +81,7 @@ d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/HLCell um
 d:Ge/CylinderForPHSPHL = 0.5 * Ge/ElectronRangePH1 um
 s:Ge/CylinderForPHSP/Parent = "World"
 s:Ge/CylinderForPHSP/Type = "TsCylinder"
-d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/RCell um
+d:Ge/CylinderForPHSP/Rmax = 1500 * Ge/RCell um
 d:Ge/CylinderForPHSP/HL   = Ge/CylinderForPHSPHL + Ge/HLCell um
 d:Ge/CylinderForPHSP/TransZ = Ge/CylinderForPHSP/HL - Ge/HLCell um
 b:Ge/CylinderForPHSP/IsParallel = "True"
@@ -136,7 +136,7 @@ b:Sc/DoseCell/PropagateToChildren		            = "False"
 Ph/Default/Modules = 1 "g4em-livermore"
 b:Ph/ListProcesses = "False"
 
-d:Ph/Default/CutForAllParticles  							= 100 nm
+d:Ph/Default/CutForAllParticles  							= 1000 nm
 b:Ph/Default/Fluorescence  									= "False" # Set to true to turn on Fluorescence
 b:Ph/Default/Auger 											= "False" # Set to true to turn on Auger
 b:Ph/Default/AugerCascade 									= "False" # Set to true to turn on AugerCascade
@@ -157,7 +157,7 @@ s:Gr/View/Type        = "OpenGL"
 
 i:Ts/ShowHistoryCountAtInterval = 1000
 
-i:Ts/NumberOfThreads = 1 # defaults to 1
+i:Ts/NumberOfThreads =-1 # defaults to 1
 i:Ts/Seed = 1 
 b:Ts/PauseBeforeQuit = "F"
 

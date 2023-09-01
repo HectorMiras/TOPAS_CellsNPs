@@ -81,7 +81,7 @@ b:Ge/CylinderForPHSP/IsParallel = "True"
 # ---- Cylinder for Dose scoring -----
 s:Ge/CylinderForDose/Parent = "World"
 s:Ge/CylinderForDose/Type = "TsCylinder"
-d:Ge/CylinderForDose/Rmax = 1000 * Ge/RCell um
+d:Ge/CylinderForDose/Rmax = 1500 * Ge/RCell um
 d:Ge/CylinderForDose/HL   = 10 * Ge/HLCell um
 d:Ge/CylinderForDose/TransZ = Ge/CylinderForDose/HL - Ge/HLCell um
 b:Ge/CylinderForDose/IsParallel = "True"
