@@ -1,55 +1,46 @@
 # ------ Include Files ------
 includeFile = ./supportFiles/cell_parameters.txt
 includeFile = ./supportFiles/np_parameters_AGuIX.txt
-includeFile = ./supportFiles/source_parameters_TrueBeam.txt
+includeFile = ./supportFiles/source_parameters_SARRP.txt
 
-s:Ge/CellPHSPName    = "TrueBeam_CellPHSP"
+s:Ge/CellPHSPName    = "SARRP_CellPHSP"
 
 ###########
 # Sources #
 ###########
 
-# --- Phase Space ----
+# ----- Beam -----
 
-s:So/PhSpSource/Type 									    = "PhaseSpace"
-s:So/PhSpSource/PhaseSpaceFileName						    = "./sourcePHSPFiles/TrueBeam_SourcePHSP"
-s:So/PhSpSource/Component								    = "BeamPosition"
-b:So/PhSpSource/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
-b:So/PhSpSource/PhaseSpacePreCheck                          = "False" # defaults to true
-i:So/PhSpSource/PhaseSpaceMultipleUse                       = 1
-#i:So/PhSpSource/NumberOfHistoriesInRun                      = 100
-#b:So/PhSpSource/LimitedAssumeFirstParticleIsNewHistory     = "true"
-#b:So/PhSpSource/LimitedAssumeEveryParticleIsNewHistory     = "true"
-#b:So/PhSpSource/LimitedAssumePhotonIsNewHistory            = "true"
+#includeFile = ./supportFiles/topas_220kVp_SARRP_spectra.txt
+
+s:So/SARRPbeam/Type = "Beam" # Beam, Isotropic, Emittance or PhaseSpace
+s:So/SARRPbeam/Component = "BeamPosition"
+s:So/SARRPbeam/BeamParticle = "gamma"
+s:So/SARRPbeam/BeamPositionDistribution = "Flat" # None, Flat or Gaussian
+s:So/SARRPbeam/BeamPositionCutoffShape = "Ellipse" # Point, Ellipse, Rectangle or Isotropic
+d:So/SARRPbeam/BeamPositionCutoffX = Ge/Rbeam um # approximate max range for secondary electrons
+d:So/SARRPbeam/BeamPositionCutoffY = Ge/Rbeam um
+s:So/SARRPbeam/BeamAngularDistribution = "None" # None, Flat or Gaussian
 
 ############
 # Geometry #
 ############
 
+d:Ge/Rbeam = Ge/WellRadius um
 
 # ---- World ----
 s:Ge/World/Material    = "G4_AIR"
-d:Ge/World/HLX         = 50 cm
-d:Ge/World/HLY         = 50 cm
-d:Ge/World/HLZ         = 70 cm
+d:Ge/World/HLX         = 1.01 * Ge/Rbeam um
+d:Ge/World/HLY         = 1.01 * Ge/Rbeam um
+d:Ge/World/HLZ         = 2500 um
 b:Ge/World/Invisible   = "F"
 
 # ---- Beam ----
 s:Ge/BeamPosition/Parent = "World"
 s:Ge/BeamPosition/Type = "Group"
-d:Ge/BeamPosition/TransZ = -140 cm
-d:Ge/BeamPosition/RotX = 0. deg
+d:Ge/BeamPosition/TransZ = Ge/World/HLZ um
+d:Ge/BeamPosition/RotX = 180. deg
 
-# ---- Solid Water down ----
-s:Ge/SolidWaterDown/Parent = "World"
-s:Ge/SolidWaterDown/Type = "TsBox"
-s:Ge/SolidWaterDown/Material    = "G4_WATER"
-d:Ge/SolidWaterDown/HLX         = 15 cm
-d:Ge/SolidWaterDown/HLY         = 15 cm
-d:Ge/SolidWaterDown/HLZ         = 5 cm
-d:Ge/SolidWaterDownNegHL          = -52000 um
-d:Ge/SolidWaterDown/TransZ          = Ge/SolidWaterDownNegHL - Ge/HLCell um
-s:Ge/SolidWaterDown/Color = "brown"
 
 # ---- Polystirene cell plate ----
 s:Ge/CellPlate/Parent = "World"
@@ -81,7 +72,8 @@ d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/HLCell um
 d:Ge/CylinderForPHSPHL = 0.5 * Ge/ElectronRangePH1 um
 s:Ge/CylinderForPHSP/Parent = "World"
 s:Ge/CylinderForPHSP/Type = "TsCylinder"
-d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/RCell um
+d:Ge/CylinderForPHSPRmax = Ge/RCell + Ge/ElectronRangePH1 um
+d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/CylinderForPHSPRmax um 
 d:Ge/CylinderForPHSP/HL   = Ge/CylinderForPHSPHL + Ge/HLCell um
 d:Ge/CylinderForPHSP/TransZ = Ge/CylinderForPHSP/HL - Ge/HLCell um
 b:Ge/CylinderForPHSP/IsParallel = "True"
@@ -89,10 +81,11 @@ b:Ge/CylinderForPHSP/IsParallel = "True"
 # ---- Cylinder for Dose scoring -----
 s:Ge/CylinderForDose/Parent = "World"
 s:Ge/CylinderForDose/Type = "TsCylinder"
-d:Ge/CylinderForDose/Rmax = 1000 * Ge/RCell um
+d:Ge/CylinderForDose/Rmax = 1500 * Ge/RCell um
 d:Ge/CylinderForDose/HL   = 10 * Ge/HLCell um
 d:Ge/CylinderForDose/TransZ = Ge/CylinderForDose/HL - Ge/HLCell um
 b:Ge/CylinderForDose/IsParallel = "True"
+
 
 #############
 # Materials #
@@ -104,21 +97,20 @@ uv:Ma/MediumMaterial/Fractions          = 2 0.999000999 0.00099900099 # use corr
 d:Ma/MediumMaterial/Density             = 1.001 g/cm3
 s:Ma/MediumMaterial/DefaultColor        = "yellow"
 
-
 ###########
 # Scorers #
 ###########
 
-s:Sc/TrueBeam_CellPHSP/Quantity									        = "PhaseSpace"
-s:Sc/TrueBeam_CellPHSP/Component									    = "CylinderForPHSP"
-s:Sc/TrueBeam_CellPHSP/Surface										    = "CylinderForPHSP/AnySurface"
-s:Sc/TrueBeam_CellPHSP/OutputType									    = "ASCII"
-s:Sc/TrueBeam_CellPHSP/OutputFile									    =Ge/CellPHSPName
-s:Sc/TrueBeam_CellPHSP/IfOutputFileAlreadyExists					    = "Overwrite"
-s:Sc/TrueBeam_CellPHSP/OnlyIncludeParticlesGoing 					    = "In"
-b:Sc/TrueBeam_CellPHSP/KillAfterPhaseSpace 						        = "False"
-sv:Sc/TrueBeam_CellPHSP/OnlyIncludeParticlesNamed 					    = 2 "gamma" "e-"
-s:Sc/TrueBeam_CellPHSP/IncludeEmptyHistories                            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
+s:Sc/SARRP_PHSP/Quantity									    = "PhaseSpace"
+s:Sc/SARRP_PHSP/Component									    = "CylinderForPHSP"
+s:Sc/SARRP_PHSP/Surface										    = "CylinderForPHSP/AnySurface"
+s:Sc/SARRP_PHSP/OutputType									    = "ASCII"
+s:Sc/SARRP_PHSP/OutputFile									    = Ge/CellPHSPName
+s:Sc/SARRP_PHSP/IfOutputFileAlreadyExists					    = "Overwrite"
+s:Sc/SARRP_PHSP/OnlyIncludeParticlesGoing 					    = "In"
+b:Sc/SARRP_PHSP/KillAfterPhaseSpace 						    = "False"
+sv:Sc/SARRP_PHSP/OnlyIncludeParticlesNamed 					    = 2 "gamma" "e-"
+s:Sc/SARRP_PHSP/IncludeEmptyHistories                           = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
 b:Sc/DoseCell/Active                                   = "True"
 s:Sc/DoseCell/Quantity                               = "DoseToMedium"
@@ -151,11 +143,12 @@ b:Gr/View/IncludeAxes = "F"
 d:Gr/View/AxesSize    = 5 mm
 b:Gr/Enable          = "F"
 b:Ts/UseQt = "F"
-#sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
+sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 1000
+i:So/SARRPbeam/NumberOfHistoriesInRun = 7600000 # 19000000 histories correspond to 1 Gy if no phsp recycles
+i:Ts/ShowHistoryCountAtInterval = 1000000
 
 i:Ts/NumberOfThreads = 1 # defaults to 1
 i:Ts/Seed = 1 

@@ -4,7 +4,7 @@ import os
 import sys
 
 sim_path = sys.argv[1]
-config_file = "SimulationConfigFile.txt"
+config_file = sys.argv[2]
 smanager = Simulation_manager(sim_path, config_file)
 
 smanager.map_files()
