@@ -7,6 +7,8 @@ supportFiles/*.phsp
 /work/
 /sourcePHSPFiles/
 /runFiles/
+/venv/
+/pythonscripts/__pycache__/
 
 # ignore foo.txt at the root (but not other foo.txt files)
 # /foo.txt
