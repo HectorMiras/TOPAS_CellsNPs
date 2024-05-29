@@ -21,6 +21,7 @@ s:So/I125Beam/BeamPositionCutoffShape = "Ellipse" # Point, Ellipse, Rectangle or
 d:So/I125Beam/BeamPositionCutoffX = Ge/Rbeam um # approximate max range for secondary electrons
 d:So/I125Beam/BeamPositionCutoffY = Ge/Rbeam um
 s:So/I125Beam/BeamAngularDistribution = "None" # None, Flat or Gaussian
+i:So/I125Beam/NumberOfHistoriesInRun = 7600000 # 19000000 histories correspond to 1 Gy if no phsp recycles
 
 ############
 # Geometry #
@@ -38,8 +39,20 @@ b:Ge/World/Invisible   = "F"
 # ---- Beam ----
 s:Ge/BeamPosition/Parent = "World"
 s:Ge/BeamPosition/Type = "Group"
-d:Ge/BeamPosition/TransZ = Ge/World/HLZ um
+d:Ge/BeamPosition/TransZ = -1 * Ge/World/HLZ um
+d:Ge/BeamPosition/RotX = 0. deg
 
+
+# ---- Titanium plate ----
+# Accounts for the Isoseed Titanium shield
+s:Ge/TitaniumPlate/Parent = "World"
+s:Ge/TitaniumPlate/Type = "TsCylinder"
+s:Ge/TitaniumPlate/Material    = "G4_Ti"
+d:Ge/TitaniumPlate/RMax         = Ge/World/HLX um
+d:Ge/TitaniumPlateThickness           = 50 um
+d:Ge/TitaniumPlate/HL           = 0.5 * Ge/TitaniumPlateThickness um
+d:Ge/TitaniumPlate/TransZ          = -2300 um
+s:Ge/TitaniumPlate/Color = "red"
 
 
 # ---- Polystirene cell plate ----
@@ -73,7 +86,7 @@ d:Ge/CylinderForPHSPHL = 0.5 * Ge/ElectronRangePH1 um
 s:Ge/CylinderForPHSP/Parent = "World"
 s:Ge/CylinderForPHSP/Type = "TsCylinder"
 d:Ge/CylinderForPHSPRmax = Ge/RCell + Ge/ElectronRangePH1 um
-d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/CylinderForPHSPRmax um
+d:Ge/CylinderForPHSP/Rmax = 1000 * Ge/CylinderForPHSPRmax um        # factor 1000 used in phase 2 to scale phsp down
 d:Ge/CylinderForPHSP/HL   = Ge/CylinderForPHSPHL + Ge/HLCell um
 #d:Ge/CylinderForPHSP/TransZ = Ge/CylinderForPHSP/HL - Ge/HLCell um
 b:Ge/CylinderForPHSP/IsParallel = "True"
@@ -110,6 +123,7 @@ s:Sc/I125Beam_PHSP/IfOutputFileAlreadyExists					    = "Overwrite"
 s:Sc/I125Beam_PHSP/OnlyIncludeParticlesGoing 					    = "In"
 b:Sc/I125Beam_PHSP/KillAfterPhaseSpace 						    = "False"
 sv:Sc/I125Beam_PHSP/OnlyIncludeParticlesNamed 					    = 2 "gamma" "e-"
+#sv:Sc/I125Beam_PHSP/OnlyIncludeParticlesNamed 					    = 1 "e-"
 s:Sc/I125Beam_PHSP/IncludeEmptyHistories                           = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
 b:Sc/DoseCell/Active                                   = "True"
@@ -129,10 +143,10 @@ Ph/Default/Modules = 1 "g4em-livermore"
 b:Ph/ListProcesses = "False"
 
 d:Ph/Default/CutForAllParticles  							= 100 nm
-b:Ph/Default/Fluorescence  									= "False" # Set to true to turn on Fluorescence
+b:Ph/Default/Fluorescence  									= "True" # Set to true to turn on Fluorescence
 b:Ph/Default/Auger 											= "False" # Set to true to turn on Auger
 b:Ph/Default/AugerCascade 									= "False" # Set to true to turn on AugerCascade
-b:Ph/Default/DeexcitationIgnoreCut 							= "False" # Set to true to implement DeexcitationIgnoreCut
+b:Ph/Default/DeexcitationIgnoreCut 							= "True" # Set to true to implement DeexcitationIgnoreCut
 b:Ph/Default/PIXE 											= "False" # Set to true to turn on PIXE"
 d:Ph/Default/LowestElectronEnergy 							= Ph/ElectronLowEnergyLimitPH1 eV 
 
@@ -147,7 +161,6 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:So/SARRPbeam/NumberOfHistoriesInRun = 7600000 # 19000000 histories correspond to 1 Gy if no phsp recycles
 i:Ts/ShowHistoryCountAtInterval = 1000000
 
 i:Ts/NumberOfThreads = 1 # defaults to 1

@@ -78,7 +78,7 @@ do
 	time ~/topas/bin/topas $INFILE1
 	time ~/topas/bin/topas $INFILE2
 	time ~/topas/bin/topas $INFILE3
-	rm $DELFILE
+	#rm $DELFILE
 
     
     COUNT=$((COUNT+1))

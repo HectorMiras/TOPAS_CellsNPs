@@ -5,5 +5,5 @@ d:Ph/ElectronLowEnergyLimitPH1          = 2000 eV # 6 MV: 22000 eV, 220 kVp: 500
 # Spectrum
 s:So/I125Beam/BeamEnergySpectrumType       = "Discrete"
 dv:So/I125Beam/BeamEnergySpectrumValues    = 7 3.77 27.202 27.472 30.944 30.995 31.704 35.3922 keV
-uv:So/I125Beam/BeamEnergySpectrumWeights   = 7 0.149 0.401 0.740 0.0683 0.132 0.0380 0.0668
+uv:So/I125Beam/BeamEnergySpectrumWeightsUnscaled   = 7 0.149 0.401 0.740 0.0683 0.132 0.0380 0.0668
 uv:So/I125Beam/BeamEnergySpectrumWeights = 0.6269199 * So/I125Beam/BeamEnergySpectrumWeightsUnscaled

@@ -6,8 +6,8 @@ includeFile = ./supportFiles/source_parameters_I125Beam.txt
 s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
 s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_2Gy_1mgml_0AGuIX_electrons"
 s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_2Gy_1mgml_0AGuIX_gammas"
-s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1308200_AGuIX.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
-s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_555000_AGuIX.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
+s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
+s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
 s:Ge/CellPHSPName    = "SARRP_CellPHSP"
 
@@ -43,7 +43,7 @@ b:Ge/World/Invisible   = "F"
 s:Ge/CellPlate/Parent = "World"
 s:Ge/CellPlate/Type = "TsCylinder"
 s:Ge/CellPlate/Material    = "G4_POLYSTYRENE"
-d:Ge/CellPlate/RMax         = Ge/SourceRMax um
+d:Ge/CellPlate/RMax         = Ge/World/RMax  um
 d:Ge/CellPlateThickness           = 2000 um
 d:Ge/CellPlate/HL           = 0.5 * Ge/ElectronRangePH1 um
 d:Ge/CellPlateNegHL          = -1 * Ge/CellPlate/HL um
