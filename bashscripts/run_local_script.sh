@@ -75,9 +75,9 @@ do
 	#read -p "Press any key to continue..."
 	
 	cd $DIR
-	#time ~/topas/bin/topas $INFILE1
-	#time ~/topas/bin/topas $INFILE2
-	#time ~/topas/bin/topas $INFILE3
+	time ~/topas/bin/topas $INFILE1
+	time ~/topas/bin/topas $INFILE2
+	time ~/topas/bin/topas $INFILE3
 	rm $DELFILE
 
     

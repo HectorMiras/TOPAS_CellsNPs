@@ -8,7 +8,7 @@ class Cell_class:
     def __init__(self):
         # all spatial values in um.
         self.rCell = 5
-        self.rNucl = 8
+        self.rNucl = 4.8
         self.height = 10
         self.membraneThickness = 0.01
 
