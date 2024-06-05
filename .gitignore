@@ -1,7 +1,7 @@
 # ignore all .bak files
  *.bak
 
-# ignore all files in the docs directory
+notas_azure_batch.txt
 supportFiles/positions*
 supportFiles/*.phsp
 /work/
