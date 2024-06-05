@@ -2,6 +2,7 @@
 
 # This script ignores the njobs value in the configfile and will create only one run directory in the container
 # Other simulation runs will be executed in the other containers, managed by the batch script
+# Arg 1 is the node number that is passed by main script
 
 INFILE1="SARRP_PHSP.txt"
 INFILE2="Cell_AGuIX.txt"
