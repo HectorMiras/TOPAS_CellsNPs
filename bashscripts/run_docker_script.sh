@@ -27,8 +27,8 @@ if [ ! $DOSAMPLE ]; then
 	cd $CURRENTPATH
 fi
 
-#DIR="${CURRENTPATH}/run${COUNT}"
-DIR="${CURRENTPATH}/run"
+DIR="${CURRENTPATH}/run${COUNT}"
+#DIR="${CURRENTPATH}/run"
 echo $COUNT
 echo $DIR
 mkdir -p $DIR
@@ -60,4 +60,4 @@ time /topas/bin/topas $INFILE3
 rm $DELFILE
 
 
-cd $CURRENTPATH
+#cd $CURRENTPATH

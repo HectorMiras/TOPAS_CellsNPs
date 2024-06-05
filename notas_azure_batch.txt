@@ -1,0 +1,6 @@
+Problemas para ejecutar proyecto con script de AzureBatch:
+- El directorio del proyecto es demasiado pesado para hacer el zip y subirlo al storage (directorios work, sourcePHSPFiles y venv)
+- El proyecto implica la ejecución de scripts de python que usan un venv que no está disponible en el worker container
+- Posible solución:
+    - Configurar mi container docker para que clone el proyecto TOPAS_CellsNPs y cree venv
+    - Adaptar el script de simulation runner para pasarle sólo el SimulationConfig.txt de TOPAS_CellsNPs y que lo reemplace por el que esté en el directorio del proyecto en el container
