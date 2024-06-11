@@ -64,6 +64,7 @@ class Simulation_manager:
         self.NPType = simulation["NPType"]
         self.CellType = simulation["CellType"]
         self.NPConcInMedium = simulation.getfloat("NPConcInMedium")
+        self.NPConcInCell = simulation.getfloat("NPConcInCell")
         if self.NPsInCell:
             self.NPNumberInCell = simulation.getint("NPNumberInCell")
         else:
@@ -113,6 +114,9 @@ class Simulation_manager:
         else:
             self.np_positions_in_medium_file = "positions_in_medium_1_NP.txt"
         if self.NPsInCell:
+            # Get the number of NPs from the concentration and cytoplasm volume
+            npart = self.np.number_from_conc_volume(self.NPConcInCell, self.cell.volume_cytoplasm())
+            self.NPNumberInCell = npart
             self.np_positions_in_cell_file = "positions_in_cell_" + \
                                              str(self.NPNumberInCell) + "_" + self.NPType + ".txt"
         else:
