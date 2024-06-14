@@ -93,9 +93,11 @@ class Simulation_manager:
         #self.runDirectoryName = os.path.join(workingDir, self.runDirectoryName)
         self.runDirectoryName = os.path.join(workingDir,"work", self.runDirectoryName)
 
-        conc_str = str(self.NPConcInMedium)
-        conc_str = conc_str.replace(".", "p")
-        self.outputFileNameSufix = f"_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}"
+        med_conc_str = str(self.NPConcInMedium)
+        med_conc_str = med_conc_str.replace(".", "p")
+        cell_conc_str = str(self.NPConcInCell)
+        cell_conc_str = cell_conc_str.replace(".", "p")
+        self.outputFileNameSufix = f"_medium{med_conc_str}mgml_cell{cell_conc_str}mgml_{self.NPType}"
 
 
     def read_support_files(self):
@@ -305,15 +307,15 @@ class Simulation_manager:
                 lines[i] = line.replace(old_file_name, f"\"{self.PHSP1Name}\"")
             if "s:Sc/NucleusPHSP/OutputFile" in line:
                 old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
+                new_file_name = f"\"nucleus_PHSP{self.outputFileNameSufix}_electrons\""
                 lines[i] = line.replace(old_file_name, new_file_name)
             if "s:Sc/DoseNucleus_e/OutputFile" in line:
                 old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"DoseToNucleus_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
+                new_file_name = f"\"DoseToNucleus{self.outputFileNameSufix}_electrons\""
                 lines[i] = line.replace(old_file_name, new_file_name)
             if "s:Sc/DoseNucleus_g/OutputFile" in line:
                 old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"DoseToNucleus_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_gammas\""
+                new_file_name = f"\"DoseToNucleus{self.outputFileNameSufix}_gammas\""
                 lines[i] = line.replace(old_file_name, new_file_name)
             if "s:Ge/MediumNPPositionsFile" in line:
                 old_file_name = line.split("= ")[-1].strip()
@@ -433,6 +435,34 @@ class Simulation_manager:
         # write the bash file
         with open(os.path.join(self.runDirectoryName, "submit_script.sh"), 'w') as file:
             file.writelines(lines)
+
+
+    def collect_np_number(self):
+        folder_path = self.runDirectoryName
+
+        file_pattern = f"/supportFiles/positions_in_cell"
+        output_path = os.path.join(folder_path, "results")
+        os.makedirs(output_path, exist_ok=True)
+
+        output_file_paths = get_outputfile_paths(folder_path, file_pattern, 'txt')
+
+        lines_list = []
+        for file_path in output_file_paths:
+            path = os.path.dirname(file_path)
+            run_number = path.split('run')[-1].split('/')[0]
+
+            with open(file_path, 'r') as f:
+                nlines = len(f.readlines())
+                lines_list.append(f'{run_number} {nlines}')
+
+        # Write a results file with all the results from each job
+        lines_list.sort(key=lambda x: int(x.split()[0]))
+        with open(os.path.join(output_path, f'AllJobs_np_number.csv'), "w") as f:
+            f.write(f'#  Run#  NP#\n')
+            for line in lines_list:
+                f.write(f'{line}\n')
+
+
 
     def merge_DoseToNucleus_results(self):
 

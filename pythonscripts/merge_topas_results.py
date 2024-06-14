@@ -8,3 +8,4 @@ config_file = sys.argv[2]
 smanager = Simulation_manager(sim_path, config_file)
 
 smanager.merge_DoseToNucleus_results()
+smanager.collect_np_number()
