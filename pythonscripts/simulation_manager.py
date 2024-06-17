@@ -65,6 +65,7 @@ class Simulation_manager:
         self.CellType = simulation["CellType"]
         self.NPConcInMedium = simulation.getfloat("NPConcInMedium")
         self.NPConcInCell = simulation.getfloat("NPConcInCell")
+        self.UpTakeVar = simulation.getfloat("UpTakeVar")/100.0
         if self.NPsInCell:
             self.NPNumberInCell = simulation.getint("NPNumberInCell")
         else:
@@ -229,6 +230,9 @@ class Simulation_manager:
             if "N =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{self.NPNumberInCell}')
+            if "sN =" in line:
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, f'{int(self.NPNumberInCell*self.UpTakeVar)}')
 
         # write the file
         with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
@@ -440,7 +444,7 @@ class Simulation_manager:
     def collect_np_number(self):
         folder_path = self.runDirectoryName
 
-        file_pattern = f"/supportFiles/positions_in_cell"
+        file_pattern = f"np_number"
         output_path = os.path.join(folder_path, "results")
         os.makedirs(output_path, exist_ok=True)
 
@@ -452,7 +456,7 @@ class Simulation_manager:
             run_number = path.split('run')[-1].split('/')[0]
 
             with open(file_path, 'r') as f:
-                nlines = len(f.readlines())
+                nlines = int(f.readlines()[0])
                 lines_list.append(f'{run_number} {nlines}')
 
         # Write a results file with all the results from each job

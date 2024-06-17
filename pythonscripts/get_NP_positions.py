@@ -3,7 +3,7 @@
 import numpy as np
 import sys
 
-def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
+def get_positions_efficient(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     """
     " Fuinction to sample N positons inside a cylinder of radius Rcyl and height Hcyl, excluding the inner volume of
     " a sphere of radius Rsph.
@@ -102,7 +102,8 @@ def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     Rmin = Rsph + Rnp
     filtered_points = filter_points_outside_sphere(positions, center, Rmin)
     np.random.shuffle(filtered_points)
-    print(f'Total number of points generated: {len(filtered_points)}')
+    numberNPs = len(filtered_points)
+    print(f'Total number of points generated: {numberNPs}')
 
     # Print the positions of the small spheres
     f = open(positions_file, 'w')
@@ -112,3 +113,68 @@ def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
         # print(f"Small sphere {i+1}: x={p[0]:.2f}, y={p[1]:.2f}, z={p[2]:.2f}")
         f.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + "\n")
     f.close()
+
+
+
+    return numberNPs
+
+def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
+    """
+    " Fuinction to sample N positons inside a cylinder of radius Rcyl and height Hcyl, excluding the inner volume of
+    " a sphere of radius Rsph.
+    " All distances are given in nm.
+    " The sampled positions are printed to the txt file positions_file
+    """
+
+    # If the number of NPs is large, calls the effiecient sammpling method
+    if N>50000:
+        return get_positions_efficient(N, Rcyl, Hcyl, Rsph, Rnp, positions_file)
+
+    min_distance = 2*Rnp + 0.001
+    Rmax = Rcyl - min_distance / 2
+    Rmin = Rsph + Rnp
+    # Half Height of the cylinder in nm
+    HL = Hcyl - min_distance / 2
+    zbins = 1
+    zbinheight = Hcyl
+
+
+    if zbinheight < 2 * Rnp:
+        print(f'Height of the zbin {zbinheight} smaller than particle diameter')
+
+    # Generate random positions for the small spheres
+    positions = np.empty((0, 3), dtype=float)
+    n_part = 0
+    while n_part < N:
+        # Generate random point inside the cylinder
+        x = (Rmax * (2*np.random.random()-1.0))
+        y = (Rmax * (2*np.random.random()-1.0))
+        z = zbinheight*(np.random.random()-0.5)
+        point = np.array([x, y, z])
+
+        # sample the positions in 1 quadrant of one zbin
+        if (np.sqrt(x * x + y * y) <= Rmax) and \
+                (np.sqrt(x * x + y * y + z * z) > Rmin) and \
+                (np.abs(z) < 0.5*(zbinheight - min_distance)):
+            # Check if the point is far enough from the other small spheres
+            if len(positions) == 0 or np.min(np.linalg.norm(positions - point, axis=1)) >= min_distance:
+                positions = np.vstack([positions, point])
+                n_part += 1
+                if n_part % 1000 == 0:
+                    print(n_part, 'out of', N)
+
+    numberNPs = n_part
+    print(f'Total number of points generated: {numberNPs}')
+
+    # Print the positions of the small spheres
+    f = open(positions_file, 'w')
+    for i, p in enumerate(positions):
+        if N == 1 and i > 0:
+            break
+        # print(f"Small sphere {i+1}: x={p[0]:.2f}, y={p[1]:.2f}, z={p[2]:.2f}")
+        f.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + "\n")
+    f.close()
+
+
+
+    return numberNPs

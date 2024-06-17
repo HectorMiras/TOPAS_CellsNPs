@@ -14,13 +14,14 @@ def prueba_np_sample():
     cell.read_file_parameters(os.path.join(wd, cellParametersFile))
     np = NP_class()
     np.read_file_parameters(os.path.join(wd, NPParametersFile))
-    NPConcInCell=1     # mg Au / ml
+    NPConcInCell=1.0     # mg Au / ml
     npart = np.number_from_conc_volume(NPConcInCell, cell.volume_cytoplasm())
     Rmax = cell.rCell*1000
     Rmin = cell.rNucl*1000
     H = cell.height*1000
     Rnp = np.rNP
-    get_positions(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file))
+    npart = get_positions(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file))
+    a=1
 
 
 def prueba_merge_topascellnp():
@@ -31,6 +32,6 @@ def prueba_merge_topascellnp():
     smanager.merge_DoseToNucleus_results()
     smanager.collect_np_number()
 
-#prueba_np_sample()
-prueba_merge_topascellnp()
+prueba_np_sample()
+#prueba_merge_topascellnp()
 
