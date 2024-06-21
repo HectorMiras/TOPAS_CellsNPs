@@ -56,7 +56,7 @@ s:Ge/CellPlate/Color = "grey"
 # ---- Cell Layer ----
 s:Ge/CellLayer/Parent = "World"
 s:Ge/CellLayer/Type = "TsCylinder"
-s:Ge/CellLayer/Material    = "G4_WATER"
+s:Ge/CellLayer/Material    = "MediumMaterial"
 d:Ge/CellLayer/RMax         = Ge/WellRadius um
 d:Ge/CellLayer/HL           = Ge/HLCell um
 

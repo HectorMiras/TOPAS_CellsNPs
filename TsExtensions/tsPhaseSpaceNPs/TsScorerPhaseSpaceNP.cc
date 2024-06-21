@@ -164,6 +164,7 @@ TsScorerPhaseSpaceNP::~TsScorerPhaseSpaceNP()
 
 G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
+    
     if (!fIsActive) {
         fSkippedWhileInactive++;
         return false;
@@ -171,22 +172,48 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
     ResolveSolid(aStep);
 
+    
 
     G4Track* aTrack = aStep->GetTrack();
-
+    
     G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+    
     G4String PreSolidName = touchable->GetVolume(0)->GetName();
+    
     G4String fParticleTypeName = aTrack->GetParticleDefinition()->GetParticleName();
+    
     G4String fPreMaterial = aStep->GetPreStepPoint()->GetMaterial()->GetName();
-    G4String fOriginVolume = aTrack->GetOriginTouchable()->GetVolume()->GetName();
+    
+    // Add null checks for GetOriginTouchable() and GetVolume()
+    G4TouchableHistory* originTouchable = (G4TouchableHistory*)(aTrack->GetOriginTouchable());
+    G4String fOriginVolume = "Unknown";
+    if (originTouchable) {
+        G4VPhysicalVolume* originVolume = originTouchable->GetVolume();
+        if (originVolume) {
+            fOriginVolume = originVolume->GetName();
+        }
+    }
+    //if (fOriginVolume=="Unknown"|| fOriginVolume=="nucleus" || fOriginVolume=="World") {
+    //    G4cout << "PreSolidName: " << PreSolidName << ", OriginVolume: " << fOriginVolume << ", PreMaterial: " << fPreMaterial << G4endl;
+    //}
+    if(false){
+        return false;
+    }
+    
+    // Debug output
+    //G4cout << "PreSolidName: " << PreSolidName << ", OriginVolume: " << fOriginVolume << ", PreMaterial: " << fPreMaterial << G4endl;
 
-
-    if ((PreSolidName == "Lysosome/SubSphere"))
+    if ( PreSolidName.contains("Cell/Subcomponents") )
     {    
-
-    if ((fPreMaterial == "AGuIX" && aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && fOriginVolume == "Lysosome/SubSphere"))
+    //if ((fPreMaterial == "goldmat" && aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&  fOriginVolume.contains("Cell/Subcomponents") ))
+    if ((aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&  fOriginVolume.contains("Cell/Subcomponents") ))
     {
         G4cout << "Checkiing!!!!!!! ##########################" << G4endl;
+
+        G4cout << "Scoring particle on nanoparticle surface. PreSolidName: " << PreSolidName 
+                   << ", Particle: " << fParticleTypeName << G4endl;
+        // Debug output
+        //G4cout << "PreSolidName: " << PreSolidName << ", OriginVolume: " << fOriginVolume << ", PreMaterial: " << fPreMaterial << G4endl;
 
         G4StepPoint* theStepPoint = aStep->GetPostStepPoint();
 
@@ -196,7 +223,7 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         G4ThreeVector vertexMom = aStep->GetTrack()->GetVertexMomentumDirection();
 
         fPType          = aStep->GetTrack()->GetDefinition()->GetPDGEncoding();
-        fPosX           = pos.x()-9*um;
+        fPosX           = pos.x();
         fPosY           = pos.y();
         fPosZ           = pos.z();
         fCosX           = mom.x();
@@ -304,7 +331,8 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         return false;
 
 
-    }}
+    }
+    }
     return false;
 }
 

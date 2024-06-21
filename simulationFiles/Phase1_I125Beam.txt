@@ -69,7 +69,7 @@ s:Ge/CellPlate/Color = "grey"
 # ---- Cell Layer ----
 s:Ge/CellLayer/Parent = "World"
 s:Ge/CellLayer/Type = "TsCylinder"
-s:Ge/CellLayer/Material    = "G4_WATER"
+s:Ge/CellLayer/Material    = "MediumMaterial"
 d:Ge/CellLayer/RMax         = Ge/WellRadius um
 d:Ge/CellLayer/HL           = Ge/HLCell um
 
@@ -161,12 +161,13 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 1000000
+i:Ts/ShowHistoryCountAtInterval = 200000
 
 i:Ts/NumberOfThreads = 1 # defaults to 1
 i:Ts/Seed = 1 
 b:Ts/PauseBeforeQuit = "F"
 
 b:Ts/ShowCPUTime = "True"
+Ts/ParameterizationErrorMaxReports				= 1
 
 

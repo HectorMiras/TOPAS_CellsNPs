@@ -118,7 +118,7 @@ s:Sc/NucleusPHSP/Component					      = "nucleus"
 s:Sc/NucleusPHSP/Surface						  = "nucleus/AnySurface"
 s:Sc/NucleusPHSP/OutputType					      = "ASCII"
 #s:Sc/NucleusPHSP/OutputFile					  = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
-s:Sc/NucleusPHSP/IfOutputFileAlreadyExists		  = "Increment"
+s:Sc/NucleusPHSP/IfOutputFileAlreadyExists		  = "Overwrite"
 s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 		  = "In"
 b:Sc/NucleusPHSP/KillAfterPhaseSpace 			  = "False"
 sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
@@ -129,7 +129,7 @@ b:Sc/DoseNucleus_e/Active                         = "True"
 s:Sc/DoseNucleus_e/Quantity                       = "DoseToMedium"
 s:Sc/DoseNucleus_e/Component                      = "nucleus"
 sv:Sc/DoseNucleus_e/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseNucleus_e/IfOutputFileAlreadyExists      = "Increment"
+s:Sc/DoseNucleus_e/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseNucleus_e/OutputType                     = "csv"
 #s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_2Gy_1mgml_0AGuIX_electrons"
 b:Sc/DoseNucleus_e/PropagateToChildren		      = "False"
@@ -139,11 +139,19 @@ b:Sc/DoseNucleus_g/Active                         = "True"
 s:Sc/DoseNucleus_g/Quantity                       = "DoseToMedium"
 s:Sc/DoseNucleus_g/Component                      = "nucleus"
 sv:Sc/DoseNucleus_g/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseNucleus_g/IfOutputFileAlreadyExists      = "Increment"
+s:Sc/DoseNucleus_g/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseNucleus_g/OutputType                     = "csv"
 #s:Sc/DoseNucleus_g/OutputFile                    = "DoseToNucleus_2Gy_1mgml_0AGuIX_gammas"
 b:Sc/DoseNucleus_g/PropagateToChildren            = "False"
 sv:Sc/DoseNucleus_g/OnlyIncludeParticlesNamed     = 1 "gamma"
+
+s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
+s:Sc/PhSpNP/Component 					= "Cell"
+s:Sc/PhSpNP/Surface				        = "Cell/AnySurface"
+s:Sc/PhSpNP/OutputType                 			= "ASCII" # ASCII, Binary, Limited or ROOT
+s:Sc/PhSpNP/OutputFile                 		 	= "PhaseSpace_NP"
+s:Sc/PhSpNP/IfOutputFileAlreadyExists			= "Overwrite"
+b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
 
 
 ###########
@@ -158,7 +166,7 @@ sv:Sc/DoseNucleus_g/OnlyIncludeParticlesNamed     = 1 "gamma"
 #s:Ge/nucleus/AssignToRegionNamed = "detailed"
 #s:Ge/Cell/AssignToRegionNamed = "detailed"
 
-Ph/Default/Modules = 1 "g4em-livermore"
+Ph/Default/Modules = 1 "g4em-dna" # "g4em-dna"  "g4em-livermore"
 b:Ph/ListProcesses = "False"
 
 d:Ph/Default/SetProductionCutLowerEdge  					= 10 eV
@@ -183,8 +191,8 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 100000
-i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 5
+i:Ts/ShowHistoryCountAtInterval = 20000
+i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 Tf/NumberOfSequentialTimes = 1
 
@@ -193,5 +201,6 @@ i:Ts/Seed = 1
 b:Ts/PauseBeforeQuit = "F"
 
 b:Ts/ShowCPUTime = "True"
+Ts/ParameterizationErrorMaxReports				= 1
 
 
