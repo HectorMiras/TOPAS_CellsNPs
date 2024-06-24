@@ -77,6 +77,7 @@ class Simulation_manager:
         self.sortNPPositions = simulation.getboolean("sortNPPositions")
         self.simScriptFile = simulation["simScriptFile"]
         self.njobs = simulation.getint("njobs")
+        self.startingJob = simulation.getint("startingJob")
         self.nhistories = simulation.getint("nhistories")
         self.runDirectoryName = simulation["runDirectoryName"]
 
@@ -393,6 +394,9 @@ class Simulation_manager:
 
             if line.startswith("ITER="):
                 lines[i] = f'ITER={self.njobs} \n'
+
+            if line.startswith("ADDITION="):
+                lines[i] = f'ADDITION={self.startingJob - 1} \n'
 
             if line.startswith("INFILE1="):
                 lines[i] = f'INFILE1=\"{self.Phase1File}\" \n'

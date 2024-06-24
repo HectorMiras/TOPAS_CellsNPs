@@ -29,7 +29,9 @@ if [ "$DOSAMPLE" == false ]; then
 	cd $CURRENTPATH
 fi
 
-while [[ $COUNT -lt $((ITER + ADDITION)) ]]
+#start with 1
+COUNT=$((COUNT+1))
+while [[ $COUNT -le $((ITER + ADDITION)) ]]
 do
     #USER=`whoami`
     #CURRENTPATH=`pwd`
