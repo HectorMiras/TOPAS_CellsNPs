@@ -17,9 +17,9 @@ s:Ge/CellPHSPName    = "SARRP_CellPHSP"
 
 # --- Phase Space ----
 
-s:So/PhSpSourceSup/Type 									   = "PhaseSpace"
-s:So/PhSpSourceSup/PhaseSpaceFileName						   = Ge/CellPHSPName
-s:So/PhSpSourceSup/Component								   = "World"
+s:So/PhSpSourceSup/Type 				       = "PhaseSpace"
+s:So/PhSpSourceSup/PhaseSpaceFileName			       = Ge/CellPHSPName
+s:So/PhSpSourceSup/Component				       = "World"
 b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
 u:So/PhSpSourceSup/PhaseSpaceScaleXPosBy                       = 0.001 # turns the source phsp into a 30 um diameter disc
 u:So/PhSpSourceSup/PhaseSpaceScaleYPosBy                       = 0.001
@@ -113,14 +113,14 @@ s:Ma/MediumMaterial/DefaultColor        = "yellow"
 ###########
 
 b:Sc/NucleusPHSP/Active                           = "True"
-s:Sc/NucleusPHSP/Quantity						  = "PhaseSpace"
-s:Sc/NucleusPHSP/Component					      = "nucleus"
-s:Sc/NucleusPHSP/Surface						  = "nucleus/AnySurface"
-s:Sc/NucleusPHSP/OutputType					      = "ASCII"
-#s:Sc/NucleusPHSP/OutputFile					  = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
-s:Sc/NucleusPHSP/IfOutputFileAlreadyExists		  = "Overwrite"
-s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 		  = "In"
-b:Sc/NucleusPHSP/KillAfterPhaseSpace 			  = "False"
+s:Sc/NucleusPHSP/Quantity			  = "PhaseSpace"
+s:Sc/NucleusPHSP/Component			  = "nucleus"
+s:Sc/NucleusPHSP/Surface			  = "nucleus/AnySurface"
+s:Sc/NucleusPHSP/OutputType			  = "ASCII"
+#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
+s:Sc/NucleusPHSP/IfOutputFileAlreadyExists        = "Overwrite"
+s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 	  = "In"
+b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
 sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
 s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
@@ -169,15 +169,15 @@ b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
 Ph/Default/Modules = 1 "g4em-dna" # "g4em-dna"  "g4em-livermore"
 b:Ph/ListProcesses = "False"
 
-d:Ph/Default/SetProductionCutLowerEdge  					= 10 eV
-d:Ph/Default/SetProductionCutHighEdge  					    = 1 MeV
-d:Ph/Default/CutForAllParticles  							= 0.1 nm
-b:Ph/Default/Fluorescence  									= "True" # Set to true to turn on Fluorescence
-b:Ph/Default/Auger 											= "True" # Set to true to turn on Auger
-b:Ph/Default/AugerCascade 									= "True" # Set to true to turn on AugerCascade
-b:Ph/Default/DeexcitationIgnoreCut 							= "True" # Set to true to implement DeexcitationIgnoreCut
-b:Ph/Default/PIXE 											= "True" # Set to true to turn on PIXE"
-d:Ph/Default/LowestElectronEnergy 							= 10 eV # 
+d:Ph/Default/SetProductionCutLowerEdge  	= 10 eV
+d:Ph/Default/SetProductionCutHighEdge  		= 1 MeV
+d:Ph/Default/CutForAllParticles  		= 0.1 nm
+b:Ph/Default/Fluorescence  			= "True" # Set to true to turn on Fluorescence
+b:Ph/Default/Auger 				= "True" # Set to true to turn on Auger
+b:Ph/Default/AugerCascade 			= "True" # Set to true to turn on AugerCascade
+b:Ph/Default/DeexcitationIgnoreCut 		= "True" # Set to true to implement DeexcitationIgnoreCut
+b:Ph/Default/PIXE 				= "True" # Set to true to turn on PIXE"
+d:Ph/Default/LowestElectronEnergy 		= 10 eV # 
 
 
 ###########
