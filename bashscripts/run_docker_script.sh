@@ -9,11 +9,13 @@ INFILE2="Cell_AGuIX.txt"
 INFILE3="nucleus_nBIO.txt"
 PYFILE1="sample_positions_in_medium.py"
 PYFILE2="sample_positions_in_cell.py"
+SPLITPYFILE="split_simulation_script.py"
 DELFILE="SARRP_PHSP.phsp"
 DOSAMPLE=true 
 
 ITER=1
 ADDITION=0
+SPLITNUM=1
 
 USER=`whoami`
 CURRENTPATH=`pwd`
@@ -52,12 +54,28 @@ if $DOSAMPLE; then
 fi
 
 #read -p "Press any key to continue..."
-	
-cd $DIR
-time /topas/bin/topas $INFILE1
-time /topas/bin/topas $INFILE2
-time /topas/bin/topas $INFILE3
-rm $DELFILE
+
+SPLITCOUNT=1
+SIMFILE1=$INFILE1
+SIMFILE2=$INFILE2
+SIMFILE3=$INFILE3
+while [[ SPLITCOUNT -le $SPLITNUM ]]
+ do
+  if [ $SPLITNUM -gt 1 ]; then
+    cd "${DIR}/supportFiles"
+	  echo 'Sample NPs in each run.'
+    SIMFILE1=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE1)
+    SIMFILE2=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE2)
+    SIMFILE3=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE3)
+  fi
+  cd "${DIR}"
+  time /topas/bin/topas $SIMFILE1
+  time /topas/bin/topas $SIMFILE2
+  time /topas/bin/topas $SIMFILE3
+	rm $DELFILE
+
+	  SPLITCOUNT=$((SPLITCOUNT+1))
+  done
 
 
 #cd $CURRENTPATH
