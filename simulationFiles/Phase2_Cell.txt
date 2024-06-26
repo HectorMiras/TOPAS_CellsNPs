@@ -192,7 +192,7 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 s:Gr/View/Type        = "OpenGL"
 
 i:Ts/ShowHistoryCountAtInterval = 20000
-i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 2
+i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 4
 
 Tf/NumberOfSequentialTimes = 1
 

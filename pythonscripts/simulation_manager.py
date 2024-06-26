@@ -77,7 +77,8 @@ class Simulation_manager:
         self.sortNPPositions = simulation.getboolean("sortNPPositions")
         self.simScriptFile = simulation["simScriptFile"]
         self.njobs = simulation.getint("njobs")
-        self.startingJob = simulation.getint("startingJob")
+        self.startingJob = simulation.getint("startingJob", fallback=1)
+        self.simSplit = simulation.getint("simSplit", fallback=0)
         self.nhistories = simulation.getint("nhistories")
         self.runDirectoryName = simulation["runDirectoryName"]
 
@@ -398,10 +399,15 @@ class Simulation_manager:
             if line.startswith("ADDITION="):
                 lines[i] = f'ADDITION={self.startingJob - 1} \n'
 
+            if line.startswith("SPLITNUM="):
+                lines[i] = f'SPLITNUM={self.simSplit} \n'
+
             if line.startswith("INFILE1="):
                 lines[i] = f'INFILE1=\"{self.Phase1File}\" \n'
             if not self.simulatePhase1:
                 if "topas $INFILE1" in line:
+                    lines[i] = "#"+line
+                if "topas $SIMFILE3" in line:
                     lines[i] = "#"+line
                 if "cp $INFILE1 $DIR" in line:
                     lines[i] = "#"+line
@@ -413,6 +419,8 @@ class Simulation_manager:
             if not self.simulatePhase2:
                 if "topas $INFILE2" in line:
                     lines[i] = "#"+line
+                if "topas $SIMFILE3" in line:
+                    lines[i] = "#"+line
                 if "cp $INFILE2 $DIR" in line:
                     lines[i] = "#"+line
                 if "sed -i" and "$DIR/$INFILE2" in line:
@@ -422,6 +430,8 @@ class Simulation_manager:
                 lines[i] = f'INFILE3=\"{self.Phase3File}\" \n'
             if not self.simulatePhase3:
                 if "topas $INFILE3" in line:
+                    lines[i] = "#"+line
+                if "topas $SIMFILE3" in line:
                     lines[i] = "#"+line
                 if "cp $INFILE3 $DIR" in line:
                     lines[i] = "#"+line
