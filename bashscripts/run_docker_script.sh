@@ -46,6 +46,7 @@ if $DOSAMPLE; then
     cd "${DIR}/supportFiles"
     python3 $PYFILE1
     python3 $PYFILE2
+    cd "${DIR}"
 fi
 
 #read -p "Press any key to continue..."

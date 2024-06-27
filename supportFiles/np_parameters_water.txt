@@ -1,6 +1,0 @@
-d:Ge/RNP                       = 7.5 nm     # AGuIX: 1.5 nm, AuNP: 7.5 nm
-s:Ma/NPMaterial                = "G4_WATER"    # AGuIX: "AGuIX", AuNP: "goldmat", Water: "G4_WATER"
-
-
-
-
