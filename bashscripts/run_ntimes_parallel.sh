@@ -51,10 +51,6 @@ run_simulation() {
     cp $INFILE2 $DIR
     cp $INFILE3 $DIR    
 
-    SEED=`bash -c 'echo $RANDOM'`
-    sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE1
-    sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE2
-    sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE3
 
     cp -r ./supportFiles $DIR
     cp -r sourcePHSPFiles $DIR
@@ -73,6 +69,12 @@ run_simulation() {
 	  SIMFILE3=$INFILE3
 	  while [[ SPLITCOUNT -le $SPLITNUM ]]
     do
+
+      SEED=`bash -c 'echo $RANDOM'`
+      sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE1
+      sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE2
+      sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" $DIR/$INFILE3
+
 	    if [ $SPLITNUM -gt 1 ]; then
 	      cd "${DIR}/supportFiles"
 		    echo 'Sample NPs in each run.'
