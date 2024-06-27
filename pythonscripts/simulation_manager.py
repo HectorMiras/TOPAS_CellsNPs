@@ -80,6 +80,7 @@ class Simulation_manager:
         self.startingJob = simulation.getint("startingJob", fallback=1)
         self.simSplit = simulation.getint("simSplit", fallback=0)
         self.nhistories = simulation.getint("nhistories")
+        self.phsp2Recycle = simulation.getint("phsp2Recycle", fallback=1)
         self.runDirectoryName = simulation["runDirectoryName"]
 
         # Generates file and directory names from previous parameters
@@ -347,6 +348,9 @@ class Simulation_manager:
                 if not self.NPsInMedium:
                     old_values = line.split("= ")[-1].strip()
                     lines[i] = line.replace(old_values, f"\"G4_WATER\"")
+            if ("i:So/" in line) and ("PhaseSpaceMultipleUse" in line):
+                old_values = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_values, f"{str(self.phsp2Recycle)}")
 
             # update medium composition and density values from NPs concentration
             w_water, w_np, dens_tot = self.np.get_relweights_and_dens_from_conc(self.NPConcInMedium)
