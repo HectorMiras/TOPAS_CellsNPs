@@ -43,6 +43,7 @@ cp $INFILE3 $DIR
 cp -r ./supportFiles $DIR
 	
 if $DOSAMPLE; then
+    echo 'Sample NPs in each run.'
     cd "${DIR}/supportFiles"
     python3 $PYFILE1
     python3 $PYFILE2
@@ -65,7 +66,6 @@ while [[ SPLITCOUNT -le $SPLITNUM ]]
 
   if [ $SPLITNUM -gt 1 ]; then
     cd "${DIR}/supportFiles"
-	  echo 'Sample NPs in each run.'
     SIMFILE1=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE1)
     SIMFILE2=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE2)
     SIMFILE3=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE3)

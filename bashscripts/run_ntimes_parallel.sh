@@ -32,7 +32,7 @@ if [ "$DOSAMPLE" == false ]; then
 fi
 
 # Number of available threads
-available_threads=$(($(nproc) - 1))
+available_threads=$(($(nproc) - 2))
 # Print the available_threads
 echo "Available threads: $available_threads"
 
@@ -94,7 +94,9 @@ run_simulation() {
     cd $currentpath
 }
 
-while [[ $COUNT -lt $((ITER + ADDITION)) ]]
+#start with 1
+COUNT=$((COUNT+1))
+while [[ $COUNT -le $((ITER + ADDITION)) ]]
 do
     # Run the simulation in the background
     run_simulation $COUNT $CURRENTPATH $DOSAMPLE &
