@@ -7,7 +7,7 @@
     "LOCAL_SIM_PATH": "/home/hector/mytopassimulations/MGHsimulations/TOPAS_CellsNPs/azure_batch_files/simulationfiles",
     "RUN_SCRIPT": "main_run_simulation_docker.sh",
     "REDUCER_SCRIPT": "main_batch_reducer_CellsNPs.sh",
-    "OUTPUT_FILE_PATTERNS": ["TOPAS_CellsNPs/work/RunDir/run/DoseToCell*",
+    "OUTPUT_FILE_PATTERNS": ["TOPAS_CellsNPs/work/RunDir/run/DoseToCell*", 
     			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*electrons*.csv",
     			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*gammas*.csv",
     			     "TOPAS_CellsNPs/work/RunDir/run/nucleus_PHSP*",
