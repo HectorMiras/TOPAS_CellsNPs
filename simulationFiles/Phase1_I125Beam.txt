@@ -161,7 +161,7 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 200000
+i:Ts/ShowHistoryCountAtInterval = 2000000
 
 i:Ts/NumberOfThreads = 1 # defaults to 1
 i:Ts/Seed = 1 
