@@ -154,7 +154,11 @@ TsScorerPhaseSpaceNP::TsScorerPhaseSpaceNP(TsParameterManager* pM, TsMaterialMan
             fNtuple->RegisterColumnI(&fSeedPart3, "Seed Part 3");
             fNtuple->RegisterColumnI(&fSeedPart4, "Seed Part 4");
         }
+
+        // Register the new column for the subcomponent index
+        fNtuple->RegisterColumnI(&fsubcomponentIndex, "Subcomponent Index");
     }
+
 }
 
 
@@ -234,6 +238,10 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         fRunID = GetRunID();
         fEventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
+        // Get the subcomponent index
+        fsubcomponentIndex = touchable->GetCopyNumber();
+        //G4cout << "Subcomponent Index: " << subcomponentIndex << G4endl;
+        
         if (fIncludeTOPASTime)
             fTOPASTime = GetTime();
 
