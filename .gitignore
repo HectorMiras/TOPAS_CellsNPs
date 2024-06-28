@@ -10,6 +10,7 @@ supportFiles/*.phsp
 /venv/
 /pythonscripts/__pycache__/
 /azure_batch_files/simulationfile/node*/
+/azure_batch_files/simulationfile/*.sh
 
 # ignore foo.txt at the root (but not other foo.txt files)
 # /foo.txt
