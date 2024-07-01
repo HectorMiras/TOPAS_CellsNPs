@@ -324,6 +324,10 @@ class Simulation_manager:
                 old_file_name = line.split("= ")[-1].strip()
                 new_file_name = f"\"DoseToNucleus{self.outputFileNameSufix}_gammas\""
                 lines[i] = line.replace(old_file_name, new_file_name)
+            if "s:Sc/DoseCyto/OutputFile " in line:
+                old_file_name = line.split("= ")[-1].strip()
+                new_file_name = f"\"DoseToCyto{self.outputFileNameSufix}\""
+                lines[i] = line.replace(old_file_name, new_file_name)
             if "s:Ge/MediumNPPositionsFile" in line:
                 old_file_name = line.split("= ")[-1].strip()
                 new_file_name = f'\"./supportFiles/{self.np_positions_in_medium_file}\"'

@@ -3,6 +3,7 @@ includeFile = ./supportFiles/cell_parameters_A549.txt
 includeFile = ./supportFiles/np_parameters_AuNP.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
+s:Sc/DoseCyto/OutputFile        = "DoseToCyto_2Gy_1mgml_0AGuIX"
 s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
 s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_2Gy_1mgml_0AGuIX_electrons"
 s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_2Gy_1mgml_0AGuIX_gammas"
@@ -124,7 +125,6 @@ b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
 sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
 s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
-
 b:Sc/DoseNucleus_e/Active                         = "True"
 s:Sc/DoseNucleus_e/Quantity                       = "DoseToMedium"
 s:Sc/DoseNucleus_e/Component                      = "nucleus"
@@ -134,6 +134,17 @@ s:Sc/DoseNucleus_e/OutputType                     = "csv"
 #s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_2Gy_1mgml_0AGuIX_electrons"
 b:Sc/DoseNucleus_e/PropagateToChildren		      = "False"
 sv:Sc/DoseNucleus_e/OnlyIncludeParticlesNamed     = 1 "e-"
+
+b:Sc/DoseCyto/Active                         = "True"
+s:Sc/DoseCyto/Quantity                       = "DoseToMedium"
+s:Sc/DoseCyto/Component                      = "Cell"
+sv:Sc/DoseCyto/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseCyto/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseCyto/OutputType                     = "csv"
+#s:Sc/DoseCyto/OutputFile                    = "DoseToCyto_2Gy_1mgml_0AGuIX"
+b:Sc/DoseCyto/PropagateToChildren		      = "False"
+sv:Sc/DoseCyto/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
+
 
 b:Sc/DoseNucleus_g/Active                         = "True"
 s:Sc/DoseNucleus_g/Quantity                       = "DoseToMedium"
