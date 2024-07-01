@@ -102,9 +102,9 @@ do
     run_simulation $COUNT $CURRENTPATH $DOSAMPLE &
 
     # Check the number of background jobs and wait if necessary
-    while [ $(jobs -r | wc -l) -ge "$available_threads" ]; do
-        sleep 30
-    done
+    #while [ $(jobs -r | wc -l) -ge "$available_threads" ]; do
+    #    sleep 30
+    #done
 
     COUNT=$((COUNT+1))
 done
