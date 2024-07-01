@@ -12,5 +12,6 @@
     			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*gammas*.csv",
     			     "TOPAS_CellsNPs/work/RunDir/run/nucleus_PHSP*",
                      "TOPAS_CellsNPs/work/RunDir/run/PhaseSpace_NP*",
+                     "TOPAS_CellsNPs/work/RunDir/run/DoseToCyto*",
                       "TOPAS_CellsNPs/work/RunDir/run/np_num*.txt"]
 }

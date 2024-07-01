@@ -32,9 +32,11 @@ if [ "$DOSAMPLE" == false ]; then
 fi
 
 # Number of available threads
-available_threads=$(($(nproc) - 2))
+available_threads=$(($(nproc) - 12))
 # Print the available_threads
 echo "Available threads: $available_threads"
+# Define the P-core CPUs
+p_cores="0-15"
 
 # Function to execute simulation for one run
 run_simulation() {
@@ -83,9 +85,9 @@ run_simulation() {
 	      SIMFILE3=$(python3 $SPLITPYFILE $SPLITNUM $SPLITCOUNT "$DIR"/$INFILE3)
 	    fi
 	    cd "${DIR}"
-	    time ~/topas/bin/topas $SIMFILE1
-	    time ~/topas/bin/topas $SIMFILE2
-	    time ~/topas/bin/topas $SIMFILE3
+	    taskset -c $p_cores time ~/topas/bin/topas $SIMFILE1
+	    taskset -c $p_cores time ~/topas/bin/topas $SIMFILE2
+	    taskset -c $p_cores time ~/topas/bin/topas $SIMFILE3
 	    #rm $DELFILE
 
 	    SPLITCOUNT=$((SPLITCOUNT+1))
