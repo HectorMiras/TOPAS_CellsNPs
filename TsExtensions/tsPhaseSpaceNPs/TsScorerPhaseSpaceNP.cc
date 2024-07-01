@@ -154,7 +154,11 @@ TsScorerPhaseSpaceNP::TsScorerPhaseSpaceNP(TsParameterManager* pM, TsMaterialMan
             fNtuple->RegisterColumnI(&fSeedPart3, "Seed Part 3");
             fNtuple->RegisterColumnI(&fSeedPart4, "Seed Part 4");
         }
+
+        // Register the new column for the subcomponent index
+        fNtuple->RegisterColumnI(&fsubcomponentIndex, "Subcomponent Index");
     }
+
 }
 
 
@@ -208,10 +212,10 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     //if ((fPreMaterial == "goldmat" && aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&  fOriginVolume.contains("Cell/Subcomponents") ))
     if ((aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&  fOriginVolume.contains("Cell/Subcomponents") ))
     {
-        G4cout << "Checkiing!!!!!!! ##########################" << G4endl;
+        //G4cout << "Checkiing!!!!!!! ##########################" << G4endl;
 
-        G4cout << "Scoring particle on nanoparticle surface. PreSolidName: " << PreSolidName 
-                   << ", Particle: " << fParticleTypeName << G4endl;
+        //G4cout << "Scoring particle on nanoparticle surface. PreSolidName: " << PreSolidName 
+        //           << ", Particle: " << fParticleTypeName << G4endl;
         // Debug output
         //G4cout << "PreSolidName: " << PreSolidName << ", OriginVolume: " << fOriginVolume << ", PreMaterial: " << fPreMaterial << G4endl;
 
@@ -234,6 +238,10 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         fRunID = GetRunID();
         fEventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
+        // Get the subcomponent index
+        fsubcomponentIndex = touchable->GetCopyNumber();
+        //G4cout << "Subcomponent Index: " << subcomponentIndex << G4endl;
+        
         if (fIncludeTOPASTime)
             fTOPASTime = GetTime();
 
@@ -326,8 +334,8 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         if (fMinimumKE[particleEncoding]==0.0) fMinimumKE[particleEncoding] = fEnergy;
         else if (fEnergy < fMinimumKE[particleEncoding]) fMinimumKE[particleEncoding] = fEnergy;
 
-        // if ( fKillAfterPhaseSpace ) aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-        aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+        if ( fKillAfterPhaseSpace ) aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+        //aStep->GetTrack()->SetTrackStatus(fStopAndKill);
         return false;
 
 

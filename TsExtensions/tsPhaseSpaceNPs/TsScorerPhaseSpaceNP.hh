@@ -100,5 +100,8 @@ protected:
     std::map<G4int, G4double> fMinimumKE;  // min KE of each particle type
     std::map<G4int, G4double> fMaximumKE;  // max KE of each particle type
 
+    // Include subcomponentIndex (copynumber)
+    G4int fsubcomponentIndex;
+
 };
 #endif
