@@ -3,14 +3,13 @@ includeFile = ./supportFiles/cell_parameters_A549.txt
 includeFile = ./supportFiles/np_parameters_AuNP.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
-s:Sc/DoseCyto/OutputFile        = "DoseToCyto"
-s:Sc/NucleusPHSP/OutputFile	    = "nucleus_electrons"
-s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_electrons"
-s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_gammas"
+s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_phsp_electrons"
+s:Sc/DoseNucleus/OutputFile   = "DoseToNucleus"
 s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
 s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
-s:Ge/CellPHSPName    = "SARRP_CellPHSP"
+s:Ge/CellPHSPName    = "I125Beam_PHSP"
 
 ###########
 # Sources #
@@ -125,36 +124,26 @@ b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
 sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
 s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
-b:Sc/DoseNucleus_e/Active                         = "True"
-s:Sc/DoseNucleus_e/Quantity                       = "DoseToMedium"
-s:Sc/DoseNucleus_e/Component                      = "nucleus"
-sv:Sc/DoseNucleus_e/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseNucleus_e/IfOutputFileAlreadyExists      = "Overwrite"
-s:Sc/DoseNucleus_e/OutputType                     = "csv"
-#s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_electrons"
-b:Sc/DoseNucleus_e/PropagateToChildren		      = "False"
-sv:Sc/DoseNucleus_e/OnlyIncludeParticlesNamed     = 1 "e-"
+b:Sc/DoseNucleus/Active                         = "True"
+s:Sc/DoseNucleus/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus/Component                      = "nucleus"
+sv:Sc/DoseNucleus/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus/OutputType                     = "csv"
+#s:Sc/DoseNucleus/OutputFile                    = "DoseToNucleus"
+b:Sc/DoseNucleus/PropagateToChildren		      = "False"
+#sv:Sc/DoseNucleus/OnlyIncludeParticlesNamed     = 1 "e-"
 
-b:Sc/DoseCyto/Active                         = "True"
-s:Sc/DoseCyto/Quantity                       = "EnergyDeposit"
-s:Sc/DoseCyto/Component                      = "Cell"
-sv:Sc/DoseCyto/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseCyto/IfOutputFileAlreadyExists      = "Overwrite"
-s:Sc/DoseCyto/OutputType                     = "csv"
-#s:Sc/DoseCyto/OutputFile                    = "DoseToCyto"
-b:Sc/DoseCyto/PropagateToChildren		      = "False"
-sv:Sc/DoseCyto/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
+b:Sc/EnergyToCell/Active                         = "True"
+s:Sc/EnergyToCell/Quantity                       = "EnergyDeposit"
+s:Sc/EnergyToCell/Component                      = "Cell"
+sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/EnergyToCell/OutputType                     = "csv"
+#s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell"
+b:Sc/EnergyToCell/PropagateToChildren		      = "False"
+sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 
-
-b:Sc/DoseNucleus_g/Active                         = "True"
-s:Sc/DoseNucleus_g/Quantity                       = "DoseToMedium"
-s:Sc/DoseNucleus_g/Component                      = "nucleus"
-sv:Sc/DoseNucleus_g/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseNucleus_g/IfOutputFileAlreadyExists      = "Overwrite"
-s:Sc/DoseNucleus_g/OutputType                     = "csv"
-#s:Sc/DoseNucleus_g/OutputFile                    = "DoseToNucleus_gamma"
-b:Sc/DoseNucleus_g/PropagateToChildren            = "False"
-sv:Sc/DoseNucleus_g/OnlyIncludeParticlesNamed     = 1 "gamma"
 
 s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
 s:Sc/PhSpNP/Component 					= "Cell"

@@ -3,12 +3,10 @@ includeFile = ./supportFiles/cell_parameters_SmallCell.txt
 includeFile = ./supportFiles/np_parameters_AuNP15.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
-s:Sc/DoseCyto/OutputFile        = "DoseToCyto_medium1p0mgml_cell1p0mgml_AuNP15"
-s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_medium1p0mgml_cell1p0mgml_AuNP15_electrons"
-s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_medium1p0mgml_cell1p0mgml_AuNP15_electrons"
-s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_medium1p0mgml_cell1p0mgml_AuNP15_gammas"
-s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_663_AuNP15.txt"
-s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_19578_AuNP15.txt"
+s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
+s:Sc/DoseNucleus/OutputFile   = "DoseToNucleus"
+s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
+s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
 s:Ge/CellPHSPName    = "I125Beam_PHSP"
 
@@ -113,12 +111,24 @@ s:Ma/MediumMaterial/DefaultColor        = "yellow"
 # Scorers #
 ###########
 
-s:Sc/DoseCell/Quantity                  = "EnergyDeposit"
-s:Sc/DoseCell/Component                 = "Cell"
-s:Sc/DoseCell/IfOutputFileAlreadyExists = "Overwrite"
-b:Sc/DoseCell/OutputToConsole           = "True"
-sv:Sc/DoseCell/OnlyIncludeIfInMaterial  = 1 "G4_WATER"
-b:Sc/DoseCell/PropagateToChildren		= "False"
+b:Sc/DoseNucleus/Active                         = "True"
+s:Sc/DoseNucleus/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus/Component                      = "nucleus"
+sv:Sc/DoseNucleus/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus/OutputType                     = "csv"
+#s:Sc/DoseNucleus/OutputFile                    = "DoseToNucleus"
+b:Sc/DoseNucleus/PropagateToChildren		      = "False"
+
+b:Sc/EnergyToCell/Active                         = "True"
+s:Sc/EnergyToCell/Quantity                       = "EnergyDeposit"
+s:Sc/EnergyToCell/Component                      = "Cell"
+sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/EnergyToCell/OutputType                     = "csv"
+#s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell"
+b:Sc/EnergyToCell/PropagateToChildren		      = "False"
+sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 
 # Chemistry Scorer
 s:Sc/IRTGValue/Quantity = "TsIRTGValue"
