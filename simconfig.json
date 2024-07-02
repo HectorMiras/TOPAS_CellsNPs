@@ -8,10 +8,9 @@
     "RUN_SCRIPT": "main_run_simulation_docker.sh",
     "REDUCER_SCRIPT": "main_batch_reducer_CellsNPs.sh",
     "OUTPUT_FILE_PATTERNS": ["TOPAS_CellsNPs/work/RunDir/run/DoseToCell*",
-    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*electrons*.csv",
-    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*gammas*.csv",
+    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*",
     			     "TOPAS_CellsNPs/work/RunDir/run/nucleus_PHSP*",
                      "TOPAS_CellsNPs/work/RunDir/run/PhaseSpace_NP*",
-                     "TOPAS_CellsNPs/work/RunDir/run/DoseToCyto*",
+                     "TOPAS_CellsNPs/work/RunDir/run/EnergyToCell*",
                       "TOPAS_CellsNPs/work/RunDir/run/np_num*.txt"]
 }

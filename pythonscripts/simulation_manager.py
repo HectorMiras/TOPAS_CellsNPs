@@ -312,22 +312,6 @@ class Simulation_manager:
             if "s:Ge/CellPHSPName" in line:
                 old_file_name = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_file_name, f"\"{self.PHSP1Name}\"")
-            if "s:Sc/NucleusPHSP/OutputFile" in line:
-                old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"nucleus_PHSP{self.outputFileNameSufix}_electrons\""
-                lines[i] = line.replace(old_file_name, new_file_name)
-            if "s:Sc/DoseNucleus_e/OutputFile" in line:
-                old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"DoseToNucleus{self.outputFileNameSufix}_electrons\""
-                lines[i] = line.replace(old_file_name, new_file_name)
-            if "s:Sc/DoseNucleus_g/OutputFile" in line:
-                old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"DoseToNucleus{self.outputFileNameSufix}_gammas\""
-                lines[i] = line.replace(old_file_name, new_file_name)
-            if "s:Sc/DoseCyto/OutputFile " in line:
-                old_file_name = line.split("= ")[-1].strip()
-                new_file_name = f"\"DoseToCyto{self.outputFileNameSufix}\""
-                lines[i] = line.replace(old_file_name, new_file_name)
             if "s:Ge/MediumNPPositionsFile" in line:
                 old_file_name = line.split("= ")[-1].strip()
                 new_file_name = f'\"./supportFiles/{self.np_positions_in_medium_file}\"'
