@@ -7,7 +7,7 @@ CONFIGFILE="${1:-SimulationConfigFile.txt}"
 
 python3 pythonscripts/run_simulation.py $CURRENTPATH $CONFIGFILE
 
-RUNDIR=$(grep "runDirectoryName" SimulationConfigFile.txt | awk -F'= ' '{print $2}' | cut -d'#' -f1 | tr -d ' ')
+RUNDIR=$(grep "runDirectoryName" "$CONFIGFILE" | awk -F'= ' '{print $2}' | cut -d'#' -f1 | tr -d ' ')
 RUNDIR="${CURRENTPATH}/work/$RUNDIR"
 echo $RUNDIR
 
