@@ -32,11 +32,14 @@ if [ "$DOSAMPLE" == false ]; then
 fi
 
 # Number of available threads
-available_threads=$(($(nproc) - 12))
+available_threads=$(($(nproc) - 8))
 # Print the available_threads
 echo "Available threads: $available_threads"
-# Define the P-core CPUs
-p_cores="0-15"
+# Define the P-core CPUs dynamically
+p_cores=$(seq -s, 0 $((available_threads - 1)))
+
+# Print the P-core CPUs for debugging purposes
+echo "P-core CPUs: $p_cores"
 
 # Function to execute simulation for one run
 run_simulation() {
@@ -104,9 +107,9 @@ do
     run_simulation $COUNT $CURRENTPATH $DOSAMPLE &
 
     # Check the number of background jobs and wait if necessary
-    #while [ $(jobs -r | wc -l) -ge "$available_threads" ]; do
-    #    sleep 30
-    #done
+    while [ $(jobs -r | wc -l) -ge "$available_threads" ]; do
+        sleep 30
+    done
 
     COUNT=$((COUNT+1))
 done
