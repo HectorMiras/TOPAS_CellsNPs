@@ -1,5 +1,5 @@
 {
-    "SIM_ID": "topas-cellsnp-med1-cells1",
+    "SIM_ID": "topas-cellsnp-med1-cells1-phspnp",
     "POOL_NODE_COUNT": 100,
     "STARTING_NODE": 1,
     "POOL_VM_SIZE": "STANDARD_D1_v2",

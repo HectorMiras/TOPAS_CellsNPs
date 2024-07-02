@@ -3,10 +3,10 @@ includeFile = ./supportFiles/cell_parameters_A549.txt
 includeFile = ./supportFiles/np_parameters_AuNP.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
-s:Sc/DoseCyto/OutputFile        = "DoseToCyto_2Gy_1mgml_0AGuIX"
-s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
-s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_2Gy_1mgml_0AGuIX_electrons"
-s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_2Gy_1mgml_0AGuIX_gammas"
+s:Sc/DoseCyto/OutputFile        = "DoseToCyto"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_electrons"
+s:Sc/DoseNucleus_e/OutputFile   = "DoseToNucleus_electrons"
+s:Sc/DoseNucleus_g/OutputFile   = "DoseToNucleus_gammas"
 s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
 s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
@@ -118,7 +118,7 @@ s:Sc/NucleusPHSP/Quantity			  = "PhaseSpace"
 s:Sc/NucleusPHSP/Component			  = "nucleus"
 s:Sc/NucleusPHSP/Surface			  = "nucleus/AnySurface"
 s:Sc/NucleusPHSP/OutputType			  = "ASCII"
-#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP_2Gy_1mgml_0AGuIX_electrons"
+#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP_electrons"
 s:Sc/NucleusPHSP/IfOutputFileAlreadyExists        = "Overwrite"
 s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 	  = "In"
 b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
@@ -131,17 +131,17 @@ s:Sc/DoseNucleus_e/Component                      = "nucleus"
 sv:Sc/DoseNucleus_e/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/DoseNucleus_e/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseNucleus_e/OutputType                     = "csv"
-#s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_2Gy_1mgml_0AGuIX_electrons"
+#s:Sc/DoseNucleus_e/OutputFile                    = "DoseToNucleus_electrons"
 b:Sc/DoseNucleus_e/PropagateToChildren		      = "False"
 sv:Sc/DoseNucleus_e/OnlyIncludeParticlesNamed     = 1 "e-"
 
 b:Sc/DoseCyto/Active                         = "True"
-s:Sc/DoseCyto/Quantity                       = "DoseToMedium"
+s:Sc/DoseCyto/Quantity                       = "EnergyDeposit"
 s:Sc/DoseCyto/Component                      = "Cell"
 sv:Sc/DoseCyto/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/DoseCyto/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseCyto/OutputType                     = "csv"
-#s:Sc/DoseCyto/OutputFile                    = "DoseToCyto_2Gy_1mgml_0AGuIX"
+#s:Sc/DoseCyto/OutputFile                    = "DoseToCyto"
 b:Sc/DoseCyto/PropagateToChildren		      = "False"
 sv:Sc/DoseCyto/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 
@@ -152,7 +152,7 @@ s:Sc/DoseNucleus_g/Component                      = "nucleus"
 sv:Sc/DoseNucleus_g/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/DoseNucleus_g/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/DoseNucleus_g/OutputType                     = "csv"
-#s:Sc/DoseNucleus_g/OutputFile                    = "DoseToNucleus_2Gy_1mgml_0AGuIX_gammas"
+#s:Sc/DoseNucleus_g/OutputFile                    = "DoseToNucleus_gamma"
 b:Sc/DoseNucleus_g/PropagateToChildren            = "False"
 sv:Sc/DoseNucleus_g/OnlyIncludeParticlesNamed     = 1 "gamma"
 

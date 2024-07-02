@@ -84,9 +84,9 @@ class Simulation_manager:
         self.runDirectoryName = simulation["runDirectoryName"]
 
         # Generates file and directory names from previous parameters
-        self.Phase1File = f'Phase1_{self.BeamSource}.txt'
-        self.Phase2File = "Phase2_Cell.txt"
-        self.Phase3File = "Phase3_dnaDamage.txt"
+        self.Phase1File = simulation.get("Phase1File", fallback=f'Phase1_{self.BeamSource}.txt')
+        self.Phase2File = simulation.get("Phase2File", fallback="Phase2_Cell.txt")
+        self.Phase3File = simulation.get("Phase3File", fallback="Phase3_dnaDamage.txt")
         self.PHSP1Name = self.BeamSource + "_PHSP"
         self.NPParametersFile = "np_parameters_" + self.NPType + ".txt"
         self.cellParametersFile = f"cell_parameters_{self.CellType}.txt"
