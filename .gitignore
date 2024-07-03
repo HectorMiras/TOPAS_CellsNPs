@@ -16,4 +16,4 @@ supportFiles/*.phsp
 # /foo.txt
 azure_batch_files/simulationfiles/main_run_simulation_docker.sh
 
-SimulationConfig_*
+SimulationConfigFile_*
