@@ -3,8 +3,6 @@ includeFile = ./supportFiles/cell_parameters_SmallCell.txt
 includeFile = ./supportFiles/np_parameters_AuNP15.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
-s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
-s:Sc/DoseNucleus/OutputFile   = "DoseToNucleus"
 s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
 s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
@@ -68,12 +66,6 @@ s:Ge/Cell/ElementMaterial             = Ma/NPMaterial
 s:Ge/Cell/PositionsFile 	          = Ge/CellNPPositionsFile
 
 
-# ---- Cell nucleus ----
-#s:Ge/nucleus/Parent                   = "Cell"
-#s:Ge/nucleus/Type                     = "TsSphere"
-#d:Ge/nucleus/RMax                     = Ge/RNucleus um
-#s:Ge/nucleus/Material                    = "G4_WATER"
-#s:Ge/nucleus/Color = "blue"
 
 # ---- Incubation medium with material mixture ----
 s:Ge/MediumVol/Parent      = "World"
@@ -111,14 +103,6 @@ s:Ma/MediumMaterial/DefaultColor        = "yellow"
 # Scorers #
 ###########
 
-b:Sc/DoseNucleus/Active                         = "True"
-s:Sc/DoseNucleus/Quantity                       = "DoseToMedium"
-s:Sc/DoseNucleus/Component                      = "nucleus"
-sv:Sc/DoseNucleus/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseNucleus/IfOutputFileAlreadyExists      = "Overwrite"
-s:Sc/DoseNucleus/OutputType                     = "csv"
-#s:Sc/DoseNucleus/OutputFile                    = "DoseToNucleus"
-b:Sc/DoseNucleus/PropagateToChildren		      = "False"
 
 b:Sc/EnergyToCell/Active                         = "True"
 s:Sc/EnergyToCell/Quantity                       = "EnergyDeposit"
@@ -126,9 +110,17 @@ s:Sc/EnergyToCell/Component                      = "Cell"
 sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/EnergyToCell/OutputType                     = "csv"
-#s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell"
+s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell_chem"
 b:Sc/EnergyToCell/PropagateToChildren		      = "False"
 sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
+
+s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
+s:Sc/PhSpNP/Component 					= "Cell"
+s:Sc/PhSpNP/Surface				        = "Cell/AnySurface"
+s:Sc/PhSpNP/OutputType                 			= "ASCII" # ASCII, Binary, Limited or ROOT
+s:Sc/PhSpNP/OutputFile = "PhaseSpace_NP_chem"
+s:Sc/PhSpNP/IfOutputFileAlreadyExists			= "Overwrite"
+b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
 
 # Chemistry Scorer
 s:Sc/IRTGValue/Quantity = "TsIRTGValue"
@@ -147,13 +139,6 @@ d:Sc/IRTGValue/CutoffTime = 1 us
 # Physics #
 ###########
 
-#s:Ge/MediumVol/AssignToRegionNamed = "detailed"
-#s:Ge/CellPlate/AssignToRegionNamed = "detailed"
-
-#s:Ge/MediumDetailed/AssignToRegionNamed = "detailed"
-#s:Ge/CellLayer/AssignToRegionNamed = "detailed"
-#s:Ge/nucleus/AssignToRegionNamed = "detailed"
-#s:Ge/Cell/AssignToRegionNamed = "detailed"
 
 Ph/Default/Modules = 2 "g4em-dna" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
 b:Ph/ListProcesses = "False"
