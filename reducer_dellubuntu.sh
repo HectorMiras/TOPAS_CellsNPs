@@ -8,7 +8,7 @@ cd $SIMULATIONTPATH
 SIMULATIONTPATH=$(pwd)
 CONFIGFILE=$(pwd)/$CONFIGFILE
 
-PYPATH="/home/radiofisica/hector/mytopassimulations/MyTOPASPythonScripts"
+PYPATH="/home/hector/mytopassimulations/MGHsimulations/pythonscripts"
 cd "$PYPATH"
 source venv/bin/activate
 python3 reduce_CellsNPs_files.py "$SIMULATIONTPATH" "$CONFIGFILE"

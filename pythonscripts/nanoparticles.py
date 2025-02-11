@@ -54,7 +54,7 @@ class NP_class:
     def number_from_conc_volume(self, conc, vol):
         # volume in um3
         # conc in mg/cm3
-        print(f'con: {conc}, vol: {vol}, mass: {self.mass_mg()}')
+        # print(f'con: {conc}, vol: {vol}, mass: {self.mass_mg()}')
         return int(conc * vol * np.power(1e-4,3) / self.mass_mg())
 
     def get_relweights_and_dens_from_conc(self, conc):

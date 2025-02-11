@@ -5,7 +5,7 @@ includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
 s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
 s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_electrons"
-s:Sc/DoseNucleus/OutputFile   = "DoseToNucleus"
+s:Sc/DoseToNucleus_Total/OutputFile   = "DoseToNucleus_Total"
 s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
 s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
@@ -124,15 +124,43 @@ b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
 sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
 s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
-b:Sc/DoseNucleus/Active                         = "True"
-s:Sc/DoseNucleus/Quantity                       = "DoseToMedium"
-s:Sc/DoseNucleus/Component                      = "nucleus"
-sv:Sc/DoseNucleus/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
-s:Sc/DoseNucleus/IfOutputFileAlreadyExists      = "Overwrite"
-s:Sc/DoseNucleus/OutputType                     = "csv"
-#s:Sc/DoseNucleus/OutputFile                    = "DoseToNucleus"
-b:Sc/DoseNucleus/PropagateToChildren		      = "False"
-#sv:Sc/DoseNucleus/OnlyIncludeParticlesNamed     = 1 "e-"
+b:Sc/DoseNucleus_Total/Active                         = "True"
+s:Sc/DoseNucleus_Total/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus_Total/Component                      = "nucleus"
+sv:Sc/DoseNucleus_Total/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus_Total/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus_Total/OutputType                     = "csv"
+#s:Sc/DoseNucleus_Total/OutputFile                    = "DoseToNucleus_Total"
+b:Sc/DoseNucleus_Total/PropagateToChildren		      = "False"
+#sv:Sc/DoseNucleus_Total/OnlyIncludeParticlesNamed     = 1 "e-"
+
+b:Sc/DoseToNucleus_IncidentTrack/Active                         = "True"
+s:Sc/DoseToNucleus_IncidentTrack/Quantity                       = "DoseToMedium"
+s:Sc/DoseToNucleus_IncidentTrack/Component                      = "nucleus"
+sv:Sc/DoseToNucleus_IncidentTrack/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseToNucleus_IncidentTrack/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseToNucleus_IncidentTrack/OutputType                     = "csv"
+s:Sc/DoseToNucleus_IncidentTrack/OutputFile                    = "DoseToNucleus_IncidentTrack"
+b:Sc/DoseToNucleus_IncidentTrack/PropagateToChildren		      = "False"
+#sv:Sc/DoseToNucleus_IncidentTrack/OnlyIncludeParticlesNamed     = 1 "e-"
+i:Sc/DoseToNucleus_IncidentTrack/EBins                     = 100
+d:Sc/DoseToNucleus_IncidentTrack/EBinMin                   = 0. MeV
+d:Sc/DoseToNucleus_IncidentTrack/EBinMax                   = 0.035 MeV
+sc:Sc/DoseToNucleus_IncidentTrack/EBinEnergy               = "IncidentTrack"
+
+b:Sc/DoseToNucleus_DepositedInStep/Active                         = "True"
+s:Sc/DoseToNucleus_DepositedInStep/Quantity                       = "DoseToMedium"
+s:Sc/DoseToNucleus_DepositedInStep/Component                      = "nucleus"
+sv:Sc/DoseToNucleus_DepositedInStep/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseToNucleus_DepositedInStep/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseToNucleus_DepositedInStep/OutputType                     = "csv"
+s:Sc/DoseToNucleus_DepositedInStep/OutputFile                    = "DoseToNucleus_DepositedInStep"
+b:Sc/DoseToNucleus_DepositedInStep/PropagateToChildren		      = "False"
+#sv:Sc/DoseToNucleus_DepositedInStep/OnlyIncludeParticlesNamed     = 1 "e-"
+i:Sc/DoseToNucleus_DepositedInStep/EBins                     = 100
+d:Sc/DoseToNucleus_DepositedInStep/EBinMin                   = 0. eV
+d:Sc/DoseToNucleus_DepositedInStep/EBinMax                   = 100. eV
+sc:Sc/DoseToNucleus_DepositedInStep/EBinEnergy               = "DepositedInStep"
 
 b:Sc/EnergyToCell/Active                         = "True"
 s:Sc/EnergyToCell/Quantity                       = "EnergyDeposit"

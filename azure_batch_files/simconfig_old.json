@@ -1,5 +1,5 @@
 {
-    "SIM_ID": "topas-azure-med0p05-cells0p05",
+    "SIM_ID": "topas-cellsnp-med1-cells0",
     "POOL_NODE_COUNT": 100,
     "STARTING_NODE": 1,
     "POOL_VM_SIZE": "STANDARD_D1_v2",
@@ -7,10 +7,11 @@
     "LOCAL_SIM_PATH": "/home/hector/mytopassimulations/MGHsimulations/TOPAS_CellsNPs/azure_batch_files/simulationfiles",
     "RUN_SCRIPT": "main_run_simulation_docker.sh",
     "REDUCER_SCRIPT": "main_batch_reducer_CellsNPs.sh",
-    "OUTPUT_FILE_PATTERNS": ["TOPAS_CellsNPs/work/RunDir/run/DoseToCell*",
-    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*",
+    "OUTPUT_FILE_PATTERNS": ["TOPAS_CellsNPs/work/RunDir/run/DoseToCell*", 
+    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*electrons*.csv",
+    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus*gammas*.csv",
     			     "TOPAS_CellsNPs/work/RunDir/run/nucleus_PHSP*",
                      "TOPAS_CellsNPs/work/RunDir/run/PhaseSpace_NP*",
-                     "TOPAS_CellsNPs/work/RunDir/run/EnergyToCell*",
+                     "TOPAS_CellsNPs/work/RunDir/run/DoseToCyto*",
                       "TOPAS_CellsNPs/work/RunDir/run/np_num*.txt"]
 }
