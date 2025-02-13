@@ -12,20 +12,20 @@
 
 #include "G4VPVParameterisation.hh"
 #include "G4ThreeVector.hh"
-#include "G4Orb.hh"
 #include "G4VPhysicalVolume.hh"
 
 class TsParameterizationDistributed : public G4VPVParameterisation
 {
 public:
-	TsParameterizationDistributed(G4double radius, std::vector<G4ThreeVector> positionList);
+	// Updated constructor (removed radius parameter)
+	TsParameterizationDistributed(std::vector<G4ThreeVector> positionList);
 	virtual ~TsParameterizationDistributed();
 
-	G4VSolid* ComputeSolid(const G4int copyNo, G4VPhysicalVolume* );
+	// Removed ComputeSolid declaration
 	void ComputeTransformation(const G4int, G4VPhysicalVolume*) const;
 
 private:
-	G4double fRadius;
+	// Removed fRadius member
 	std::vector<G4ThreeVector> fPositionList;
 };
 

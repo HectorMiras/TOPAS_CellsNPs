@@ -63,8 +63,8 @@ G4VPhysicalVolume* TsDistributedComponents::Construct()
 	fEnvelopeLog = CreateLogicalVolume(componentSolid);
 	fEnvelopePhys = CreatePhysicalVolume(fEnvelopeLog);
 
-	// Parameterization
-	fParam = new TsParameterizationDistributed(fElementRadius, positionList);
+	// Updated parameterization instantiation using only 'positionList'
+	fParam = new TsParameterizationDistributed(positionList);
 
 	// Subelements
 	G4String name = "SubcompSolid";
