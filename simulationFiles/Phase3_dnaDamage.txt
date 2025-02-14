@@ -101,3 +101,5 @@ Ts/ShowHistoryCountAtInterval                       = 1
 #sv:Gr/view/ColorByParticleTypeNames     = 4 "e-" "alpha" "proton" "neutron"
 #sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
 #s:Gr/view/BackgroundColor               = "White"
+
+i:Ts/NumberOfThreads =16 # defaults to 1

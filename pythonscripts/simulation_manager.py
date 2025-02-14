@@ -366,12 +366,12 @@ class Simulation_manager:
                 # get the old file name
                 old_file_name = line.split("/")[-1].strip()
                 lines[i] = line.replace(old_file_name, self.cellParametersFile)
-            if "s:Ge/SourcePHSPName" in line:
-                old_file_name = line.split("= ")[-1].strip()
-                conc_str = str(self.NPConcInMedium)
-                conc_str = conc_str.replace(".", "p")
-                new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
-                lines[i] = line.replace(old_file_name, new_file_name)
+           # if "s:Ge/SourcePHSPName" in line:
+               # old_file_name = line.split("= ")[-1].strip()
+               # conc_str = str(self.NPConcInMedium)
+               # conc_str = conc_str.replace(".", "p")
+               # new_file_name = f"\"nucleus_PHSP_{conc_str}mgml_{self.NPNumberInCell}_{self.NPType}_electrons\""
+               # lines[i] = line.replace(old_file_name, new_file_name)
 
         # write the file
         with open(os.path.join(self.runDirectoryName, self.Phase3File), 'w') as file:
