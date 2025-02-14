@@ -131,7 +131,7 @@ def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     zmin = -Hcyl/2 + min_distance/2
     zmax = Hcyl/2 - min_distance/2
     # Adjust bin_size to be the max of Hcyl/10 or min_distance*4 to prevent too many bins.
-    bin_size = max(Hcyl/10, min_distance * 4)
+    bin_size = max(Hcyl/100, min_distance * 4)
 
     # dictionary: key=(i,j,k), value=list of points in that bin
     bins = {}
