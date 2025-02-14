@@ -118,6 +118,78 @@ def get_positions_efficient(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
 
     return numberNPs
 
+def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
+    """
+    More efficient sampling inside a cylinder (cytoplasm) excluding the nucleus region,
+    with overlap testing via spatial binning.
+    All distances are in nm.
+    """
+    import math
+    min_distance = 2 * Rnp + 0.001
+    Rmax = Rcyl - min_distance / 2
+    Rmin = Rsph + Rnp
+    zmin = -Hcyl/2 + min_distance/2
+    zmax = Hcyl/2 - min_distance/2
+    # Adjust bin_size to be the max of Hcyl/10 or min_distance*4 to prevent too many bins.
+    bin_size = max(Hcyl/10, min_distance * 4)
+
+    # dictionary: key=(i,j,k), value=list of points in that bin
+    bins = {}
+    positions = []
+
+    def get_bin_index(point):
+        return (int(math.floor(point[0] / bin_size)),
+                int(math.floor(point[1] / bin_size)),
+                int(math.floor(point[2] / bin_size)))
+    
+    def neighbor_bins(bin_index):
+        bx, by, bz = bin_index
+        # range(b-1, b+2) iterates over b-1, b, and b+1, which is sufficient.
+        for i in range(bx-1, bx+2):
+            for j in range(by-1, by+2):
+                for k in range(bz-1, bz+2):
+                    yield (i, j, k)
+    
+    count = 0
+    max_attempts = N * 100  # safety for infinite loops
+    attempts = 0
+    while count < N and attempts < max_attempts:
+        attempts += 1
+        x = (Rmax * (2 * np.random.random() - 1))
+        y = (Rmax * (2 * np.random.random() - 1))
+        if np.sqrt(x*x + y*y) > Rmax:
+            continue
+        z = np.random.uniform(zmin, zmax)
+        if np.sqrt(x*x+y*y+z*z) <= Rmin:
+            continue
+
+        candidate = np.array([x, y, z])
+        bin_idx = get_bin_index(candidate)
+        overlap_found = False
+        for nb in neighbor_bins(bin_idx):
+            for pt in bins.get(nb, []):
+                if np.linalg.norm(candidate - pt) < min_distance:
+                    overlap_found = True
+                    break
+            if overlap_found:
+                break
+        if overlap_found:
+            continue
+
+        positions.append(candidate)
+        bins.setdefault(bin_idx, []).append(candidate)
+        count += 1
+        if count % 1000 == 0:
+            print(count, "out of", N)
+
+    print(f"Total generated points: {len(positions)} after {attempts} attempts")
+    with open(positions_file, 'w') as f:
+        for i, p in enumerate(positions):
+            if N == 1 and i > 0:
+                break
+            f.write(f"{p[0]} {p[1]} {p[2]}\n")
+    return len(positions)
+
 def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     """
     " Fuinction to sample N positons inside a cylinder of radius Rcyl and height Hcyl, excluding the inner volume of
