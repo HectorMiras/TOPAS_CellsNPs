@@ -102,4 +102,8 @@ Ts/ShowHistoryCountAtInterval                       = 1
 #sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
 #s:Gr/view/BackgroundColor               = "White"
 
+<<<<<<< HEAD
 i:Ts/NumberOfThreads =16 # defaults to 1
+=======
+i:Ts/NumberOfThreads =1 # defaults to 1
+>>>>>>> 4092a6d5a52ecc5e3b190fcded88c4ca0a4971aa
