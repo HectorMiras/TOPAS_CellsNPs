@@ -176,6 +176,7 @@ sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 # Tuple scorer. By default includes physical and chemical track.
 # For the physical track: the position and PDG Encoding
 # For the chemical track: the position at TimeCut and moleculeID
+b:Sc/pTuple/Active = "False"
 s:Sc/pTuple/Quantity = "Tuple"
 s:Sc/pTuple/Component = "Cell"
 s:Sc/pTuple/OutputType = "ASCII"

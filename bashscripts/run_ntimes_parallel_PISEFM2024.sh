@@ -32,7 +32,7 @@ if [ "$DOSAMPLE" == false ]; then
 fi
 
 # Number of available threads
-available_threads=$(($(nproc) - 8))
+available_threads=$(($(nproc) - 2))
 # Print the available_threads
 echo "Available threads: $available_threads"
 # Define the P-core CPUs dynamically
