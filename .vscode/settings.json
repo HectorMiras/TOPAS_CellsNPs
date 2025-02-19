@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "string_view": "cpp",
+        "unordered_map": "cpp"
+    }
+}

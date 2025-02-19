@@ -207,10 +207,11 @@ G4bool TsScorerPhaseSpaceNP::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     // Debug output
     //G4cout << "PreSolidName: " << PreSolidName << ", OriginVolume: " << fOriginVolume << ", PreMaterial: " << fPreMaterial << G4endl;
 
-    if ( PreSolidName.contains("Cell/Subcomponents") )
+    if ( PreSolidName.contains("Cell/Subcomponents") || PreSolidName.contains("Nanoparticle"))
     {    
     //if ((fPreMaterial == "goldmat" && aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&  fOriginVolume.contains("Cell/Subcomponents") ))
-    if ((aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&  fOriginVolume.contains("Cell/Subcomponents") ))
+    if ((aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && 
+     (fOriginVolume.contains("Cell/Subcomponents") || fOriginVolume.contains("Nanoparticle")) ))
     {
         //G4cout << "Checkiing!!!!!!! ##########################" << G4endl;
 

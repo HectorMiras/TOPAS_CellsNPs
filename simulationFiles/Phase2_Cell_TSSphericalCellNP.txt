@@ -1,0 +1,269 @@
+# ------ Include Files ------
+includeFile = ./supportFiles/cell_parameters_SphericalCell.txt
+includeFile = ./supportFiles/np_parameters_AuNP.txt
+includeFile = ./supportFiles/source_parameters_I125Beam.txt
+
+s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_electrons"
+s:Sc/DoseToNucleus_Total/OutputFile   = "DoseToNucleus_Total"
+s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
+s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
+
+s:Ge/CellPHSPName    = "I125Beam_PHSP"
+
+###########
+# Sources #
+###########
+
+# --- Phase Space ----
+
+s:So/PhSpSourceSup/Type 				       = "PhaseSpace"
+s:So/PhSpSourceSup/PhaseSpaceFileName			       = Ge/CellPHSPName
+s:So/PhSpSourceSup/Component				       = "World"
+b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
+u:So/PhSpSourceSup/PhaseSpaceScaleXPosBy                       = 0.001 # turns the source phsp into a 30 um diameter disc
+u:So/PhSpSourceSup/PhaseSpaceScaleYPosBy                       = 0.001
+b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "False" # defaults to true
+
+
+############
+# Geometry #
+############
+
+d:Ge/SourceRMax = Ge/RCell + Ge/ElectronRangePH1 um
+
+# ---- World ----
+s:Ge/World/Material    = "Vacuum"
+s:Ge/World/Type        = "TsCylinder"
+d:Ge/World/RMax         = 1.5 * Ge/SourceRMax um
+d:Ge/World/HL         = Ge/ElectronRangePH1 + Ge/RCell um
+b:Ge/World/Invisible   = "F"
+
+# ---- Polystirene cell plate ----
+s:Ge/CellPlate/Parent = "World"
+s:Ge/CellPlate/Type = "TsCylinder"
+s:Ge/CellPlate/Material    = "G4_POLYSTYRENE"
+d:Ge/CellPlate/RMax         = Ge/World/RMax  um
+d:Ge/CellPlateThickness           = 2000 um
+d:Ge/CellPlate/HL           = 0.5 * Ge/ElectronRangePH1 um
+d:Ge/CellPlateNegHL          = -1 * Ge/CellPlate/HL um
+d:Ge/CellPlate/TransZ          = Ge/CellPlateNegHL - Ge/RCell um
+s:Ge/CellPlate/Color = "grey"
+
+# ---- Cell Layer ----
+s:Ge/CellLayer/Parent = "World"
+s:Ge/CellLayer/Type = "TsCylinder"
+s:Ge/CellLayer/Material    = "MediumMaterial"
+d:Ge/CellLayer/RMax         = Ge/SourceRMax um
+d:Ge/CellLayer/HL           = Ge/RCell um
+
+
+#### CELL ####
+s:Ge/Cell/Type="TsSphericalCellSphericalNP"
+s:Ge/Cell/Parent= "CellLayer"
+s:Ge/Cell/Material="G4_WATER"
+d:Ge/Cell/CellRadius= Ge/RCell um
+s:Ge/Cell/Color="white"
+
+#NUCLEUS
+d:Ge/Cell/Nucleus/NucleusRadius= Ge/RNucleus um 
+s:Ge/Cell/Nucleus/Material="G4_WATER"
+d:Ge/Cell/Nucleus/translateX = 0.0 um
+d:Ge/Cell/Nucleus/translateY = 0.0 um
+d:Ge/Cell/Nucleus/translateZ = 0.0 um
+s:Ge/Cell/Nucleus/DrawingStyle="solid"
+s:Ge/Cell/Nucleus/Color="red"
+
+#MITOCHONDRIA - optional
+i:Ge/Cell/Mitochondria/NumberOfMitochondria= 10
+d:Ge/Cell/Mitochondria/r= 500 nm
+s:Ge/Cell/Mitochondria/Material="G4_WATER"
+s:Ge/Cell/Mitochondria/Color="grass"
+s:Ge/Cell/Mitochondria/DrawingStyle="wireframe"
+
+#MEMBRANE - optional
+d:Ge/Cell/Membrane/Thickness = Ge/CellMembrane nm
+s:Ge/Cell/Membrane/Material="G4_WATER"
+s:Ge/Cell/Membrane/Color="grass"
+s:Ge/Cell/Membrane/DrawingStyle="wireframe"
+
+#NANOPARTICLES in the cytosol - optional
+i:Ge/Cell/Nanoparticle/NumberOfNanoparticles = 19578
+d:Ge/Cell/Nanoparticle/r = Ge/RNP nm
+s:Ge/Cell/Nanoparticle/Material = Ma/NPMaterial
+s:Ge/Cell/Nanoparticle/Color = "yellow"
+s:Ge/Cell/Nanoparticle/DrawingStyle = "solid"
+
+
+# ---- Cell nucleus ----
+s:Ge/nucleus/Parent                   = "World"
+s:Ge/nucleus/Type                     = "TsSphere"
+d:Ge/nucleus/RMax                     = Ge/RNucleus um
+b:Ge/nucleus/IsParallel               = "True"
+s:Ge/nucleus/Color = "blue"
+
+# ---- Incubation medium with material mixture ----
+s:Ge/MediumVol/Parent      = "World"
+s:Ge/MediumVol/Type        = "TsCylinder"
+s:Ge/MediumVol/Material    = "MediumMaterial"
+d:Ge/MediumVol/RMax        = Ge/SourceRMax um
+d:Ge/MediumVol/HL          = 0.5 * Ge/ElectronRangePH1 um 
+d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/RCell um
+
+# ---- Incubation medium with NPs ----
+d:Ge/MediumDetailedThickness            = 0.2 um
+s:Ge/MediumDetailed/Parent            = "MediumVol"
+s:Ge/MediumDetailed/Type              = "TsDistributedComponents"
+s:Ge/MediumDetailed/Material          = "G4_WATER"
+s:Ge/MediumDetailed/ComponentType     = "G4Tubs"
+d:Ge/MediumDetailed/ComponentRadius   = 1.25 * Ge/RNucleus um
+d:Ge/MediumDetailed/ComponentHL       = 0.5 * Ge/MediumDetailedThickness um 
+d:Ge/MediumDetailed/ElementRadius	  = Ge/RNP nm
+s:Ge/MediumDetailed/ElementMaterial   = Ma/NPMaterial
+s:Ge/MediumDetailed/PositionsFile 	  = Ge/MediumNPPositionsFile
+d:Ge/MediumDetailed/TransZ            = Ge/MediumDetailed/ComponentHL - Ge/MediumVol/HL um
+
+#############
+# Materials #
+#############
+
+b:Ma/MediumMaterial/BuildFromMaterials  = "True"
+sv:Ma/MediumMaterial/Components         = 2 "G4_WATER" Ma/NPMaterial   
+uv:Ma/MediumMaterial/Fractions          = 2 0.9990009990009991 0.0009990009990009992
+d:Ma/MediumMaterial/Density             = 1.000948137402207 g/cm3
+s:Ma/MediumMaterial/DefaultColor        = "yellow"
+
+
+###########
+# Scorers #
+###########
+
+b:Sc/NucleusPHSP/Active                           = "True"
+s:Sc/NucleusPHSP/Quantity			  = "PhaseSpace"
+s:Sc/NucleusPHSP/Component			  = "nucleus"
+s:Sc/NucleusPHSP/Surface			  = "nucleus/AnySurface"
+s:Sc/NucleusPHSP/OutputType			  = "ASCII"
+#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP_electrons"
+s:Sc/NucleusPHSP/IfOutputFileAlreadyExists        = "Overwrite"
+s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 	  = "In"
+b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
+sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
+s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
+
+b:Sc/DoseNucleus_Total/Active                         = "True"
+s:Sc/DoseNucleus_Total/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus_Total/Component                      = "nucleus"
+sv:Sc/DoseNucleus_Total/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus_Total/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus_Total/OutputType                     = "csv"
+#s:Sc/DoseNucleus_Total/OutputFile                    = "DoseToNucleus_Total"
+b:Sc/DoseNucleus_Total/PropagateToChildren		      = "False"
+#sv:Sc/DoseNucleus_Total/OnlyIncludeParticlesNamed     = 1 "e-"
+
+
+
+
+b:Sc/EnergyToCell/Active                         = "True"
+s:Sc/EnergyToCell/Quantity                       = "EnergyDeposit"
+s:Sc/EnergyToCell/Component                      = "Cell"
+sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/EnergyToCell/OutputType                     = "csv"
+#s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell"
+b:Sc/EnergyToCell/PropagateToChildren		      = "True"
+sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
+
+# Tuple scorer. By default includes physical and chemical track.
+# For the physical track: the position and PDG Encoding
+# For the chemical track: the position at TimeCut and moleculeID
+s:Sc/pTuple/Quantity = "Tuple"
+s:Sc/pTuple/Component = "Cell"
+s:Sc/pTuple/OutputType = "ASCII"
+b:Sc/pTuple/OutputToConsole = "True"
+s:Sc/pTuple/IfOutputFileAlreadyExists = "Overwrite"
+#d:Sc/pTuple/TimeCut = 10.0 ns
+b:Sc/pTuple/PropagateToChildren		      = "True"
+
+# Alternatively, chemical or physical information can be 
+# disregarded setting to false the following parameters
+b:Sc/pTuple/IncludeChemicalTrack = "False"
+b:Sc/pTuple/IncludeParticleName = "False"
+# Physical process. A "none" value is assigned to the chemistry tuple
+b:Sc/pTuple/IncludePhysicalProcessName  = "False"
+# Event, trackID and parent trackID. For the chemical stage, two parent track IDs are providen as the track is a result of a reaction 
+b:Sc/pTuple/IncludeEventID = "True"
+b:Sc/pTuple/IncludeTrackID = "True"
+b:Sc/pTuple/IncludeParentID = "False"
+# Step number in the scoring region
+b:Sc/pTuple/IncludeStepNumber = "False"
+# Energy deposited by the tracks and kinetic energy at scoring site.
+b:Sc/pTuple/IncludeEnergyDeposited = "True"
+b:Sc/pTuple/IncludeKineticEnergy   = "True"
+# Geometrical information
+b:Sc/pTuple/IncludeVolumeName = "True"
+b:Sc/pTuple/IncludeVolumeCopyNumber = "True"
+# Time of flight
+b:Sc/pTuple/IncludeGlobalTime = "False"
+
+
+
+s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
+s:Sc/PhSpNP/Component 					= "Cell"
+s:Sc/PhSpNP/Surface				        = "Cell/AnySurface"
+s:Sc/PhSpNP/OutputType                 			= "ASCII" # ASCII, Binary, Limited or ROOT
+s:Sc/PhSpNP/OutputFile                 		 	= "PhaseSpace_NP"
+s:Sc/PhSpNP/IfOutputFileAlreadyExists			= "Overwrite"
+b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
+b:Sc/PhSpNP/PropagateToChildren		      = "True"
+
+
+###########
+# Physics #
+###########
+
+#s:Ge/MediumVol/AssignToRegionNamed = "detailed"
+#s:Ge/CellPlate/AssignToRegionNamed = "detailed"
+
+#s:Ge/MediumDetailed/AssignToRegionNamed = "detailed"
+#s:Ge/CellLayer/AssignToRegionNamed = "detailed"
+#s:Ge/nucleus/AssignToRegionNamed = "detailed"
+#s:Ge/Cell/AssignToRegionNamed = "detailed"
+
+Ph/Default/Modules = 1 "g4em-dna" # "g4em-dna"  "g4em-livermore"
+b:Ph/ListProcesses = "False"
+
+d:Ph/Default/SetProductionCutLowerEdge  	= 10 eV
+d:Ph/Default/SetProductionCutHighEdge  		= 1 MeV
+d:Ph/Default/CutForAllParticles  		= 0.1 nm
+b:Ph/Default/Fluorescence  			= "True" # Set to true to turn on Fluorescence
+b:Ph/Default/Auger 				= "True" # Set to true to turn on Auger
+b:Ph/Default/AugerCascade 			= "True" # Set to true to turn on AugerCascade
+b:Ph/Default/DeexcitationIgnoreCut 		= "True" # Set to true to implement DeexcitationIgnoreCut
+b:Ph/Default/PIXE 				= "True" # Set to true to turn on PIXE"
+d:Ph/Default/LowestElectronEnergy 		= 10 eV # 
+
+
+###########
+# Graphics #
+###########
+b:Gr/View/IncludeAxes = "F"
+d:Gr/View/AxesSize    = 5 mm
+b:Gr/Enable          = "F"
+b:Ts/UseQt = "F"
+sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
+
+s:Gr/View/Type        = "OpenGL"
+
+i:Ts/ShowHistoryCountAtInterval = 100000
+i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
+
+Tf/NumberOfSequentialTimes = 1
+
+i:Ts/NumberOfThreads = 1 # defaults to 1
+i:Ts/Seed = 1 
+b:Ts/PauseBeforeQuit = "F"
+
+b:Ts/ShowCPUTime = "True"
+Ts/ParameterizationErrorMaxReports				= 1
+
+
