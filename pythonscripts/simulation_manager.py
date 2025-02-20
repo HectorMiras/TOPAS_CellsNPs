@@ -63,6 +63,7 @@ class Simulation_manager:
         self.NPsInCell = simulation.getboolean("NPsInCell")
         self.NPType = simulation["NPType"]
         self.CellType = simulation["CellType"]
+        self.CellShape = simulation.get("CellShape", fallback="Cylindrical")
         self.NPConcInMedium = simulation.getfloat("NPConcInMedium")
         self.NPConcInCell = simulation.getfloat("NPConcInCell")
         self.UpTakeVar = simulation.getfloat("UpTakeVar")/100.0
@@ -105,7 +106,7 @@ class Simulation_manager:
 
 
     def read_support_files(self):
-        self.cell = Cell_class()
+        self.cell = Cell_class(self.CellShape)
         self.cell.read_file_parameters(os.path.join(self.supportFilesDir, self.cellParametersFile))
         self.np = NP_class()
         self.np.read_file_parameters(os.path.join(self.supportFilesDir, self.NPParametersFile))
@@ -194,7 +195,7 @@ class Simulation_manager:
             line = lines[i]
             if "positions_file =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'\"{self.np_positions_in_medium_file}\"')
+                lines[i] = line.replace(old_value, f'"{self.np_positions_in_medium_file}"')
             if "Rmax =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'1.25*{1000 * self.cell.rNucl}')
@@ -205,11 +206,10 @@ class Simulation_manager:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{self.NPNumberInMedium}')
 
-
-        # write the file
         with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_medium.py"), 'w') as file:
             file.writelines(lines)
 
+        # Process sample_positions_in_cell.py, replacing the shape line with self.CellShape
         with open(os.path.join(self.pythonScripts, "sample_positions_in_cell.py"), 'r') as file:
             lines = file.readlines()
 
@@ -217,7 +217,7 @@ class Simulation_manager:
             line = lines[i]
             if "positions_file =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'\"{self.np_positions_in_cell_file}\"')
+                lines[i] = line.replace(old_value, f'"{self.np_positions_in_cell_file}"')
             if "Rmax =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{1000 * self.cell.rCell}')
@@ -235,9 +235,11 @@ class Simulation_manager:
                 lines[i] = line.replace(old_value, f'{self.NPNumberInCell}')
             if "sN =" in line:
                 old_value = line.split("= ")[-1].strip()
-                lines[i] = line.replace(old_value, f'{int(self.NPNumberInCell*self.UpTakeVar)}')
+                lines[i] = line.replace(old_value, f'{int(self.NPNumberInCell * self.UpTakeVar)}')
+            if line.strip().startswith("shape="):
+                # Replace the shape value with self.CellShape from the config
+                lines[i] = f'shape="{self.CellShape}"\n'
 
-        # write the file
         with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
             file.writelines(lines)
 
@@ -336,6 +338,11 @@ class Simulation_manager:
                 if not self.NPsInMedium:
                     old_values = line.split("= ")[-1].strip()
                     lines[i] = line.replace(old_values, f"\"G4_WATER\"")
+            if "s:Ge/Cell/ComponentType" in line:
+                # Map according to the cell shape: G4Tubs for Cylindrical, G4Sphere for Spherical
+                new_value = "\"G4Sphere\"" if self.CellShape.lower() == "spherical" else "\"G4Tubs\""
+                old_value = line.split("= ")[-1].strip()
+                lines[i] = line.replace(old_value, new_value)
             if ("i:So/" in line) and ("PhaseSpaceMultipleUse" in line):
                 old_values = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_values, f"{str(self.phsp2Recycle)}")

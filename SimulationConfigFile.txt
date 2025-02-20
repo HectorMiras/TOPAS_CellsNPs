@@ -10,6 +10,7 @@ HasSourcePHSP = False                           # If True, will copy the sourceP
 NPsInMedium = True 				# Presence of NPs in medium. If "False", medium is considered water.
 NPsInCell = True  				# Presence of NPs in cell cytoplasm.
 CellType = SmallCell 				# Name of the cell model: A549, AugerRange, ...
+CellShape = Cylindrical        # Possible shapes: Cylindrical, Spherical 
 NPType = AuNP15					# Types: AGuIX, AuNP, water, AGuIXBi, ...
 NPConcInMedium = 1.0 			        # mg of NPs in ml of water. Determines number of NPs explicitly simulated in the region of the medium above the cell,
 NPConcInCell = 1.0                              # mg of NPs in ml of water. Determines the number of NPs to be explicitly simulated in the cell

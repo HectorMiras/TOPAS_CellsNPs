@@ -134,7 +134,7 @@ s:Sc/DoseNucleus_Total/OutputType                     = "csv"
 b:Sc/DoseNucleus_Total/PropagateToChildren		      = "False"
 #sv:Sc/DoseNucleus_Total/OnlyIncludeParticlesNamed     = 1 "e-"
 
-b:Sc/DoseToNucleus_IncidentTrack/Active                         = "True"
+b:Sc/DoseToNucleus_IncidentTrack/Active                         = "False"
 s:Sc/DoseToNucleus_IncidentTrack/Quantity                       = "DoseToMedium"
 s:Sc/DoseToNucleus_IncidentTrack/Component                      = "nucleus"
 sv:Sc/DoseToNucleus_IncidentTrack/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
@@ -148,7 +148,7 @@ d:Sc/DoseToNucleus_IncidentTrack/EBinMin                   = 0. MeV
 d:Sc/DoseToNucleus_IncidentTrack/EBinMax                   = 0.035 MeV
 sc:Sc/DoseToNucleus_IncidentTrack/EBinEnergy               = "IncidentTrack"
 
-b:Sc/DoseToNucleus_DepositedInStep/Active                         = "True"
+b:Sc/DoseToNucleus_DepositedInStep/Active                         = "False"
 s:Sc/DoseToNucleus_DepositedInStep/Quantity                       = "DoseToMedium"
 s:Sc/DoseToNucleus_DepositedInStep/Component                      = "nucleus"
 sv:Sc/DoseToNucleus_DepositedInStep/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
@@ -224,7 +224,7 @@ i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 Tf/NumberOfSequentialTimes = 1
 
-i:Ts/NumberOfThreads = 1 # defaults to 1
+i:Ts/NumberOfThreads = -2 # defaults to 1
 i:Ts/Seed = 1 
 b:Ts/PauseBeforeQuit = "F"
 

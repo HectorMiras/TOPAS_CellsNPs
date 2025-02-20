@@ -9,6 +9,7 @@ def get_positions_efficient(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     " a sphere of radius Rsph.
     " All distances are given in nm.
     " The sampled positions are printed to the txt file positions_file
+    " THIS METHOD IS OUTDATED AND NOT USED ANYMORE
     """
 
     def filter_points_outside_sphere(points, center, radius):
@@ -118,20 +119,39 @@ def get_positions_efficient(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
 
     return numberNPs
 
-def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
+def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cylindrical"):
     """
-    More efficient sampling inside a cylinder (cytoplasm) excluding the nucleus region,
+    More efficient sampling inside a cell excluding the nucleus region,
     with overlap testing via spatial binning.
+    
+    For a "Cylindrical" cell the domain is defined by:
+      - a cylinder of radius Rcyl (adjusted) and height Hcyl.
+    
+    For a "Spherical" cell the domain is defined by:
+      - a sphere of radius Rcyl (adjusted).
+    
     All distances are in nm.
     """
     import math
     min_distance = 2 * Rnp + 0.001
-    Rmax = Rcyl - min_distance / 2
-    Rmin = Rsph + Rnp
-    zmin = -Hcyl/2 + min_distance/2
-    zmax = Hcyl/2 - min_distance/2
-    # Adjust bin_size to be the max of Hcyl/10 or min_distance*4 to prevent too many bins.
-    bin_size = max(Hcyl/100, min_distance * 4)
+
+    if shape == "Cylindrical":
+        Rmax = Rcyl - min_distance / 2
+        Rmin = Rsph + Rnp
+        zmin = -Hcyl/2 + min_distance/2
+        zmax = Hcyl/2 - min_distance/2
+        # For bin sizing, we use Hcyl.
+        bin_size = max(Hcyl/100, min_distance * 4)
+    elif shape == "Spherical":
+        # In spherical mode, Rcyl represents the cell radius.
+        Rmax = Rcyl - min_distance / 2
+        Rmin = Rsph + Rnp
+        zmin = -Rmax
+        zmax = Rmax
+        # Adjust bin size according to the full diameter.
+        bin_size = max((2*Rmax)/100, min_distance * 4)
+    else:
+        raise ValueError("Unknown shape. Use 'Cylindrical' or 'Spherical'.")
 
     # dictionary: key=(i,j,k), value=list of points in that bin
     bins = {}
@@ -144,7 +164,7 @@ def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     
     def neighbor_bins(bin_index):
         bx, by, bz = bin_index
-        # range(b-1, b+2) iterates over b-1, b, and b+1, which is sufficient.
+        # range(b-1, b+2) iterates over b-1, b, and b+1.
         for i in range(bx-1, bx+2):
             for j in range(by-1, by+2):
                 for k in range(bz-1, bz+2):
@@ -155,15 +175,30 @@ def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
     attempts = 0
     while count < N and attempts < max_attempts:
         attempts += 1
-        x = (Rmax * (2 * np.random.random() - 1))
-        y = (Rmax * (2 * np.random.random() - 1))
-        if np.sqrt(x*x + y*y) > Rmax:
-            continue
-        z = np.random.uniform(zmin, zmax)
-        if np.sqrt(x*x+y*y+z*z) <= Rmin:
-            continue
+        if shape == "Cylindrical":
+            x = Rmax * (2 * np.random.random() - 1)
+            y = Rmax * (2 * np.random.random() - 1)
+            # Ensure the point falls within a circle of radius Rmax in the x-y plane.
+            if np.sqrt(x*x + y*y) > Rmax:
+                continue
+            z = np.random.uniform(zmin, zmax)
+            candidate = np.array([x, y, z])
+            # Reject points falling within the inner sphere.
+            if np.linalg.norm(candidate) <= Rmin:
+                continue
+        elif shape == "Spherical":
+            x = Rmax * (2 * np.random.random() - 1)
+            y = Rmax * (2 * np.random.random() - 1)
+            z = Rmax * (2 * np.random.random() - 1)
+            candidate = np.array([x, y, z])
+            # Ensure the point is inside the outer sphere.
+            if np.linalg.norm(candidate) > Rmax:
+                continue
+            # Reject points inside the nucleus.
+            if np.linalg.norm(candidate) <= Rmin:
+                continue
 
-        candidate = np.array([x, y, z])
+        # Check for spatial overlap using bins.
         bin_idx = get_bin_index(candidate)
         overlap_found = False
         for nb in neighbor_bins(bin_idx):
@@ -190,63 +225,78 @@ def get_positions_binned(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
             f.write(f"{p[0]} {p[1]} {p[2]}\n")
     return len(positions)
 
-def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file):
+def get_positions(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cylindrical"):
     """
-    " Fuinction to sample N positons inside a cylinder of radius Rcyl and height Hcyl, excluding the inner volume of
-    " a sphere of radius Rsph.
-    " All distances are given in nm.
-    " The sampled positions are printed to the txt file positions_file
+    Function to sample N positions inside a cell excluding the inner (nucleus) volume.
+    
+    For a "Cylindrical" cell the domain is defined by:
+      - a cylinder of radius Rcyl (adjusted) and height Hcyl.
+    
+    For a "Spherical" cell the domain is defined by:
+      - a sphere of radius Rcyl (adjusted).
+      
+    All distances are given in nm.
+    The sampled positions are printed to the txt file positions_file.
     """
-
-    # If the number of NPs is large, calls the effiecient sammpling method
-    if N>50000:
+    # For large numbers use efficient method only for cylindrical cells.
+    if N > 50000 and shape == "Cylindrical":
         return get_positions_efficient(N, Rcyl, Hcyl, Rsph, Rnp, positions_file)
+    
+    min_distance = 2 * Rnp + 0.001
 
-    min_distance = 2*Rnp + 0.001
-    Rmax = Rcyl - min_distance / 2
-    Rmin = Rsph + Rnp
-    # Half Height of the cylinder in nm
-    HL = Hcyl - min_distance / 2
-    zbins = 1
-    zbinheight = Hcyl
+    # In both cases, Rmax is adjusted from Rcyl and Rmin defines the nucleus boundary.
+    if shape == "Cylindrical":
+        Rmax = Rcyl - min_distance / 2
+        Rmin = Rsph + Rnp
+        zbinheight = Hcyl
+    elif shape == "Spherical":
+        Rmax = Rcyl - min_distance / 2
+        Rmin = Rsph + Rnp
+    else:
+        raise ValueError("Unknown shape. Use 'Cylindrical' or 'Spherical'.")
 
-
-    if zbinheight < 2 * Rnp:
-        print(f'Height of the zbin {zbinheight} smaller than particle diameter')
-
-    # Generate random positions for the small spheres
     positions = np.empty((0, 3), dtype=float)
     n_part = 0
-    while n_part < N:
-        # Generate random point inside the cylinder
-        x = (Rmax * (2*np.random.random()-1.0))
-        y = (Rmax * (2*np.random.random()-1.0))
-        z = zbinheight*(np.random.random()-0.5)
-        point = np.array([x, y, z])
 
-        # sample the positions in 1 quadrant of one zbin
-        if (np.sqrt(x * x + y * y) <= Rmax) and \
-                (np.sqrt(x * x + y * y + z * z) > Rmin) and \
-                (np.abs(z) < 0.5*(zbinheight - min_distance)):
-            # Check if the point is far enough from the other small spheres
-            if len(positions) == 0 or np.min(np.linalg.norm(positions - point, axis=1)) >= min_distance:
-                positions = np.vstack([positions, point])
-                n_part += 1
-                if n_part % 1000 == 0:
-                    print(n_part, 'out of', N)
+    while n_part < N:
+        if shape == "Cylindrical":
+            # Generate point inside a cylinder.
+            x = Rmax * (2 * np.random.random() - 1.0)
+            y = Rmax * (2 * np.random.random() - 1.0)
+            # Accept only if inside circle of radius Rmax.
+            if np.sqrt(x * x + y * y) > Rmax:
+                continue
+            z = np.random.uniform(-Hcyl/2 + min_distance/2, Hcyl/2 - min_distance/2)
+            candidate = np.array([x, y, z])
+            # The candidate must be outside the inner (nucleus) sphere.
+            if np.linalg.norm(candidate) <= Rmin:
+                continue
+        elif shape == "Spherical":
+            # Generate point uniformly from cube with side length 2*Rmax.
+            x = Rmax * (2 * np.random.random() - 1.0)
+            y = Rmax * (2 * np.random.random() - 1.0)
+            z = Rmax * (2 * np.random.random() - 1.0)
+            candidate = np.array([x, y, z])
+            # Candidate must lie inside the outer sphere
+            if np.linalg.norm(candidate) > Rmax:
+                continue
+            # And outside the nucleus sphere.
+            if np.linalg.norm(candidate) <= Rmin:
+                continue
+
+        # Check that the candidate is far enough from others.
+        if positions.shape[0] == 0 or np.min(np.linalg.norm(positions - candidate, axis=1)) >= min_distance:
+            positions = np.vstack([positions, candidate])
+            n_part += 1
+            if n_part % 1000 == 0:
+                print(n_part, "out of", N)
 
     numberNPs = n_part
     print(f'Total number of points generated: {numberNPs}')
 
-    # Print the positions of the small spheres
-    f = open(positions_file, 'w')
-    for i, p in enumerate(positions):
-        if N == 1 and i > 0:
-            break
-        # print(f"Small sphere {i+1}: x={p[0]:.2f}, y={p[1]:.2f}, z={p[2]:.2f}")
-        f.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + "\n")
-    f.close()
-
-
-
+    with open(positions_file, 'w') as f:
+        for i, p in enumerate(positions):
+            if N == 1 and i > 0:
+                break
+            f.write(f"{p[0]} {p[1]} {p[2]}\n")
     return numberNPs

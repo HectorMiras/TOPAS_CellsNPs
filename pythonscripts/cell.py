@@ -5,12 +5,13 @@ import math
 
 class Cell_class:
 
-    def __init__(self):
+    def __init__(self, shape="Cylindrical"):
         # all spatial values in um.
         self.rCell = 5
         self.rNucl = 4.8
         self.height = 10
         self.membraneThickness = 0.01
+        self.shape = shape  # "Cylindrical" or "Spherical"
 
     def read_file_parameters(self, cell_parameter_file):
         parameters = {}
@@ -39,16 +40,29 @@ class Cell_class:
                         self.rCell = value
                     if "HLCell" in parameter:
                         self.height = 2 * value
+                    else:
+                        self.height = self.rCell
                     if "RNucleus" in parameter:
                         self.rNucl = value
                     if "CellMembrane" in parameter:
                         self.membraneThickness = 0.001 * value
 
-    def volume_cell(self,):
-        return math.pi * np.power(self.rCell, 2) * self.height
+                    # if shape is Spherical, assign height = rCell
+                    if self.shape == "Spherical":
+                        self.height = self.rCell
 
-    def volume_nucleus(self,):
+
+    def volume_cell(self):
+        if self.shape == "Spherical":
+            # Volume of a sphere: (4/3)πr³.
+            return (4/3) * math.pi * np.power(self.rCell, 3)
+        else:
+            # Assume cylindrical shape: base area * height.
+            return math.pi * np.power(self.rCell, 2) * self.height
+
+    def volume_nucleus(self):
+        # Volume of a sphere: (4/3)πr³.
         return (4/3) * math.pi * np.power(self.rNucl, 3)
 
-    def volume_cytoplasm(self,):
+    def volume_cytoplasm(self):
         return self.volume_cell() - self.volume_nucleus()
