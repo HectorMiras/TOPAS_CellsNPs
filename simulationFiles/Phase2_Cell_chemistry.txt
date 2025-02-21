@@ -123,15 +123,22 @@ s:Sc/PhSpNP/IfOutputFileAlreadyExists			= "Overwrite"
 b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
 
 # Chemistry Scorer
+
+u:perCent = 0.01 
+d:MaxEn = 36 keV  # max for I125 Energy 
+
 s:Sc/IRTGValue/Quantity = "TsIRTGValue"
 s:Sc/IRTGValue/Component = "Cell"
 s:Sc/IRTGValue/OutputType	= "ASCII" # ASCII, Binary, Limited or ROOT
-b:Sc/IRTGValue/OutputToConsole                   = "TRUE"
+d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds       = MaxEn keV * perCent
+d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds keV
+#d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds = 10 eV
+#d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 100 eV
+d:Sc/IRTGValue/KillPrimaryBasedOnTrackLength        = 100 um
+b:Sc/IRTGValue/OutputToConsole                   = "False"
 s:Sc/IRTGValue/IfOutputFileAlreadyExists         = "Overwrite"
 b:Sc/IRTGValue/PropagateToChildren = "False"
-d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds = 10 eV
-d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 100 eV
-d:Sc/IRTGValue/KillPrimaryBasedOnTrackLength = 1 um
+
 d:Sc/IRTGValue/CutoffTime = 1 us
 
 
@@ -140,9 +147,10 @@ d:Sc/IRTGValue/CutoffTime = 1 us
 ###########
 
 
-Ph/Default/Modules = 2 "g4em-dna" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
+Ph/Default/Modules = 3 "g4em-livermore" "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
 b:Ph/ListProcesses = "False"
-
+#b:Ph/Default/PhysicsForGold/Active = "True"
+#s:Ph/Default/PhysicsForGold/Region = Ge/Cell/AssignToRegionNamed
 d:Ph/Default/SetProductionCutLowerEdge  	= 10 eV
 d:Ph/Default/SetProductionCutHighEdge  		= 1 MeV
 d:Ph/Default/CutForAllParticles  		= 0.1 nm
@@ -153,10 +161,37 @@ b:Ph/Default/DeexcitationIgnoreCut 		= "True" # Set to true to implement Deexcit
 b:Ph/Default/PIXE 				= "True" # Set to true to turn on PIXE"
 d:Ph/Default/LowestElectronEnergy 		= 10 eV # 
 
-includeFile				= supportFiles/TOPASDefaultReactions.txt
+#s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA" 
+#s:Ph/Default/SolvatedElectronThermalizationModel =  "Ritchie"
+
+
+includeFile				= supportFiles/TOPAS-DefaultReactions.txt
 s:Ch/ChemistryName			= "TOPASChemistry"
 b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+u:Ch/TOPASChemistry/Temperature = 37.0
+b:Ch/TOPASChemistry/ApplyCorrectionScalingForTemperature = "True"
 
+# G4DNA settings
+s:Ge/Cell/AssignToRegionNamed = "cellreg"
+s:Ph/Default/ForRegion/cellreg/ActiveG4EmModelFromModule = "TsEmDNAPhysics" # "g4em-dna" # "TsEmDNAPhysics" # 
+d:Ph/Default/ForRegion/cellreg/SetProductionCutLowerEdge = 15 eV
+d:Ph/Default/ForRegion/cellreg/SetProductionCutHighEdge = 1 MeV
+d:Ph/Default/ForRegion/cellreg/EMRangeMin = 15 eV
+d:Ph/Default/ForRegion/cellreg/EMRangeMax = 1 MeV
+d:Ph/Default/ForRegion/cellreg/CutForElectrons = 0.1 nm
+
+# Livermore settings
+s:Ge/MediumDetailed/AssignToRegionNamed = "nocellreg"
+s:Ge/World/AssignToRegionNamed = "nocellreg"
+s:Ge/CellPlate/AssignToRegionNamed = "nocellreg"
+s:Ge/MediumVol/AssignToRegionNamed = "nocellreg"
+s:Ge/CellLayer/AssignToRegionNamed = "nocellreg"
+s:Ph/Default/ForRegion/nocellreg/ActiveG4EmModelNamed = "g4em-livermore"
+d:Ph/Default/ForRegion/nocellreg/SetProductionCutLowerEdge = 10 eV
+d:Ph/Default/ForRegion/nocellreg/SetProductionCutHighEdge = 1 MeV
+d:Ph/Default/ForRegion/nocellreg/EMRangeMin = 10 eV
+d:Ph/Default/ForRegion/nocellreg/EMRangeMax = 1 MeV
+d:Ph/Default/ForRegion/nocellreg/CutForElectrons = 0.1 nm
 
 ###########
 # Graphics #
@@ -169,7 +204,7 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 10000
+i:Ts/ShowHistoryCountAtInterval = 10000000
 i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 # For testing
@@ -179,11 +214,12 @@ i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 Tf/NumberOfSequentialTimes = 1
 
-i:Ts/NumberOfThreads = 1 # defaults to 1
+i:Ts/NumberOfThreads = -2 # defaults to 1
 i:Ts/Seed = 30672
 b:Ts/PauseBeforeQuit = "F"
 
 b:Ts/ShowCPUTime = "True"
 Ts/ParameterizationErrorMaxReports				= 1
+Ts/MaxInterruptedHistories   = 2147483646
 
 

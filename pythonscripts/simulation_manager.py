@@ -404,7 +404,7 @@ class Simulation_manager:
             if line.startswith("INFILE1="):
                 lines[i] = f'INFILE1=\"{self.Phase1File}\" \n'
             if not self.simulatePhase1:
-                if "topas $INFILE1" in line:
+                if "topas $SIMFILE1" in line:
                     lines[i] = "#"+line
                 if "topas $SIMFILE3" in line:
                     lines[i] = "#"+line
@@ -416,7 +416,7 @@ class Simulation_manager:
             if line.startswith("INFILE2="):
                 lines[i] = f'INFILE2=\"{self.Phase2File}\" \n'
             if not self.simulatePhase2:
-                if "topas $INFILE2" in line:
+                if "topas $SIMFILE2" in line:
                     lines[i] = "#"+line
                 if "topas $SIMFILE3" in line:
                     lines[i] = "#"+line
