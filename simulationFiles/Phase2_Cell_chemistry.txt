@@ -130,11 +130,11 @@ d:MaxEn = 36 keV  # max for I125 Energy
 s:Sc/IRTGValue/Quantity = "TsIRTGValue"
 s:Sc/IRTGValue/Component = "Cell"
 s:Sc/IRTGValue/OutputType	= "ASCII" # ASCII, Binary, Limited or ROOT
-d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds       = MaxEn keV * perCent
-d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds keV
-#d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds = 10 eV
-#d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 100 eV
-d:Sc/IRTGValue/KillPrimaryBasedOnTrackLength        = 100 um
+#d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds       = MaxEn keV * perCent
+#d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds keV
+d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds = 1 MeV
+d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 1 MeV
+d:Sc/IRTGValue/KillPrimaryBasedOnTrackLength        = 10 m
 b:Sc/IRTGValue/OutputToConsole                   = "False"
 s:Sc/IRTGValue/IfOutputFileAlreadyExists         = "Overwrite"
 b:Sc/IRTGValue/PropagateToChildren = "False"
@@ -147,7 +147,7 @@ d:Sc/IRTGValue/CutoffTime = 1 us
 ###########
 
 
-Ph/Default/Modules = 3 "g4em-livermore" "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
+Ph/Default/Modules = 3 "g4em-dna" "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
 b:Ph/ListProcesses = "False"
 #b:Ph/Default/PhysicsForGold/Active = "True"
 #s:Ph/Default/PhysicsForGold/Region = Ge/Cell/AssignToRegionNamed
@@ -171,27 +171,6 @@ b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
 u:Ch/TOPASChemistry/Temperature = 37.0
 b:Ch/TOPASChemistry/ApplyCorrectionScalingForTemperature = "True"
 
-# G4DNA settings
-s:Ge/Cell/AssignToRegionNamed = "cellreg"
-s:Ph/Default/ForRegion/cellreg/ActiveG4EmModelFromModule = "TsEmDNAPhysics" # "g4em-dna" # "TsEmDNAPhysics" # 
-d:Ph/Default/ForRegion/cellreg/SetProductionCutLowerEdge = 15 eV
-d:Ph/Default/ForRegion/cellreg/SetProductionCutHighEdge = 1 MeV
-d:Ph/Default/ForRegion/cellreg/EMRangeMin = 15 eV
-d:Ph/Default/ForRegion/cellreg/EMRangeMax = 1 MeV
-d:Ph/Default/ForRegion/cellreg/CutForElectrons = 0.1 nm
-
-# Livermore settings
-s:Ge/MediumDetailed/AssignToRegionNamed = "nocellreg"
-s:Ge/World/AssignToRegionNamed = "nocellreg"
-s:Ge/CellPlate/AssignToRegionNamed = "nocellreg"
-s:Ge/MediumVol/AssignToRegionNamed = "nocellreg"
-s:Ge/CellLayer/AssignToRegionNamed = "nocellreg"
-s:Ph/Default/ForRegion/nocellreg/ActiveG4EmModelNamed = "g4em-livermore"
-d:Ph/Default/ForRegion/nocellreg/SetProductionCutLowerEdge = 10 eV
-d:Ph/Default/ForRegion/nocellreg/SetProductionCutHighEdge = 1 MeV
-d:Ph/Default/ForRegion/nocellreg/EMRangeMin = 10 eV
-d:Ph/Default/ForRegion/nocellreg/EMRangeMax = 1 MeV
-d:Ph/Default/ForRegion/nocellreg/CutForElectrons = 0.1 nm
 
 ###########
 # Graphics #
