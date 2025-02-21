@@ -10,7 +10,7 @@
     "OUTPUT_FILE_PATTERNS": ["TOPAS_CellsNPs/work/RunDir/run/DoseToCell*",
     			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus_DepositedInStep*",
     			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus_IncidentTrack*",
-    			     "TOPAS_CellsNPs/work/RunDir/run/DoseToNucleus_Total*",
+    			     "TOPAS_CellsNPs/work/RunDir/run/DoseNucleus_Total*",
     			     "TOPAS_CellsNPs/work/RunDir/run/nucleus_PHSP*",
                      "TOPAS_CellsNPs/work/RunDir/run/PhaseSpace_NP*",
                      "TOPAS_CellsNPs/work/RunDir/run/EnergyToCell*",

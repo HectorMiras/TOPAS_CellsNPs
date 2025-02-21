@@ -40,8 +40,6 @@ class Cell_class:
                         self.rCell = value
                     if "HLCell" in parameter:
                         self.height = 2 * value
-                    else:
-                        self.height = self.rCell
                     if "RNucleus" in parameter:
                         self.rNucl = value
                     if "CellMembrane" in parameter:

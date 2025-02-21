@@ -32,6 +32,21 @@ def prueba_merge_topascellnp():
     smanager.merge_DoseToNucleus_results()
     smanager.collect_np_number()
 
-prueba_np_sample()
+
+def prueba_np_number_calc():
+    wd = r'/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/test-med1-smallcell1/supportFiles'
+    cellParametersFile='cell_parameters_SmallCell.txt'
+    NPParametersFile='np_parameters_AuNP15.txt'
+    cell = Cell_class(shape="Cylindrical")
+    cell.read_file_parameters(os.path.join(wd, cellParametersFile))
+    np = NP_class()
+    np.read_file_parameters(os.path.join(wd, NPParametersFile))
+    NPConcInCell=1.0     # mg Au / ml
+    npart = np.number_from_conc_volume(NPConcInCell, cell.volume_cytoplasm())
+    a=1
+
+
+#prueba_np_sample()
 #prueba_merge_topascellnp()
 
+prueba_np_number_calc()
