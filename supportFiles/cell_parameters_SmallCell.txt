@@ -1,6 +1,6 @@
 d:Ge/RCell            = 6.0 um
 d:Ge/HLCell            = 5 um
-d:Ge/RNucleus         = 4.8 um
+d:Ge/RNucleus         = 4.65 um
 #d:Ge/HLNucleus         = 4.2 um
 d:Ge/CellMembrane     = 10 nm
 
