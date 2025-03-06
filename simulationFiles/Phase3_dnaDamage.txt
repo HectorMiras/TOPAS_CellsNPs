@@ -14,9 +14,7 @@ s:Ge/SourcePHSPName    = "nucleus_PHSP_electrons"
 s:So/PhSpSourceSup/Type 				       = "PhaseSpace"
 s:So/PhSpSourceSup/PhaseSpaceFileName			       = Ge/SourcePHSPName
 s:So/PhSpSourceSup/Component				       = "World"
-b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "True" # defaults to false
-#u:So/PhSpSourceSup/PhaseSpaceScaleXPosBy                       = 0.001 # turns the source phsp into a 30 um diameter disc
-#u:So/PhSpSourceSup/PhaseSpaceScaleYPosBy                       = 0.001
+b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
 b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "True" # defaults to true
 
 
@@ -26,13 +24,13 @@ b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "True" # defaul
 
 Ge/QuitIfOverlapDetected = "false"
 
-
 # ---- World ----
-s:Ge/World/Material    = "G4_WATER"
-#s:Ge/World/Type        = "TsCylinder"
-d:Ge/World/HLX         = 15 um
-d:Ge/World/HLY         = 15 um
-d:Ge/World/HLZ         = 15 um
+s:Ge/World/Material    = "G4_WATER"   # "G4_WATER" "Vacuum"
+#s:Ge/World/Type        = "TsSphere"
+#d:Ge/World/Rmax         = 10 um
+d:Ge/World/HLX         = 6 um
+d:Ge/World/HLY         = 6 um
+d:Ge/World/HLZ         = 6 um
 b:Ge/World/Invisible   = "F"
 
 
@@ -86,6 +84,16 @@ d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 # Scorers #
 ###########
 
+
+b:Sc/DoseNucleus_Ph3/Active                         = "True"
+s:Sc/DoseNucleus_Ph3/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus_Ph3/Component                      = "Nucleus"
+sv:Sc/DoseNucleus_Ph3/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus_Ph3/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus_Ph3/OutputType                     = "csv"
+#s:Sc/DoseNucleus_Ph3/OutputFile                    = "DoseNucleus_Ph3"
+b:Sc/DoseNucleus_Ph3/PropagateToChildren		      = "True"
+#sv:Sc/DoseNucleus_Ph3/OnlyIncludeParticlesNamed     = 1 "e-"
 
 # -- Scorer --
 includeFile									= supportFiles/DNAScorerStepByStep.txt

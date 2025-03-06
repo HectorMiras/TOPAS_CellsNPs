@@ -406,8 +406,6 @@ class Simulation_manager:
             if not self.simulatePhase1:
                 if "topas $SIMFILE1" in line:
                     lines[i] = "#"+line
-                if "topas $SIMFILE3" in line:
-                    lines[i] = "#"+line
                 if "cp $INFILE1 $DIR" in line:
                     lines[i] = "#"+line
                 if "sed -i" and "$DIR/$INFILE1" in line:
@@ -418,8 +416,6 @@ class Simulation_manager:
             if not self.simulatePhase2:
                 if "topas $SIMFILE2" in line:
                     lines[i] = "#"+line
-                if "topas $SIMFILE3" in line:
-                    lines[i] = "#"+line
                 if "cp $INFILE2 $DIR" in line:
                     lines[i] = "#"+line
                 if "sed -i" and "$DIR/$INFILE2" in line:
@@ -428,8 +424,6 @@ class Simulation_manager:
             if line.startswith("INFILE3="):
                 lines[i] = f'INFILE3=\"{self.Phase3File}\" \n'
             if not self.simulatePhase3:
-                if "topas $INFILE3" in line:
-                    lines[i] = "#"+line
                 if "topas $SIMFILE3" in line:
                     lines[i] = "#"+line
                 if "cp $INFILE3 $DIR" in line:
@@ -442,7 +436,7 @@ class Simulation_manager:
                 new_file_name = f'\"{self.PHSP1Name}.phsp\"'
                 lines[i] = line.replace(old_file_name, new_file_name)
 
-            if self.sortNPPositions:
+            if self.sortNPPositions and self.simulatePhase2:
                 if "DOSAMPLE=" in line:
                     lines[i] = "DOSAMPLE=true"
             else:

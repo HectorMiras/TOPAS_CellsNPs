@@ -41,7 +41,7 @@ b:Ge/World/Invisible   = "F"
 s:Ge/CellPlate/Parent = "World"
 s:Ge/CellPlate/Type = "TsCylinder"
 s:Ge/CellPlate/Material    = "G4_POLYSTYRENE"
-d:Ge/CellPlate/RMax         = Ge/World/RMax  um
+d:Ge/CellPlate/RMax         = Ge/World/HLX  um
 d:Ge/CellPlateThickness           = 2000 um
 d:Ge/CellPlate/HL           = 0.5 * Ge/ElectronRangePH1 um
 d:Ge/CellPlateNegHL          = -1 * Ge/CellPlate/HL um
@@ -89,6 +89,8 @@ s:Ge/MediumDetailed/ElementMaterial   = Ma/NPMaterial
 s:Ge/MediumDetailed/PositionsFile 	  = Ge/MediumNPPositionsFile
 d:Ge/MediumDetailed/TransZ            = Ge/MediumDetailed/ComponentHL - Ge/MediumVol/HL um
 
+
+
 #############
 # Materials #
 #############
@@ -115,13 +117,6 @@ s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell_chem"
 b:Sc/EnergyToCell/PropagateToChildren		      = "False"
 sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 
-s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
-s:Sc/PhSpNP/Component 					= "Cell"
-s:Sc/PhSpNP/Surface				        = "Cell/AnySurface"
-s:Sc/PhSpNP/OutputType                 			= "ASCII" # ASCII, Binary, Limited or ROOT
-s:Sc/PhSpNP/OutputFile = "PhaseSpace_NP_chem"
-s:Sc/PhSpNP/IfOutputFileAlreadyExists			= "Overwrite"
-b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
 
 # Chemistry Scorer
 
