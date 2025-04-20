@@ -100,6 +100,7 @@ includeFile									= supportFiles/DNAScorerStepByStep.txt
 s:Sc/DNADamageScorer/Quantity				= "DNADamageNucleusStepByStep"
 s:Sc/DNADamageScorer/Component 				= "Nucleus"
 i:Sc/DNADamageScorer/NumberOfHistoriesInRun = 1
+b:Sc/DNADamageScorer/PropagateToChildren = "true"
 d:Sc/DNADamageScorer/ScoringRadius			= Ge/Nucleus/NucleusRadius um
 i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
 sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
