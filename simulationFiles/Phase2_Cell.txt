@@ -4,7 +4,7 @@ includeFile = ./supportFiles/np_parameters_AuNP.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
 s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
-s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP_electrons"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP"
 s:Sc/DoseToNucleus_Total/OutputFile   = "DoseToNucleus_Total"
 s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
 s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
@@ -117,11 +117,11 @@ s:Sc/NucleusPHSP/Quantity			  = "PhaseSpace"
 s:Sc/NucleusPHSP/Component			  = "nucleus"
 s:Sc/NucleusPHSP/Surface			  = "nucleus/AnySurface"
 s:Sc/NucleusPHSP/OutputType			  = "ASCII"
-#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP_electrons"
+#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP"
 s:Sc/NucleusPHSP/IfOutputFileAlreadyExists        = "Overwrite"
 s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 	  = "In"
 b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
-sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
+#sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
 s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
 
 b:Sc/DoseNucleus_Total/Active                         = "True"

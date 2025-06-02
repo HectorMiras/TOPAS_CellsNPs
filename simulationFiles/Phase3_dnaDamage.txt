@@ -3,7 +3,7 @@ includeFile = ./supportFiles/cell_parameters_SmallCell.txt
 
 
 
-s:Ge/SourcePHSPName    = "nucleus_PHSP_electrons"
+s:Ge/SourcePHSPName    = "nucleus_PHSP"
 
 ###########
 # Sources #
@@ -25,7 +25,7 @@ b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "True" # defaul
 Ge/QuitIfOverlapDetected = "false"
 
 # ---- World ----
-s:Ge/World/Material    = "G4_WATER"   # "G4_WATER" "Vacuum"
+s:Ge/World/Material    = "Vacuum"   # "G4_WATER" "Vacuum"
 #s:Ge/World/Type        = "TsSphere"
 #d:Ge/World/Rmax         = 10 um
 d:Ge/World/HLX         = 6 um
@@ -105,15 +105,17 @@ d:Sc/DNADamageScorer/ScoringRadius			= Ge/Nucleus/NucleusRadius um
 i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
 sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
 sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
-s:Sc/DNADamageScorer/PrimaryParticle		= "e-"
+#s:Sc/DNADamageScorer/PrimaryParticle		= "e-"
 d:Sc/DNADamageScorer/MeanEnergy				= 30 keV
-#d:Sc/DNADamageScorer/StopTrackingAtDose		= 0.5 gray
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 1.0 gray
 d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
 d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Nucleus/NucleusRadius um
 d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
 d:Sc/DNADamageScorer/ImageYMaxPosition		= Ge/Nucleus/NucleusRadius um
 d:Sc/DNADamageScorer/ImageZMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
 d:Sc/DNADamageScorer/ImageZMaxPosition		= Ge/Nucleus/NucleusRadius um
+b:Sc/DNADamageScorer/MinimalSDDOutput = "false"
+d:Sc/DNADamageScorer/DirectDamageThreshold = 11.75 eV     # For half-cylindrical DNA model, the recommended value is 17.5 eV
 
 # Geometry file for Nucleus scorer
 s:Sc/DNADamageScorer/GeometryInfo			= "supportFiles/Geoinfo.txt"

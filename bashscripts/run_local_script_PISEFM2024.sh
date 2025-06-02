@@ -12,6 +12,7 @@ DOSAMPLE=true
 ITER=1
 ADDITION=0
 SPLITNUM=1
+MAX_RETRIES=5  # Maximum number of retries for failed simulations
 
 USER=`whoami`
 CURRENTPATH=`pwd`
@@ -83,7 +84,7 @@ do
     SEED=`bash -c 'echo $RANDOM'`
     sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$DIR"/$INFILE1
     sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$DIR"/$INFILE2
-	  sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$DIR"/$INFILE3
+	sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$DIR"/$INFILE3
 
 	  if [ $SPLITNUM -gt 1 ]; then
 	    cd "${DIR}/supportFiles"
@@ -96,7 +97,33 @@ do
 
 	  time topas $SIMFILE1
 	  time topas $SIMFILE2
-	  time topas $SIMFILE3
+	  
+	  # Add error handling for $SIMFILE3 which sometimes crashes
+	  retry_count=0
+	  success=false
+	  
+	  while [ $retry_count -lt $MAX_RETRIES ] && [ "$success" != "true" ]; do
+	    echo "Running topas $SIMFILE3 (attempt $((retry_count+1))/$MAX_RETRIES)"
+	    time topas $SIMFILE3
+	    
+	    if [ $? -eq 0 ]; then
+	      success=true
+	      echo "Simulation $SIMFILE3 completed successfully"
+	    else
+	      retry_count=$((retry_count+1))
+	      echo "Simulation $SIMFILE3 failed (core dumped). Retrying with new seed..."
+	      
+	      if [ $retry_count -lt $MAX_RETRIES ]; then
+	        # Generate new random seed
+	        SEED=`bash -c 'echo $RANDOM'`
+	        echo "Using new seed: $SEED"
+	        sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$DIR"/$INFILE3
+	      else
+	        echo "Maximum retries reached. Moving on..."
+	      fi
+	    fi
+	  done
+	  
 	  #rm $DELFILE
 
 	  SPLITCOUNT=$((SPLITCOUNT+1))
