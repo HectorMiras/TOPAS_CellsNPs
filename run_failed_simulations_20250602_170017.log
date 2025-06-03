@@ -1,0 +1,6 @@
+Starting simulation check at lun 02 jun 2025 17:00:17 CEST
+Simulation path: /home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/CellColony-med1-cell1
+Checking cell1...
+Empty DNADamage.phsp found in cell1/run89
+  Attempt 1 of 10 for cell1/run89
+  Using new random seed: 19122
