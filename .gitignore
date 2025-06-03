@@ -1,5 +1,6 @@
-# ignore all .bak files
+
  *.bak
+ *.log
 
 notas_azure_batch.txt
 supportFiles/positions*
