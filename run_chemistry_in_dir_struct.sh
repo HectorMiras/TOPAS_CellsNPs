@@ -3,7 +3,9 @@
 SIMULATIONTPATH=$1
 MAX_RETRIES=5  # Setting maximum retries constant
 
-INFILE="./simulationFiles/Phase2_Cell_chemistry.txt"
+#INFILE="./simulationFiles/Phase2_Cell_chemistry.txt"
+INFILE="./simulationFiles/Phase2_Cell_ChemMolecules.txt"
+OUTFILENAME="NumberOfMoleculesAtTime.phsp"
 # Use basename to extract just the filename from the path
 SIMFILE=$(basename "$INFILE")
 
@@ -54,12 +56,28 @@ process_run_dir() {
     # Change to the run directory
     cd "$DIR"
     
+    # Replace Ge position lines from local Phase2_Cell.txt
+    if [ -f Phase2_Cell.txt ]; then
+        GE_MEDIUM_LINE=$(grep '^s:Ge/MediumNPPositionsFile' Phase2_Cell.txt)
+        GE_CELL_LINE=$(grep '^s:Ge/CellNPPositionsFile' Phase2_Cell.txt)
+
+        if [ -n "$GE_MEDIUM_LINE" ] && [ -n "$GE_CELL_LINE" ]; then
+            sed -i "s|^s:Ge/MediumNPPositionsFile.*|$GE_MEDIUM_LINE|" "$SIMFILE"
+            sed -i "s|^s:Ge/CellNPPositionsFile.*|$GE_CELL_LINE|" "$SIMFILE"
+            echo "Replaced Ge position lines in $SIMFILE"
+        else
+            echo "Warning: One or both replacement lines not found in Phase2_Cell.txt"
+        fi
+    else
+        echo "Warning: Phase2_Cell.txt not found in $DIR"
+    fi
+
     if [ "$SAMPLESEEDS" == true ]; then
         SEED=`bash -c 'echo $RANDOM'`
         sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$SIMFILE"
     fi
-    
-    # Add error handling for simulation which sometimes crashes
+
+    # Retry simulation loop
     retry_count=0
     success=false
           
@@ -72,10 +90,9 @@ process_run_dir() {
             echo "Simulation $SIMFILE completed successfully"
         else
             retry_count=$((retry_count+1))
-            echo "Simulation $SIMFILE failed (core dumped). Retrying with new seed..."
+            echo "Simulation $SIMFILE failed. Retrying with new seed..."
               
             if [ $retry_count -lt $MAX_RETRIES ]; then
-                # Generate new random seed
                 SEED=`bash -c 'echo $RANDOM'`
                 echo "Using new seed: $SEED"
                 sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$SIMFILE"
@@ -84,17 +101,20 @@ process_run_dir() {
             fi
         fi
     done
-    
-    # Return to original directory
+
     cd "$CURRENTDIR"
-    
     echo "Completed processing directory: $DIR"
     echo "----------------------------------------"
 }
 
+
 # Process all run directories found at any level
 for DIR in $run_dirs; do
-    process_run_dir "$DIR"
+    if [ ! -f "$DIR/$OUTFILENAME" ]; then
+        process_run_dir "$DIR"
+    else
+        echo "Skipping $DIR: $OUTFILENAME already exists."
+    fi
 done
 
 echo "All run directories processed"

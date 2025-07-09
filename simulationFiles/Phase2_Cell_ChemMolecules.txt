@@ -113,7 +113,7 @@ s:Sc/EnergyToCell/Component                      = "Cell"
 sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/EnergyToCell/OutputType                     = "csv"
-s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell_chem"
+s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell_ChemMolecules"
 b:Sc/EnergyToCell/PropagateToChildren		      = "False"
 sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 
@@ -123,17 +123,21 @@ sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 u:perCent = 0.01 
 d:MaxEn = 36 keV  # max for I125 Energy 
 
-s:Sc/IRTGValue/Quantity = "TsIRTGValue"
-s:Sc/IRTGValue/Component = "Cell"
-s:Sc/IRTGValue/OutputType	= "ASCII" # ASCII, Binary, Limited or ROOT
-d:Sc/IRTGValue/KillPrimaryIfEnergyLossExceeds       = 500 eV 
-d:Sc/IRTGValue/AbortEventIfPrimaryEnergyLossExceeds = 10 keV
-d:Sc/IRTGValue/KillPrimaryBasedOnTrackLength        = 2 um
-b:Sc/IRTGValue/OutputToConsole                   = "False"
-s:Sc/IRTGValue/IfOutputFileAlreadyExists         = "Overwrite"
-b:Sc/IRTGValue/PropagateToChildren = "False"
 
-d:Sc/IRTGValue/CutoffTime = 1 us
+s:Sc/NumberOfMoleculesAtTime/Quantity   = "TsSBSMoleculesAtTime" 
+s:Sc/NumberOfMoleculesAtTime/Component   = "Cell"
+b:Sc/NumberOfMoleculesAtTime/OutputToConsole = "True"
+s:Sc/NumberOfMoleculesAtTime/IfOutputFileAlreadyExists = "Overwrite"
+# Record time, do not confuse with Time features.
+i:Sc/NumberOfMoleculesAtTime/TimeBins   = 20
+d:Sc/NumberOfMoleculesAtTime/TimeBinMin = 1.0 ps
+d:Sc/NumberOfMoleculesAtTime/TimeBinMax = 999999 ps
+b:Sc/NumberOfMoleculesAtTime/TimeBinLog = "True"
+s:Sc/NumberOfMoleculesAtTime/OutputType = "ascii" # or root
+s:Sc/NumberOfMoleculesAtTime/OutputFile = "NumberOfMoleculesAtTime"
+d:Sc/NumberOfMoleculesAtTime/KillPrimaryIfEnergyLossExceeds = 50 keV
+d:Sc/NumberOfMoleculesAtTime/AbortEventIfPrimaryEnergyLossExceeds = 50 keV
+d:Sc/NumberOfMoleculesAtTime/KillPrimaryBasedOnTrackLength        = 100 um
 
 
 ###########
@@ -177,7 +181,7 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 10000000
+i:Ts/ShowHistoryCountAtInterval = 10000
 i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 # For testing
@@ -187,8 +191,8 @@ i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 Tf/NumberOfSequentialTimes = 1
 
-i:Ts/NumberOfThreads = -2 # defaults to 1
-i:Ts/Seed = 30672
+i:Ts/NumberOfThreads = -10 # defaults to 1
+i:Ts/Seed = 22236
 b:Ts/PauseBeforeQuit = "F"
 
 b:Ts/ShowCPUTime = "True"
