@@ -2,7 +2,7 @@ import os
 from simulation_manager import Simulation_manager
 from cell import Cell_class
 from nanoparticles import NP_class
-from get_NP_positions import get_positions
+from get_NP_positions import get_positions, get_positions_clustered
 
 
 def prueba_np_sample():
@@ -20,7 +20,26 @@ def prueba_np_sample():
     Rmin = cell.rNucl*1000
     H = cell.height*1000
     Rnp = np.rNP
-    npart = get_positions(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file))
+    npart = get_positions(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file))    
+    a=1
+
+def prueba_np_sample_clustered():
+    wd = r'/home/hector/mytopassimulations/MGHsimulations/tests/np_sample_clustered/'
+    cellParametersFile='cell_parameters.txt'
+    NPParametersFile='np_parameters_AuNP15.txt'
+    positions_file = 'positions_in_cell.txt'
+    cell = Cell_class()
+    cell.read_file_parameters(os.path.join(wd, cellParametersFile))
+    np = NP_class()
+    np.read_file_parameters(os.path.join(wd, NPParametersFile))
+    NPConcInCell=1.0     # mg Au / ml
+    npart = np.number_from_conc_volume(NPConcInCell, cell.volume_cytoplasm())
+    Rmax = cell.rCell*1000
+    Rmin = cell.rNucl*1000
+    H = cell.height*1000
+    Rnp = np.rNP
+
+    npart = get_positions_clustered(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file),shape="Cylindrical", cluster_distribution='Gaussian')
     a=1
 
 
@@ -46,7 +65,7 @@ def prueba_np_number_calc():
     a=1
 
 
-#prueba_np_sample()
+prueba_np_sample_clustered()
 #prueba_merge_topascellnp()
 
-prueba_np_number_calc()
+#prueba_np_number_calc()
