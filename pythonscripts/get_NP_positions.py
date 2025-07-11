@@ -493,6 +493,10 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
             positions.append(candidate)
             bins.setdefault(bin_idx, []).append(candidate)
             count += 1
+            if count >= N:
+                print(count, "out of", N)
+                break
+            
             if count % 1000 == 0:
                 print(count, "out of", N)
 
