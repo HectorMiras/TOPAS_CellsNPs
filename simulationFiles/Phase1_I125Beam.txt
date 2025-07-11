@@ -33,7 +33,7 @@ d:Ge/Rbeam = Ge/WellRadius um
 s:Ge/World/Material    = "G4_AIR"
 d:Ge/World/HLX         = 1.01 * Ge/Rbeam um
 d:Ge/World/HLY         = 1.01 * Ge/Rbeam um
-d:Ge/World/HLZ         = 2500 um
+d:Ge/World/HLZ         = 5020 um
 b:Ge/World/Invisible   = "F"
 
 # ---- Beam ----

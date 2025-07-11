@@ -1,9 +1,9 @@
 #!/bin/bash
 
-NCELLS=30
+NCELLS=40
 INFILE=SimulationConfigFile_PISEFM2024.txt
 TEMP_CONFIG="temp_config.txt"
-STARTCELL=11
+STARTCELL=1
 ENDCELL=$((STARTCELL + NCELLS - 1))
 
 if [ -z "$NCELLS" ]; then
