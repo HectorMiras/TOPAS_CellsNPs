@@ -45,7 +45,7 @@ def prueba_np_sample_clustered():
     
     # cluster radii is a list of the radii of the clusters generated. Plot histogram of cluster_radii
     import matplotlib.pyplot as plt
-    plt.hist(cluster_radii, bins=50)
+    plt.hist(cluster_radii, bins=20)
     plt.xlabel('Cluster radius (nm)')
     plt.ylabel('Number of clusters')
     plt.title('Distribution of cluster radii')

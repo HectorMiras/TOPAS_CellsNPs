@@ -11,7 +11,7 @@ Rnp = 15 # AGuIX: 1.5, AuNP15: 15 (7.5 np Au core + 7.5 PEG shell)
 N = 5000 # AGuIX: 400000, AuNP: 5000
 sN = 500  # N sigma
 Nrand = int(np.random.normal(N, sN))
-numberNPs = get_positions_binned(Nrand, Rmax, H, Rmin, Rnp, positions_file, shape=shape)
+
 cluster_distribution = 'LogNormal'  # Options: 'LogNormal', 'Gamma', 'Gaussian'
 
 numberNPs, cluster_radii = get_positions_clustered(Nrand, Rmax, H, Rmin, Rnp, positions_file,shape="Cylindrical", cluster_distribution=cluster_distribution)

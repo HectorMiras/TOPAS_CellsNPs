@@ -326,7 +326,7 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         if cluster_distribution == 'LogNormal':
             # Example: Log-normal distribution with mean=1 and std=0.5
             mean=3
-            std=1
+            std=2
             return np.random.lognormal(mean=mean, sigma=std)
         elif cluster_distribution == 'Gamma':
             # Example: Gamma distribution with shape=2 and scale=1
@@ -388,7 +388,7 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         '''
 
         positions = []
-        r = r * 1.01  # Add a small offset to avoid numerical issues
+        r = r * 2  # to account for coating or shell thickness
         if R < 2*r:
             positions = np.array([[0.0, 0.0, 0.0]])  # No positions if cluster radius is smaller than nanoparticle radius
             return np.array(positions)
@@ -466,6 +466,8 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         # skip vary large clusters
         if Rcluster > (Rcyl - Rsph)/4:
             continue
+        if Rcluster < 2 * Rnp:
+            Rcluster = Rnp  # Ensure minimum cluster size to fit at least one nanoparticle
         # generate a random position for the cluster. Include attempts to find a valid position.
         cluster_coordinates= get_cluster_coordinates(Rcluster, Rcyl, Hcyl, Rsph, shape)
         if cluster_coordinates is None:
