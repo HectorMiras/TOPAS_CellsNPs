@@ -39,7 +39,18 @@ def prueba_np_sample_clustered():
     H = cell.height*1000
     Rnp = np.rNP
 
-    npart = get_positions_clustered(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file),shape="Cylindrical", cluster_distribution='Gaussian')
+    cluster_distribution = 'LogNormal'  # Options: 'LogNormal', 'Gamma', 'Gaussian'
+
+    npart, cluster_radii = get_positions_clustered(npart, Rmax, H, Rmin, Rnp, os.path.join(wd,positions_file),shape="Cylindrical", cluster_distribution= cluster_distribution)
+    
+    # cluster radii is a list of the radii of the clusters generated. Plot histogram of cluster_radii
+    import matplotlib.pyplot as plt
+    plt.hist(cluster_radii, bins=50)
+    plt.xlabel('Cluster radius (nm)')
+    plt.ylabel('Number of clusters')
+    plt.title('Distribution of cluster radii')
+    plt.savefig(os.path.join(wd, 'cluster_radii_histogram.png'))
+    plt.show()
     a=1
 
 

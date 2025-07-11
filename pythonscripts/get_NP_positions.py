@@ -325,19 +325,19 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         """
         if cluster_distribution == 'LogNormal':
             # Example: Log-normal distribution with mean=1 and std=0.5
-            mean=50
-            std=10
-            return int(np.random.lognormal(mean=mean, sigma=std)) 
+            mean=3
+            std=1
+            return np.random.lognormal(mean=mean, sigma=std)
         elif cluster_distribution == 'Gamma':
             # Example: Gamma distribution with shape=2 and scale=1
             shape=2
             scale=1
-            return int(np.random.gamma(shape, scale))
+            return np.random.gamma(shape, scale)
         elif cluster_distribution == 'Gaussian':
             # Example: Gaussian distribution with mean=1 and std=0.5
             mean=50
             std=10
-            return int(np.random.normal(loc=mean, scale=std))
+            return np.random.normal(loc=mean, scale=std)
         
 
         
@@ -383,11 +383,14 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         return candidate
 
     def generate_np_positions_in_cluster(R, r):
-        
-        positions = []
+        '''
+        Generates positions of nanoparticles in a cluster of radius R using FCC packing.
+        '''
 
+        positions = []
+        r = r * 1.01  # Add a small offset to avoid numerical issues
         if R < 2*r:
-            np.array([[0.0, 0.0, 0.0]])  # No positions if cluster radius is smaller than nanoparticle radius
+            positions = np.array([[0.0, 0.0, 0.0]])  # No positions if cluster radius is smaller than nanoparticle radius
             return np.array(positions)
         
         a = 2 * np.sqrt(2) * r  # Parámetro de celda para empaquetamiento FCC
@@ -413,6 +416,10 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
                         if np.linalg.norm(pos) <= (R - r):
                             positions.append(pos)
 
+        if len(positions) == 0:
+            positions = np.array([[0.0, 0.0, 0.0]])  # No positions if cluster radius is smaller than nanoparticle radius
+            return np.array(positions)
+        
         return np.array(positions)
 
 
@@ -422,7 +429,7 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
     
     
     
-    min_distance = 2 * Rnp + 0.001
+    min_distance = 2 * (Rnp*1.0001)
 
     if shape == "Cylindrical":
         bin_size = max(Hcyl/100, min_distance * 4)
@@ -451,18 +458,23 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
     count = 0
     max_attempts = N * 100  # safety for infinite loops
     attempts = 0
+    cluster_radii = []
     while count < N and attempts < max_attempts:
         attempts += 1
         # Generate a cluster size based on the distribution.
         Rcluster = get_cluster_size(cluster_distribution)
+        # skip vary large clusters
+        if Rcluster > (Rcyl - Rsph)/4:
+            continue
         # generate a random position for the cluster. Include attempts to find a valid position.
         cluster_coordinates= get_cluster_coordinates(Rcluster, Rcyl, Hcyl, Rsph, shape)
         if cluster_coordinates is None:
             continue
         
-        # Fill the cluster with NPs.
-        nps_coords_in_cluster = generate_np_positions_in_cluster(Rcluster, Rnp) + cluster_coordinates
-        
+        # Fill the cluster with NPs. FCC packing is used to generate positions.
+        np_positions = generate_np_positions_in_cluster(Rcluster, Rnp)
+        nps_coords_in_cluster = np_positions + cluster_coordinates
+        cluster_radii.append(Rcluster)
         # If nanoparticles do not overlap with the existing positions add them to the positions.
         for candidate in nps_coords_in_cluster:      
             # Check for spatial overlap using bins.
@@ -490,4 +502,4 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
             if N == 1 and i > 0:
                 break
             f.write(f"{p[0]} {p[1]} {p[2]}\n")
-    return len(positions)
+    return len(positions), cluster_radii
