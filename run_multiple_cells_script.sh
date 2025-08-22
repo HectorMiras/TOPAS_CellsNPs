@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NCELLS=40
+NCELLS=1
 INFILE=SimulationConfigFile_PISEFM2024.txt
 TEMP_CONFIG="temp_config.txt"
 STARTCELL=1
@@ -29,7 +29,7 @@ for i in $(seq $STARTCELL $ENDCELL); do
 done
 
 # Clean up
-rm -f "$TEMP_CONFIG"
+#rm -f "$TEMP_CONFIG"
 
 echo "All simulations completed!"
 

@@ -1,5 +1,5 @@
-Starting simulation check at jue 19 jun 2025 09:40:59 CEST
-Simulation path: /home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/CellColony-med5-cell5
+Starting simulation check at jue 07 ago 2025 10:39:53 CEST
+Simulation path: /home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/CellColony-med1-cell1-new
 Checking cell1...
 Checking cell10...
 Checking cell11...
@@ -47,4 +47,4 @@ Total runs checked: 4000
 Total missing or empty DNADamage.phsp files: 0
 Total successfully fixed: 0
 Total failed after 20 attempts: 0
-Finished at jue 19 jun 2025 09:41:03 CEST
+Finished at jue 07 ago 2025 10:39:56 CEST

@@ -1,8 +1,11 @@
 # ------ Include Files ------
-includeFile = ./supportFiles/cell_parameters_SmallCell.txt
-includeFile = ./supportFiles/np_parameters_AuNP15.txt
+includeFile = ./supportFiles/cell_parameters_A549.txt
+includeFile = ./supportFiles/np_parameters_AuNP.txt
 includeFile = ./supportFiles/source_parameters_I125Beam.txt
 
+s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP"
+s:Sc/DoseToNucleus_Total/OutputFile   = "DoseToNucleus_Total"
 s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
 s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
 
@@ -30,7 +33,7 @@ b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "False" # defau
 d:Ge/SourceRMax = Ge/RCell + Ge/ElectronRangePH1 um
 
 # ---- World ----
-s:Ge/World/Material    = "Vacuum"
+s:Ge/World/Material    = "G4_WATER"
 #s:Ge/World/Type        = "TsCylinder"
 d:Ge/World/HLX         = 1.5 * Ge/SourceRMax um
 d:Ge/World/HLY         = 1.5 * Ge/SourceRMax um
@@ -41,7 +44,7 @@ b:Ge/World/Invisible   = "F"
 s:Ge/CellPlate/Parent = "World"
 s:Ge/CellPlate/Type = "TsCylinder"
 s:Ge/CellPlate/Material    = "G4_POLYSTYRENE"
-d:Ge/CellPlate/RMax         = Ge/World/HLX  um
+d:Ge/CellPlate/RMax         = Ge/SourceRMax  um
 d:Ge/CellPlateThickness           = 2000 um
 d:Ge/CellPlate/HL           = 0.5 * Ge/ElectronRangePH1 um
 d:Ge/CellPlateNegHL          = -1 * Ge/CellPlate/HL um
@@ -56,7 +59,7 @@ d:Ge/CellLayer/RMax         = Ge/SourceRMax um
 d:Ge/CellLayer/HL           = Ge/HLCell um
 
 # ---- Cell ----
-s:Ge/Cell/Type                        = "TsDistributedComponents"
+s:Ge/Cell/Type                        = "TsMyCellWithNPs"
 s:Ge/Cell/Parent                      = "CellLayer"
 s:Ge/Cell/ComponentType               = "G4Tubs"
 s:Ge/Cell/Material                    = "G4_WATER"
@@ -65,6 +68,30 @@ d:Ge/Cell/ComponentHL                 = Ge/HLCell um
 d:Ge/Cell/ElementRadius	              = Ge/RNP nm
 s:Ge/Cell/ElementMaterial             = Ma/NPMaterial
 s:Ge/Cell/PositionsFile 	          = Ge/CellNPPositionsFile
+s:Ge/Cell/Nucleus/Material                   = "G4_WATER"
+s:Ge/Cell/Nucleus/Color                      = "White"
+s:Ge/Cell/Nucleus/DNAModel                   = "Sphere"
+d:Ge/Cell/Nucleus/NucleusRadius              = 4.65 um
+i:Ge/Cell/Nucleus/HilbertCurveLayer          = 4
+i:Ge/Cell/Nucleus/HilbertCurve3DRepeat       = 30
+s:Ge/Cell/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
+s:Ge/Cell/Nucleus/Voxel/Material             = "G4_WATER"
+b:Ge/Cell/Nucleus/ShowDNAVoxels              = "false"
+s:Ge/Cell/Nucleus/ChromatinFiber/Material    = "G4_WATER"
+b:Ge/Cell/Nucleus/ShowChromatinCylinders     = "false"
+s:Ge/Cell/Nucleus/Histone/Material           = "G4_HistoneMaterial"
+b:Ge/Cell/Nucleus/OnlyBuildOneHistone        = "false"
+b:Ge/Cell/Nucleus/HistoneAsScavenger         = "true"
+b:Ge/Cell/Nucleus/AddBases                   = "true"
+s:Ge/Cell/Nucleus/Base1/Material             = "G4_BaseMaterial"
+s:Ge/Cell/Nucleus/Base2/Material             = "G4_BaseMaterial"
+b:Ge/Cell/Nucleus/AddBackbone               = "true"
+s:Ge/Cell/Nucleus/Backbone1/Material         = "G4_BackboneMaterial"
+s:Ge/Cell/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
+b:Ge/Cell/Nucleus/AddHydrationShell          = "true"
+s:Ge/Cell/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
+s:Ge/Cell/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
+
 
 
 
@@ -89,22 +116,42 @@ s:Ge/MediumDetailed/ElementMaterial   = Ma/NPMaterial
 s:Ge/MediumDetailed/PositionsFile 	  = Ge/MediumNPPositionsFile
 d:Ge/MediumDetailed/TransZ            = Ge/MediumDetailed/ComponentHL - Ge/MediumVol/HL um
 
-
-
 #############
 # Materials #
 #############
 
 b:Ma/MediumMaterial/BuildFromMaterials  = "True"
 sv:Ma/MediumMaterial/Components         = 2 "G4_WATER" Ma/NPMaterial   
-uv:Ma/MediumMaterial/Fractions          = 2 0.9990009990009991 0.0009990009990009992
-d:Ma/MediumMaterial/Density             = 1.000948137402207 g/cm3
+uv:Ma/MediumMaterial/Fractions          = 2 0.999000999 0.00099900099 # use corresponding concentration of NPs
+d:Ma/MediumMaterial/Density             = 1.001 g/cm3
 s:Ma/MediumMaterial/DefaultColor        = "yellow"
+
+# -- Materials
+s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
+d:Ma/G4_HistoneMaterial/CloneWithDensity    = 1.407 g/cm3
+s:Ma/G4_BaseMaterial/CloneFromMaterial      = "G4_WATER"
+d:Ma/G4_BaseMaterial/CloneWithDensity       = 1.0 g/cm3
+s:Ma/G4_BackboneMaterial/CloneFromMaterial  = "G4_WATER"
+d:Ma/G4_BackboneMaterial/CloneWithDensity   = 1.0 g/cm3
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 
 
 ###########
 # Scorers #
 ###########
+
+
+b:Sc/DoseNucleus_Total/Active                         = "True"
+s:Sc/DoseNucleus_Total/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus_Total/Component                      = "Cell"  # Target Cell component with nucleus subcomponent
+sv:Sc/DoseNucleus_Total/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus_Total/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus_Total/OutputType                     = "csv"
+#s:Sc/DoseNucleus_Total/OutputFile                    = "DoseToNucleus_Total"
+b:Sc/DoseNucleus_Total/PropagateToChildren		      = "True"
+#sv:Sc/DoseNucleus_Total/OnlyIncludeParticlesNamed     = 1 "e-"
+
 
 
 b:Sc/EnergyToCell/Active                         = "True"
@@ -113,36 +160,44 @@ s:Sc/EnergyToCell/Component                      = "Cell"
 sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
 s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
 s:Sc/EnergyToCell/OutputType                     = "csv"
-s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell_ChemMolecules"
-b:Sc/EnergyToCell/PropagateToChildren		      = "False"
+#s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell"
+b:Sc/EnergyToCell/PropagateToChildren		      = "True"
 sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
 
+# -- DNA Damage Scorer for Nucleus subcomponent --
+includeFile									= supportFiles/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Quantity				= "MyCellNucleusDNADamageSBS"
+s:Sc/DNADamageScorer/Component 				= "Cell"  # Reference to Cell component (scorer will target nucleus subcomponent)
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = 1
+b:Sc/DNADamageScorer/PropagateToChildren = "true"
+d:Sc/DNADamageScorer/ScoringRadius			= Ge/Cell/Nucleus/NucleusRadius um  # Use Cell nucleus radius parameter
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
+#s:Sc/DNADamageScorer/PrimaryParticle		= "e-"
+d:Sc/DNADamageScorer/MeanEnergy				= 30 keV
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 1.0 gray
+d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Cell/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Cell/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Cell/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageYMaxPosition		= Ge/Cell/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageZMinPosition		= 0 um - Ge/Cell/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageZMaxPosition		= Ge/Cell/Nucleus/NucleusRadius um
+b:Sc/DNADamageScorer/MinimalSDDOutput = "false"
+d:Sc/DNADamageScorer/DirectDamageThreshold = 11.75 eV     # For half-cylindrical DNA model, the recommended value is 17.5 eV
+s:Sc/DNADamageScorer/OutputFile = "DNADamage_Phase2"
 
-# Chemistry Scorer
+# Geometry file for Nucleus scorer
+s:Sc/DNADamageScorer/GeometryInfo			= "supportFiles/Geoinfo.txt"
+s:Sc/DNADamageScorer/FileVoxelCopyNumbersInsideNucleus = "supportFiles/CopyNoTable.txt"
+s:Sc/DNADamageScorer/MapChromosomeVoxelsFile = "supportFiles/signedCHVoxel.txt"
 
-u:perCent = 0.01 
-d:MaxEn = 36 keV  # max for I125 Energy 
-
-
-s:Sc/NumberOfMoleculesAtTime/Quantity   = "TsSBSMoleculesAtTime" 
-s:Sc/NumberOfMoleculesAtTime/Component   = "Cell"
-b:Sc/NumberOfMoleculesAtTime/OutputToConsole = "True"
-s:Sc/NumberOfMoleculesAtTime/IfOutputFileAlreadyExists = "Overwrite"
-# Record time, do not confuse with Time features.
-i:Sc/NumberOfMoleculesAtTime/TimeBins   = 20
-d:Sc/NumberOfMoleculesAtTime/TimeBinMin = 1.0 ps
-d:Sc/NumberOfMoleculesAtTime/TimeBinMax = 999999 ps
-b:Sc/NumberOfMoleculesAtTime/TimeBinLog = "True"
-s:Sc/NumberOfMoleculesAtTime/OutputType = "ascii" # or root
-s:Sc/NumberOfMoleculesAtTime/OutputFile = "NumberOfMoleculesAtTime"
-d:Sc/NumberOfMoleculesAtTime/KillPrimaryIfEnergyLossExceeds = 50 keV
-d:Sc/NumberOfMoleculesAtTime/AbortEventIfPrimaryEnergyLossExceeds = 50 keV
-d:Sc/NumberOfMoleculesAtTime/KillPrimaryBasedOnTrackLength        = 100 um
-
+#s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
 
 ###########
 # Physics #
 ###########
+
 
 
 Ph/Default/Modules = 3 "g4em-dna" "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
@@ -163,12 +218,12 @@ d:Ph/Default/LowestElectronEnergy 		= 10 eV #
 #s:Ph/Default/SolvatedElectronThermalizationModel =  "Ritchie"
 
 
-includeFile				= supportFiles/TOPAS-DefaultReactions.txt
+includeFile				= supportFiles/TOPASDefaultReactions.txt
 s:Ch/ChemistryName			= "TOPASChemistry"
 b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1 us
 u:Ch/TOPASChemistry/Temperature = 37.0
 b:Ch/TOPASChemistry/ApplyCorrectionScalingForTemperature = "True"
-
 
 ###########
 # Graphics #
@@ -181,22 +236,16 @@ sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
 
 s:Gr/View/Type        = "OpenGL"
 
-i:Ts/ShowHistoryCountAtInterval = 10000
+i:Ts/ShowHistoryCountAtInterval = 200000
 i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
-
-# For testing
-#i:Ts/ShowHistoryCountAtInterval = 100
-#i:So/PhSpSourceSup/PhaseSpaceMultipleUse = 0
-#i:So/PhSpSourceSup/NumberOfHistoriesInRun = 10000 # for testing
 
 Tf/NumberOfSequentialTimes = 1
 
 i:Ts/NumberOfThreads = -2 # defaults to 1
-i:Ts/Seed = 22236
+i:Ts/Seed = 1 
 b:Ts/PauseBeforeQuit = "F"
 
 b:Ts/ShowCPUTime = "True"
 Ts/ParameterizationErrorMaxReports				= 1
-Ts/MaxInterruptedHistories   = 2147483646
 
 

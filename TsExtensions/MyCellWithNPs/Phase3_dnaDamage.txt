@@ -1,0 +1,176 @@
+# ------ Include Files ------
+includeFile = ./supportFiles/cell_parameters_SmallCell.txt
+
+
+
+s:Ge/SourcePHSPName    = "nucleus_PHSP"
+
+###########
+# Sources #
+###########
+
+# --- Phase Space ----
+
+s:So/PhSpSourceSup/Type 				       = "PhaseSpace"
+s:So/PhSpSourceSup/PhaseSpaceFileName			       = Ge/SourcePHSPName
+s:So/PhSpSourceSup/Component				       = "World"
+b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
+b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "True" # defaults to true
+
+
+############
+# Geometry #
+############
+
+Ge/QuitIfOverlapDetected = "false"
+
+# ---- World ----
+s:Ge/World/Material    = "Vacuum"   # "G4_WATER" "Vacuum"
+#s:Ge/World/Type        = "TsSphere"
+#d:Ge/World/Rmax         = 10 um
+d:Ge/World/HLX         = 6 um
+d:Ge/World/HLY         = 6 um
+d:Ge/World/HLZ         = 6 um
+b:Ge/World/Invisible   = "F"
+
+
+# Nucleus
+s:Ge/Nucleus/Type                       = "TsNucleus"
+s:Ge/Nucleus/Parent                     = "World"
+s:Ge/Nucleus/Material                   = "G4_WATER"
+s:Ge/Nucleus/Color                      = "White"
+s:Ge/Nucleus/DNAModel					= "Sphere"
+d:Ge/Nucleus/NucleusRadius              = 4.65 um
+i:Ge/Nucleus/HilbertCurveLayer          = 4
+i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
+s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
+s:Ge/Nucleus/Voxel/Material             = "G4_WATER"
+b:Ge/Nucleus/ShowDNAVoxels              = "false"
+s:Ge/Nucleus/ChromatinFiber/Material    = "G4_WATER"
+b:Ge/Nucleus/ShowChromatinCylinders     = "false"
+s:Ge/Nucleus/Histone/Material           = "G4_HistoneMaterial"
+b:Ge/Nucleus/OnlyBuildOneHistone        = "false"
+b:Ge/Nucleus/HistoneAsScavenger         = "true"
+b:Ge/Nucleus/AddBases                   = "true"
+s:Ge/Nucleus/Base1/Material             = "G4_BaseMaterial"
+s:Ge/Nucleus/Base2/Material             = "G4_BaseMaterial"
+b:Ge/Nucleus/AddBackbones               = "true"
+s:Ge/Nucleus/Backbone1/Material         = "G4_BackboneMaterial"
+s:Ge/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
+b:Ge/Nucleus/AddHydrationShell          = "true"
+s:Ge/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
+s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
+
+
+
+
+#############
+# Materials #
+#############
+
+
+# -- Materials
+s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
+d:Ma/G4_HistoneMaterial/CloneWithDensity    = 1.407 g/cm3
+s:Ma/G4_BaseMaterial/CloneFromMaterial      = "G4_WATER"
+d:Ma/G4_BaseMaterial/CloneWithDensity       = 1.0 g/cm3
+s:Ma/G4_BackboneMaterial/CloneFromMaterial  = "G4_WATER"
+d:Ma/G4_BackboneMaterial/CloneWithDensity   = 1.0 g/cm3
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
+
+
+###########
+# Scorers #
+###########
+
+
+b:Sc/DoseNucleus_Ph3/Active                         = "True"
+s:Sc/DoseNucleus_Ph3/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus_Ph3/Component                      = "Nucleus"
+sv:Sc/DoseNucleus_Ph3/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus_Ph3/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus_Ph3/OutputType                     = "csv"
+#s:Sc/DoseNucleus_Ph3/OutputFile                    = "DoseNucleus_Ph3"
+b:Sc/DoseNucleus_Ph3/PropagateToChildren		      = "True"
+#sv:Sc/DoseNucleus_Ph3/OnlyIncludeParticlesNamed     = 1 "e-"
+
+# -- Scorer --
+includeFile									= supportFiles/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Quantity				= "DNADamageNucleusStepByStep"
+s:Sc/DNADamageScorer/Component 				= "Nucleus"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = 1
+b:Sc/DNADamageScorer/PropagateToChildren = "true"
+d:Sc/DNADamageScorer/ScoringRadius			= Ge/Nucleus/NucleusRadius um
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
+#s:Sc/DNADamageScorer/PrimaryParticle		= "e-"
+d:Sc/DNADamageScorer/MeanEnergy				= 30 keV
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 1.0 gray
+d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageYMaxPosition		= Ge/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageZMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageZMaxPosition		= Ge/Nucleus/NucleusRadius um
+b:Sc/DNADamageScorer/MinimalSDDOutput = "false"
+d:Sc/DNADamageScorer/DirectDamageThreshold = 11.75 eV     # For half-cylindrical DNA model, the recommended value is 17.5 eV
+
+# Geometry file for Nucleus scorer
+s:Sc/DNADamageScorer/GeometryInfo			= "supportFiles/Geoinfo.txt"
+s:Sc/DNADamageScorer/FileVoxelCopyNumbersInsideNucleus = "supportFiles/CopyNoTable.txt"
+s:Sc/DNADamageScorer/MapChromosomeVoxelsFile = "supportFiles/signedCHVoxel.txt"
+
+###########
+# Physics #
+###########
+
+
+Ph/Default/Modules = 3 "g4em-dna" "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
+b:Ph/ListProcesses = "False"
+#b:Ph/Default/PhysicsForGold/Active = "True"
+#s:Ph/Default/PhysicsForGold/Region = Ge/Cell/AssignToRegionNamed
+d:Ph/Default/SetProductionCutLowerEdge  	= 10 eV
+d:Ph/Default/SetProductionCutHighEdge  		= 1 MeV
+d:Ph/Default/CutForAllParticles  		= 0.1 nm
+b:Ph/Default/Fluorescence  			= "True" # Set to true to turn on Fluorescence
+b:Ph/Default/Auger 				= "True" # Set to true to turn on Auger
+b:Ph/Default/AugerCascade 			= "True" # Set to true to turn on AugerCascade
+b:Ph/Default/DeexcitationIgnoreCut 		= "True" # Set to true to implement DeexcitationIgnoreCut
+b:Ph/Default/PIXE 				= "True" # Set to true to turn on PIXE"
+d:Ph/Default/LowestElectronEnergy 		= 10 eV # 
+
+#s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA" 
+#s:Ph/Default/SolvatedElectronThermalizationModel =  "Ritchie"
+
+
+includeFile				= supportFiles/TOPASDefaultReactions.txt
+s:Ch/ChemistryName			= "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+u:Ch/TOPASChemistry/Temperature = 37.0
+b:Ch/TOPASChemistry/ApplyCorrectionScalingForTemperature = "True"
+
+###########
+# Graphics #
+###########
+b:Gr/View/IncludeAxes = "F"
+d:Gr/View/AxesSize    = 5 mm
+b:Gr/Enable          = "F"
+b:Ts/UseQt = "F"
+sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
+
+s:Gr/View/Type        = "OpenGL"
+
+i:Ts/ShowHistoryCountAtInterval = 10000
+i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
+
+Tf/NumberOfSequentialTimes = 1
+
+i:Ts/NumberOfThreads = -2 # defaults to 1
+i:Ts/Seed = 3
+b:Ts/PauseBeforeQuit = "F"
+
+b:Ts/ShowCPUTime = "True"
+Ts/ParameterizationErrorMaxReports				= 1
+

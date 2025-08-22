@@ -1,0 +1,74 @@
+# Test parameter file for TsMyCellWithNPs with nucleus
+# This file demonstrates the enhanced TsMyCellWithNPs class with nucleus support
+
+# Include basic parameter files
+includeFile = ./supportFiles/cell_parameters_A549.txt
+includeFile = ./supportFiles/np_parameters_AuNP.txt
+
+# Simple world setup for testing
+s:Ge/World/Material    = "Vacuum"
+s:Ge/World/Type        = "TsCylinder"
+d:Ge/World/RMax        = 20 um
+d:Ge/World/HL          = 10 um
+
+# Cell Layer
+s:Ge/CellLayer/Parent = "World"
+s:Ge/CellLayer/Type = "TsCylinder"
+s:Ge/CellLayer/Material    = "G4_WATER"
+d:Ge/CellLayer/RMax        = 10 um
+d:Ge/CellLayer/HL          = 5 um
+
+# Enhanced Cell with nanoparticles and nucleus
+s:Ge/Cell/Type                        = "TsMyCellWithNPs"
+s:Ge/Cell/Parent                      = "CellLayer"
+s:Ge/Cell/ComponentType               = "G4Tubs"
+s:Ge/Cell/Material                    = "G4_WATER"
+d:Ge/Cell/ComponentRadius             = Ge/RCell um
+d:Ge/Cell/ComponentHL                 = Ge/HLCell um
+d:Ge/Cell/ElementRadius	              = Ge/RNP nm
+s:Ge/Cell/ElementMaterial             = "G4_GOLD"
+s:Ge/Cell/PositionsFile 	          = "./supportFiles/positions_in_cell_1000_AuNPs.txt"
+
+# Nucleus parameters - these will trigger nucleus creation
+s:Ge/Cell/NucleusMaterial                   = "G4_WATER"
+s:Ge/Cell/NucleusColor                      = "White"
+s:Ge/Cell/NucleusDNAModel					= "Sphere"
+d:Ge/Cell/NucleusNucleusRadius              = 4.65 um
+i:Ge/Cell/NucleusHilbertCurveLayer          = 4
+i:Ge/Cell/NucleusHilbertCurve3DRepeat       = 30
+s:Ge/Cell/NucleusHilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
+s:Ge/Cell/NucleusVoxel/Material             = "G4_WATER"
+b:Ge/Cell/NucleusShowDNAVoxels              = "false"
+s:Ge/Cell/NucleusChromatinFiber/Material    = "G4_WATER"
+b:Ge/Cell/NucleusShowChromatinCylinders     = "false"
+s:Ge/Cell/NucleusHistone/Material           = "G4_HistoneMaterial"
+b:Ge/Cell/NucleusOnlyBuildOneHistone        = "false"
+b:Ge/Cell/NucleusHistoneAsScavenger         = "true"
+b:Ge/Cell/NucleusAddBases                   = "true"
+s:Ge/Cell/NucleusBase1/Material             = "G4_BaseMaterial"
+s:Ge/Cell/NucleusBase2/Material             = "G4_BaseMaterial"
+b:Ge/Cell/NucleusAddBackbones               = "true"
+s:Ge/Cell/NucleusBackbone1/Material         = "G4_BackboneMaterial"
+s:Ge/Cell/NucleusBackbone2/Material         = "G4_BackboneMaterial"
+b:Ge/Cell/NucleusAddHydrationShell          = "true"
+s:Ge/Cell/NucleusHydrationShell1/Material   = "G4_WATER_MODIFIED"
+s:Ge/Cell/NucleusHydrationShell2/Material   = "G4_WATER_MODIFIED"
+
+# Required materials for DNA components
+s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
+d:Ma/G4_HistoneMaterial/CloneWithDensity    = 1.407 g/cm3
+s:Ma/G4_BaseMaterial/CloneFromMaterial      = "G4_WATER"
+d:Ma/G4_BaseMaterial/CloneWithDensity       = 1.0 g/cm3
+s:Ma/G4_BackboneMaterial/CloneFromMaterial  = "G4_WATER"
+d:Ma/G4_BackboneMaterial/CloneWithDensity   = 1.0 g/cm3
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
+
+# Graphics
+b:Gr/Enable = "True"
+s:Gr/View/Type = "OpenGL"
+
+# Run settings
+i:Ts/NumberOfThreads = 1
+i:Ts/Seed = 1
+b:Ts/PauseBeforeQuit = "True"

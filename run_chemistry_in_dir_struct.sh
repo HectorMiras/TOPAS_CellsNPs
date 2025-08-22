@@ -110,10 +110,10 @@ process_run_dir() {
 
 # Process all run directories found at any level
 for DIR in $run_dirs; do
-    if [ ! -f "$DIR/$OUTFILENAME" ]; then
+    if [ ! -s "$DIR/$OUTFILENAME" ]; then
         process_run_dir "$DIR"
     else
-        echo "Skipping $DIR: $OUTFILENAME already exists."
+        echo "Skipping $DIR: $OUTFILENAME already exists and is not empty."
     fi
 done
 

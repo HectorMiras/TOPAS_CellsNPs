@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "string_view": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "random": "cpp"
     }
 }

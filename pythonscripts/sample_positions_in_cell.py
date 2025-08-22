@@ -12,7 +12,8 @@ N = 5000 # AGuIX: 400000, AuNP: 5000
 sN = 500  # N sigma
 Nrand = int(np.random.normal(N, sN))
 
-cluster_distribution = 'LogNormal'  # Options: 'LogNormal', 'Gamma', 'Gaussian'
+# cluster_distribution = 'LogNormal'  # Options: 'LogNormal', 'Gamma', 'Gaussian'
+cluster_distribution = None  # If you want to sample positions without clustering
 
 numberNPs, cluster_radii = get_positions_clustered(Nrand, Rmax, H, Rmin, Rnp, positions_file,shape="Cylindrical", cluster_distribution=cluster_distribution)
     

@@ -326,7 +326,7 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         if cluster_distribution == 'LogNormal':
             # Example: Log-normal distribution with mean=1 and std=0.5
             mean=3
-            std=2
+            std=1
             return np.random.lognormal(mean=mean, sigma=std)
         elif cluster_distribution == 'Gamma':
             # Example: Gamma distribution with shape=2 and scale=1
