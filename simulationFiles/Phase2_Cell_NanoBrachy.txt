@@ -1,0 +1,234 @@
+# ------ Include Files ------
+includeFile = ./supportFiles/cell_parameters_A549.txt
+includeFile = ./supportFiles/np_parameters_AuNP.txt
+includeFile = ./supportFiles/source_parameters_I125Beam.txt
+
+s:Sc/EnergyToCell/OutputFile        = "EnergyToCell"
+s:Sc/NucleusPHSP/OutputFile	    = "nucleus_PHSP"
+s:Sc/DoseToNucleus_Total/OutputFile   = "DoseToNucleus_Total"
+s:Ge/MediumNPPositionsFile     = "./supportFiles/positions_in_medium_1179_AuNPs.txt"   # AGuIX: 1308200_AGuIX, AuNP: 1179_AuNPs, Water: 1_NP  (values corresponding to 1 mg/ml)
+s:Ge/CellNPPositionsFile       = "./supportFiles/positions_in_cell_55000_AuNPs.txt"   # AGuIX: 555000_AGuIX, AuNP: 35370 / 5000_AuNPs, Water: positions_in_cell_1_NP
+
+s:Ge/CellPHSPName    = "I125Beam_PHSP"
+
+###########
+# Sources #
+###########
+
+# --- Phase Space ----
+
+s:So/PhSpSourceSup/Type 				       = "PhaseSpace"
+s:So/PhSpSourceSup/PhaseSpaceFileName			       = Ge/CellPHSPName
+s:So/PhSpSourceSup/Component				       = "World"
+b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
+u:So/PhSpSourceSup/PhaseSpaceScaleXPosBy                       = 0.002 # turns the source phsp into a 30 um diameter disc
+u:So/PhSpSourceSup/PhaseSpaceScaleYPosBy                       = 0.002
+b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "False" # defaults to true
+
+
+############
+# Geometry #
+############
+
+d:Ge/SourceRMax = Ge/RCell + Ge/ElectronRangePH1 um
+
+# ---- World ----
+s:Ge/World/Material    = "G4_WATER"
+s:Ge/World/Type        = "TsCylinder"
+d:Ge/World/RMax         = 1.5 * Ge/SourceRMax um
+d:Ge/World/HL         = Ge/ElectronRangePH1 + Ge/HLCell um
+b:Ge/World/Invisible   = "F"
+
+# ---- Polystirene cell plate ----
+s:Ge/CellPlate/Parent = "World"
+s:Ge/CellPlate/Type = "TsCylinder"
+s:Ge/CellPlate/Material    = "G4_POLYSTYRENE"
+d:Ge/CellPlate/RMax         = Ge/World/RMax  um
+d:Ge/CellPlateThickness           = 2000 um
+d:Ge/CellPlate/HL           = 0.5 * Ge/ElectronRangePH1 um
+d:Ge/CellPlateNegHL          = -1 * Ge/CellPlate/HL um
+d:Ge/CellPlate/TransZ          = Ge/CellPlateNegHL - Ge/HLCell um
+s:Ge/CellPlate/Color = "grey"
+
+# ---- Cell Layer ----
+s:Ge/CellLayer/Parent = "World"
+s:Ge/CellLayer/Type = "TsCylinder"
+s:Ge/CellLayer/Material    = "MediumMaterial"
+d:Ge/CellLayer/RMax         = Ge/SourceRMax um
+d:Ge/CellLayer/HL           = Ge/HLCell um
+
+# ---- Cell ----
+s:Ge/Cell/Type                        = "TsDistributedComponents"
+s:Ge/Cell/Parent                      = "CellLayer"
+s:Ge/Cell/ComponentType               = "G4Tubs"
+s:Ge/Cell/Material                    = "G4_WATER"
+d:Ge/Cell/ComponentRadius             = Ge/RCell um
+d:Ge/Cell/ComponentHL                 = Ge/HLCell um
+d:Ge/Cell/ElementRadius	              = Ge/RNP nm
+s:Ge/Cell/ElementMaterial             = Ma/NPMaterial
+s:Ge/Cell/PositionsFile 	          = Ge/CellNPPositionsFile
+
+
+# ---- Cell nucleus ----
+s:Ge/nucleus/Parent                   = "World"
+s:Ge/nucleus/Type                     = "TsSphere"
+d:Ge/nucleus/RMax                     = Ge/RNucleus um
+b:Ge/nucleus/IsParallel               = "True"
+s:Ge/nucleus/Color = "blue"
+
+# ---- Incubation medium with material mixture ----
+s:Ge/MediumVol/Parent      = "World"
+s:Ge/MediumVol/Type        = "TsCylinder"
+s:Ge/MediumVol/Material    = "MediumMaterial"
+d:Ge/MediumVol/RMax        = Ge/SourceRMax um
+d:Ge/MediumVol/HL          = 0.5 * Ge/ElectronRangePH1 um 
+d:Ge/MediumVol/TransZ      = Ge/MediumVol/HL + Ge/HLCell um
+
+# ---- Incubation medium with NPs ----
+d:Ge/MediumDetailedThickness            = 0.2 um
+s:Ge/MediumDetailed/Parent            = "MediumVol"
+s:Ge/MediumDetailed/Type              = "TsDistributedComponents"
+s:Ge/MediumDetailed/Material          = "G4_WATER"
+s:Ge/MediumDetailed/ComponentType     = "G4Tubs"
+d:Ge/MediumDetailed/ComponentRadius   = 1.25 * Ge/RNucleus um
+d:Ge/MediumDetailed/ComponentHL       = 0.5 * Ge/MediumDetailedThickness um 
+d:Ge/MediumDetailed/ElementRadius	  = Ge/RNP nm
+s:Ge/MediumDetailed/ElementMaterial   = Ma/NPMaterial
+s:Ge/MediumDetailed/PositionsFile 	  = Ge/MediumNPPositionsFile
+d:Ge/MediumDetailed/TransZ            = Ge/MediumDetailed/ComponentHL - Ge/MediumVol/HL um
+
+#############
+# Materials #
+#############
+
+b:Ma/MediumMaterial/BuildFromMaterials  = "True"
+sv:Ma/MediumMaterial/Components         = 2 "G4_WATER" Ma/NPMaterial   
+uv:Ma/MediumMaterial/Fractions          = 2 0.999000999 0.00099900099 # use corresponding concentration of NPs
+d:Ma/MediumMaterial/Density             = 1.001 g/cm3
+s:Ma/MediumMaterial/DefaultColor        = "yellow"
+
+
+###########
+# Scorers #
+###########
+
+b:Sc/NucleusPHSP/Active                           = "True"
+s:Sc/NucleusPHSP/Quantity			  = "PhaseSpace"
+s:Sc/NucleusPHSP/Component			  = "nucleus"
+s:Sc/NucleusPHSP/Surface			  = "nucleus/AnySurface"
+s:Sc/NucleusPHSP/OutputType			  = "ASCII"
+#s:Sc/NucleusPHSP/OutputFile			  = "nucleus_PHSP"
+s:Sc/NucleusPHSP/IfOutputFileAlreadyExists        = "Overwrite"
+s:Sc/NucleusPHSP/OnlyIncludeParticlesGoing 	  = "In"
+b:Sc/NucleusPHSP/KillAfterPhaseSpace 	          = "False"
+#sv:Sc/NucleusPHSP/OnlyIncludeParticlesNamed 	  = 1 "e-"
+s:Sc/NucleusPHSP/IncludeEmptyHistories            = "None" # "None", "InSequence", "AtEndOfRun" or "AtEndOfFile"
+
+b:Sc/DoseNucleus_Total/Active                         = "True"
+s:Sc/DoseNucleus_Total/Quantity                       = "DoseToMedium"
+s:Sc/DoseNucleus_Total/Component                      = "nucleus"
+sv:Sc/DoseNucleus_Total/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/DoseNucleus_Total/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/DoseNucleus_Total/OutputType                     = "csv"
+#s:Sc/DoseNucleus_Total/OutputFile                    = "DoseToNucleus_Total"
+b:Sc/DoseNucleus_Total/PropagateToChildren		      = "False"
+#sv:Sc/DoseNucleus_Total/OnlyIncludeParticlesNamed     = 1 "e-"
+
+#b:Sc/DoseToNucleus_IncidentTrack/Active                         = "False"
+#s:Sc/DoseToNucleus_IncidentTrack/Quantity                       = "DoseToMedium"
+#s:Sc/DoseToNucleus_IncidentTrack/Component                      = "nucleus"
+#sv:Sc/DoseToNucleus_IncidentTrack/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+#s:Sc/DoseToNucleus_IncidentTrack/IfOutputFileAlreadyExists      = "Overwrite"
+#s:Sc/DoseToNucleus_IncidentTrack/OutputType                     = "csv"
+#s:Sc/DoseToNucleus_IncidentTrack/OutputFile                    = "DoseToNucleus_IncidentTrack"
+#b:Sc/DoseToNucleus_IncidentTrack/PropagateToChildren		      = "False"
+#sv:Sc/DoseToNucleus_IncidentTrack/OnlyIncludeParticlesNamed     = 1 "e-"
+#i:Sc/DoseToNucleus_IncidentTrack/EBins                     = 100
+#d:Sc/DoseToNucleus_IncidentTrack/EBinMin                   = 0. MeV
+#d:Sc/DoseToNucleus_IncidentTrack/EBinMax                   = 0.035 MeV
+#sc:Sc/DoseToNucleus_IncidentTrack/EBinEnergy               = "IncidentTrack"
+
+#b:Sc/DoseToNucleus_DepositedInStep/Active                         = "False"
+#s:Sc/DoseToNucleus_DepositedInStep/Quantity                       = "DoseToMedium"
+#s:Sc/DoseToNucleus_DepositedInStep/Component                      = "nucleus"
+#sv:Sc/DoseToNucleus_DepositedInStep/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+#s:Sc/DoseToNucleus_DepositedInStep/IfOutputFileAlreadyExists      = "Overwrite"
+#s:Sc/DoseToNucleus_DepositedInStep/OutputType                     = "csv"
+#s:Sc/DoseToNucleus_DepositedInStep/OutputFile                    = "DoseToNucleus_DepositedInStep"
+#b:Sc/DoseToNucleus_DepositedInStep/PropagateToChildren		      = "False"
+#sv:Sc/DoseToNucleus_DepositedInStep/OnlyIncludeParticlesNamed     = 1 "e-"
+#i:Sc/DoseToNucleus_DepositedInStep/EBins                     = 100
+#d:Sc/DoseToNucleus_DepositedInStep/EBinMin                   = 0. eV
+#d:Sc/DoseToNucleus_DepositedInStep/EBinMax                   = 100. eV
+#sc:Sc/DoseToNucleus_DepositedInStep/EBinEnergy               = "DepositedInStep"
+
+b:Sc/EnergyToCell/Active                         = "True"
+s:Sc/EnergyToCell/Quantity                       = "EnergyDeposit"
+s:Sc/EnergyToCell/Component                      = "Cell"
+sv:Sc/EnergyToCell/Report                        = 7 "Sum" "Mean" "Count_in_bin" "Second_Moment" "Variance" "Standard_Deviation" "Histories"
+s:Sc/EnergyToCell/IfOutputFileAlreadyExists      = "Overwrite"
+s:Sc/EnergyToCell/OutputType                     = "csv"
+#s:Sc/EnergyToCell/OutputFile                    = "EnergyToCell"
+b:Sc/EnergyToCell/PropagateToChildren		      = "False"
+sv:Sc/EnergyToCell/OnlyIncludeIfInMaterial		      = 1 "G4_WATER"
+
+
+s:Sc/PhSpNP/Quantity 					= "PhaseSpaceNP"
+s:Sc/PhSpNP/Component 					= "Cell"
+s:Sc/PhSpNP/Surface				        = "Cell/AnySurface"
+s:Sc/PhSpNP/OutputType                 			= "ASCII" # ASCII, Binary, Limited or ROOT
+s:Sc/PhSpNP/OutputFile                 		 	= "PhaseSpace_NP"
+s:Sc/PhSpNP/IfOutputFileAlreadyExists			= "Overwrite"
+b:Sc/PhSpNP/KillAfterPhaseSpace				= "False"
+
+
+###########
+# Physics #
+###########
+
+#s:Ge/MediumVol/AssignToRegionNamed = "detailed"
+#s:Ge/CellPlate/AssignToRegionNamed = "detailed"
+
+#s:Ge/MediumDetailed/AssignToRegionNamed = "detailed"
+#s:Ge/CellLayer/AssignToRegionNamed = "detailed"
+#s:Ge/nucleus/AssignToRegionNamed = "detailed"
+#s:Ge/Cell/AssignToRegionNamed = "detailed"
+
+Ph/Default/Modules = 1 "g4em-dna" # "g4em-dna"  "g4em-livermore"
+b:Ph/ListProcesses = "False"
+
+d:Ph/Default/SetProductionCutLowerEdge  	= 10 eV
+d:Ph/Default/SetProductionCutHighEdge  		= 1 MeV
+d:Ph/Default/CutForAllParticles  		= 0.1 nm
+b:Ph/Default/Fluorescence  			= "True" # Set to true to turn on Fluorescence
+b:Ph/Default/Auger 				= "True" # Set to true to turn on Auger
+b:Ph/Default/AugerCascade 			= "True" # Set to true to turn on AugerCascade
+b:Ph/Default/DeexcitationIgnoreCut 		= "True" # Set to true to implement DeexcitationIgnoreCut
+b:Ph/Default/PIXE 				= "True" # Set to true to turn on PIXE"
+d:Ph/Default/LowestElectronEnergy 		= 10 eV # 
+
+
+###########
+# Graphics #
+###########
+b:Gr/View/IncludeAxes = "F"
+d:Gr/View/AxesSize    = 5 mm
+b:Gr/Enable          = "F"
+b:Ts/UseQt = "F"
+sv:Gr/OnlyIncludeParticlesNamed        = 1 "e-"
+
+s:Gr/View/Type        = "OpenGL"
+
+i:Ts/ShowHistoryCountAtInterval = 200000
+i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
+
+Tf/NumberOfSequentialTimes = 1
+
+i:Ts/NumberOfThreads = -2 # defaults to 1
+i:Ts/Seed = 1 
+b:Ts/PauseBeforeQuit = "F"
+
+b:Ts/ShowCPUTime = "True"
+Ts/ParameterizationErrorMaxReports				= 1
+
+

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-SIMULATIONTPATH="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/CellColony-med5-cell5"
-MAX_RETRIES=20  # Setting maximum retries constant
+SIMULATIONTPATH="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/NanoBrachy-CellColony-MDAMB231-med0-cell0"
+MAX_RETRIES=5  # Setting maximum retries constant
 
-INFILE="./simulationFiles/Phase3_dnaDamage.txt"
+INFILE="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/simulationFiles/Phase3_dnaDamage.txt"
 CHECKFILE="DNADamage.phsp"
 # Use basename to extract just the filename from the path
 SIMFILE=$(basename "$INFILE")
@@ -29,15 +29,15 @@ if [ ! -d "$SIMULATIONTPATH" ]; then
   exit 1
 fi
 
-# Iterate through cell directories
-for cell_dir in "$SIMULATIONTPATH"/cell*/; do
+# Iterate through cell directories in natural numeric order
+for cell_dir in $(ls -d "$SIMULATIONTPATH"/cell*/ 2>/dev/null | sort -V); do
   if [ -d "$cell_dir" ]; then
     cell_name=$(basename "$cell_dir")
     ((total_cells++))
     echo "Checking $cell_name..." | tee -a "$LOG_FILE"
     
-    # Iterate through run directories in each cell
-    for run_dir in "$cell_dir"/run*/; do
+    # Iterate through run directories in each cell, sorted numerically
+    for run_dir in $(ls -d "$cell_dir"/run*/ 2>/dev/null | sort -V); do
       if [ -d "$run_dir" ]; then
         run_name=$(basename "$run_dir")
         ((total_runs++))
@@ -68,15 +68,16 @@ for cell_dir in "$SIMULATIONTPATH"/cell*/; do
               echo "  Using new random seed: $SEED" | tee -a "$LOG_FILE"
               
               # Save original seed to restore later
-              ORIGINAL_SEED=$(grep "i:Ts/Seed" "$run_dir/$INFILE" | awk '{print $NF}')
+              ORIGINAL_SEED=$(grep "i:Ts/Seed" "$run_dir/$SIMFILE" | awk '{print $NF}')
               
-              # Modify the seed directly in the original file
-              sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$run_dir/$INFILE"
+              # Modify the seed directly in the copied file
+              sed -i "s/i:Ts\/Seed = .*/i:Ts\/Seed = $SEED/" "$run_dir/$SIMFILE"
             fi
             
             # Run TOPAS in the run directory
             cd "$run_dir" || continue
             echo "  Running: topas $INFILE in $(pwd)" | tee -a "$LOG_FILE"
+           # topas "$INFILE" 
             topas "$INFILE" >> "$LOG_FILE" 2>&1
             
             # Check if the simulation was successful (file exists AND has content)

@@ -336,7 +336,7 @@ class Simulation_manager:
                     lines[i] = line.replace(old_values, f"\"G4_WATER\"")
             if "Ge/CellLayer/Material" in line:
                 if not self.NPsInMedium:
-                    old_values = line.split("= ")[-1].strip()
+                    old_values = line.split("= ")[-1].strip() 
                     lines[i] = line.replace(old_values, f"\"G4_WATER\"")
             if "s:Ge/Cell/ComponentType" in line:
                 # Map according to the cell shape: G4Tubs for Cylindrical, G4Sphere for Spherical
@@ -348,7 +348,10 @@ class Simulation_manager:
                 lines[i] = line.replace(old_values, f"{str(self.phsp2Recycle)}")
 
             # update medium composition and density values from NPs concentration
-            w_water, w_np, dens_tot = self.np.get_relweights_and_dens_from_conc(self.NPConcInMedium)
+            if self.NPsInMedium:
+                w_water, w_np, dens_tot = self.np.get_relweights_and_dens_from_conc(self.NPConcInMedium)
+            else:
+                w_water, w_np, dens_tot = 1.0, 0.0, 1.0
             if "Ma/MediumMaterial/Fractions" in line:
                 old_values = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_values, f"2 {w_water} {w_np}")

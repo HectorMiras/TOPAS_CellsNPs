@@ -255,12 +255,6 @@ void TsMyCellWithNPs::CreateNucleusSubcomponent()
 
     G4cout << "=== End Nucleus parameters ===" << G4endl;
 
-    // Create and construct the nucleus component
-    fNucleusComponent = new TsNucleus(fPm, fEm, fLocalMm, fLocalGm, this, fEnvelopePhys, nucleusName);
-    if (fNucleusComponent) {
-        fNucleusComponent->Construct();
-    }
-
     // Print the actual radius of the constructed G4Orb("Nucleus")
     G4Orb* nucleusOrb = nullptr;
     for (auto* solid : *G4SolidStore::GetInstance()) {

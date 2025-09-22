@@ -25,7 +25,7 @@ b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "True" # defaul
 Ge/QuitIfOverlapDetected = "false"
 
 # ---- World ----
-s:Ge/World/Material    = "Vacuum"   # "G4_WATER" "Vacuum"
+s:Ge/World/Material    = "G4_WATER"   # "G4_WATER" "Vacuum"
 #s:Ge/World/Type        = "TsSphere"
 #d:Ge/World/Rmax         = 10 um
 d:Ge/World/HLX         = 6 um
@@ -127,7 +127,7 @@ s:Sc/DNADamageScorer/MapChromosomeVoxelsFile = "supportFiles/signedCHVoxel.txt"
 ###########
 
 
-Ph/Default/Modules = 3 "g4em-dna" "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
+Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry" # "g4em-dna"  "g4em-livermore"
 b:Ph/ListProcesses = "False"
 #b:Ph/Default/PhysicsForGold/Active = "True"
 #s:Ph/Default/PhysicsForGold/Region = Ge/Cell/AssignToRegionNamed

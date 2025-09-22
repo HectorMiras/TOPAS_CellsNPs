@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NCELLS=1
+NCELLS=80
 INFILE=SimulationConfigFile_PISEFM2024.txt
 TEMP_CONFIG="temp_config.txt"
 STARTCELL=1

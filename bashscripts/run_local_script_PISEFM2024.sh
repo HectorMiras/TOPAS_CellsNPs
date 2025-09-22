@@ -6,7 +6,7 @@ INFILE3="nucleus_nBIO.txt"
 PYFILE1="sample_positions_in_medium.py"
 PYFILE2="sample_positions_in_cell.py"
 SPLITPYFILE="split_simulation_script.py"
-DELFILE="SARRP_PHSP.phsp"
+DELFILE="I125Beam_PHSP.phsp"
 DOSAMPLE=true 
 
 ITER=1
@@ -124,7 +124,7 @@ do
 	    fi
 	  done
 	  
-	  #rm $DELFILE
+	  rm $DELFILE
 
 	  SPLITCOUNT=$((SPLITCOUNT+1))
   done

@@ -477,6 +477,8 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
         np_positions = generate_np_positions_in_cluster(Rcluster, Rnp)
         nps_coords_in_cluster = np_positions + cluster_coordinates
         cluster_radii.append(Rcluster)
+        if Rcluster > 200:
+            print(f'Cluster radius: {Rcluster} nm, Number of NPs in cluster: {len(nps_coords_in_cluster)}')
         # If nanoparticles do not overlap with the existing positions add them to the positions.
         for candidate in nps_coords_in_cluster:      
             # Check for spatial overlap using bins.
