@@ -1,5 +1,5 @@
 # ------ Include Files ------
-includeFile = ./supportFiles/cell_parameters_SmallCell.txt
+includeFile = ./supportFiles/cell_parameters_MDAMB231.txt
 
 
 
@@ -15,7 +15,7 @@ s:So/PhSpSourceSup/Type 				       = "PhaseSpace"
 s:So/PhSpSourceSup/PhaseSpaceFileName			       = Ge/SourcePHSPName
 s:So/PhSpSourceSup/Component				       = "World"
 b:So/PhSpSourceSup/PhaseSpaceIncludeEmptyHistories             = "False" # defaults to false
-b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "True" # defaults to true
+b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "False" # defaults to true
 
 
 ############
@@ -167,7 +167,7 @@ i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 Tf/NumberOfSequentialTimes = 1
 
-i:Ts/NumberOfThreads = -2 # defaults to 1
+i:Ts/NumberOfThreads = -8 # defaults to 1
 i:Ts/Seed = 3
 b:Ts/PauseBeforeQuit = "F"
 

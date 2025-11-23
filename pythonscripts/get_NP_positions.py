@@ -319,6 +319,9 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
     import math
     import numpy as np
 
+    if isinstance(cluster_distribution, str) and cluster_distribution in ("none", "None", "False", "false", ""):
+        cluster_distribution = None
+
     def get_cluster_size(cluster_distribution):
         """
         Returns a random cluster size based on the provided distribution.
@@ -345,42 +348,42 @@ def get_positions_clustered(N, Rcyl, Hcyl, Rsph, Rnp, positions_file, shape="Cyl
     def get_cluster_coordinates(Rcluster, Rext, Hcyl, Rint, shape):
         """
         Generates random coordinates for a cluster of size Rcluster.
-        Returns None if the cluster is out of bounds.
+        Returns None if the cluster is out of bounds after max attempts.
+        Ensures cluster center keeps entire cluster outside nucleus region.
         """
         Rmax = Rext - Rcluster - 0.001
-        Rmin = Rint + Rcluster + 0.001
-        candidate = None
+        Rmin = Rint + Rcluster + 0.001  # distance from origin required for cluster center
         attempts = 0
-        max_attempts = 10  # safety for infinite loops
-        while candidate is None and attempts < max_attempts:
+        max_attempts = 50  # allow more attempts before giving up
+        while attempts < max_attempts:
             attempts += 1
             if shape == "Cylindrical":
                 x = Rmax * (2 * np.random.random() - 1)
                 y = Rmax * (2 * np.random.random() - 1)
-                # Ensure the point falls within a circle of radius Rcluster in the x-y plane.
-                if np.sqrt(x*x + y*y) > Rmax:
-                    return None
-                z = np.random.uniform(-Hcyl/2 + Rcluster, Hcyl/2 - Rcluster)
+                # Ensure the point falls within circle of radius Rmax in x-y plane.
+                if np.sqrt(x * x + y * y) > Rmax:
+                    continue
+                z = np.random.uniform(-Hcyl / 2 + Rcluster, Hcyl / 2 - Rcluster)
                 candidate = np.array([x, y, z])
-                # Reject points falling within the inner sphere.
+                # Reject points falling within (expanded) inner sphere.
                 if np.linalg.norm(candidate) <= Rmin:
-                    candidate = None
-                return np.array([x, y, z])
+                    continue
+                return candidate
             elif shape == "Spherical":
                 x = Rmax * (2 * np.random.random() - 1)
                 y = Rmax * (2 * np.random.random() - 1)
                 z = Rmax * (2 * np.random.random() - 1)
                 candidate = np.array([x, y, z])
-                # Ensure the point is inside the outer sphere.
+                # Ensure candidate inside outer sphere.
                 if np.linalg.norm(candidate) > Rmax:
-                    candidate = None
-                # Reject points inside the nucleus.
+                    continue
+                # Reject candidates whose cluster would intersect nucleus.
                 if np.linalg.norm(candidate) <= Rmin:
-                    candidate = None
+                    continue
+                return candidate
             else:
                 raise ValueError("Unknown shape. Use 'Cylindrical' or 'Spherical'.")
-            
-        return candidate
+        return None  # failed to find valid position
 
     def generate_np_positions_in_cluster(R, r):
         '''

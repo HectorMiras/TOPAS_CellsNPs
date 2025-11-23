@@ -76,6 +76,7 @@ class Simulation_manager:
         else:
             self.NPNumberInMedium = 1
         self.sortNPPositions = simulation.getboolean("sortNPPositions")
+        self.NPClusterization = simulation.get("NPClusterization", fallback="None")
         self.simScriptFile = simulation["simScriptFile"]
         self.njobs = simulation.getint("njobs")
         self.startingJob = simulation.getint("startingJob", fallback=1)
@@ -205,6 +206,7 @@ class Simulation_manager:
             if "N =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{self.NPNumberInMedium}')
+            
 
         with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_medium.py"), 'w') as file:
             file.writelines(lines)
@@ -236,9 +238,10 @@ class Simulation_manager:
             if "sN =" in line:
                 old_value = line.split("= ")[-1].strip()
                 lines[i] = line.replace(old_value, f'{int(self.NPNumberInCell * self.UpTakeVar)}')
-            if line.strip().startswith("shape="):
-                # Replace the shape value with self.CellShape from the config
-                lines[i] = f'shape="{self.CellShape}"\n'
+            if line.strip().startswith("shape"):
+                lines[i] = f'shape = "{self.CellShape}"\n'
+            if line.strip().startswith("cluster_distribution"):
+                lines[i] = f'cluster_distribution ="{self.NPClusterization}"\n'
 
         with open(os.path.join(self.runDirectoryName, "supportFiles", "sample_positions_in_cell.py"), 'w') as file:
             file.writelines(lines)

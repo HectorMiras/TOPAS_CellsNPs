@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SIMULATIONTPATH="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/CellColony-med5-cell5"
+SIMULATIONTPATH="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/CellColony-med5-cell5-WorldWater"
 MAX_RETRIES=20  # Setting maximum retries constant
 
 INFILE="./simulationFiles/Phase3_dnaDamage.txt"

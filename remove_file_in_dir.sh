@@ -3,8 +3,9 @@
 
 # --- User-defined variables ---
 # FILENAMERM="I125Beam_PHSP.phsp"   # name of the file to remove
-FILENAMERM="Foci*"
-DIRRM="./work" # directory where search and deletion will happen
+FILENAMERM="DNADamage*"
+# FILENAMERM="Foci*"
+DIRRM="./work/NanoBrachy-CellColony-MDAMB231-med0-cell5-clustered-WorldWater/" # directory where search and deletion will happen
 
 # --- Safety checks ---
 if [ -z "$FILENAMERM" ] || [ -z "$DIRRM" ]; then

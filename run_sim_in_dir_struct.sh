@@ -3,7 +3,7 @@
 SIMULATIONTPATH=$1
 MAX_RETRIES=5  # Setting maximum retries constant
 
-INFILE="./simulationFiles/Phase2_Cell_chemistry.txt"
+INFILE="./simulationFiles/Phase3_dnaDamage.txt"
 # Use basename to extract just the filename from the path
 SIMFILE=$(basename "$INFILE")
 
