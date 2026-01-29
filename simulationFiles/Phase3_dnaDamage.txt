@@ -25,12 +25,12 @@ b:So/PhSpSourceSup/PhaseSpacePreCheck                          = "False" # defau
 Ge/QuitIfOverlapDetected = "false"
 
 # ---- World ----
-s:Ge/World/Material    = "G4_WATER"   # "G4_WATER" "Vacuum"
+s:Ge/World/Material    = "Vacuum"   # "G4_WATER" "Vacuum"
 #s:Ge/World/Type        = "TsSphere"
 #d:Ge/World/Rmax         = 10 um
-d:Ge/World/HLX         = 6 um
-d:Ge/World/HLY         = 6 um
-d:Ge/World/HLZ         = 6 um
+d:Ge/World/HLX         = 10 um
+d:Ge/World/HLY         = 10 um
+d:Ge/World/HLZ         = 10 um
 b:Ge/World/Invisible   = "F"
 
 
@@ -167,7 +167,7 @@ i:So/PhSpSourceSup/PhaseSpaceMultipleUse  = 1
 
 Tf/NumberOfSequentialTimes = 1
 
-i:Ts/NumberOfThreads = -8 # defaults to 1
+i:Ts/NumberOfThreads = -2 # defaults to 1
 i:Ts/Seed = 3
 b:Ts/PauseBeforeQuit = "F"
 

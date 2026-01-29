@@ -1,12 +1,12 @@
 #!/bin/bash
 
-SIMULATIONTPATH="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/NanoBrachy-CellColony-MDAMB231-med0-cell5"
+SIMULATIONTPATH="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/work/NanoBrachy-CellColony-MDAMB231-med0-cell1-clustered"
 MAX_RETRIES=20  # Setting maximum retries constant
 
-# INFILE="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/simulationFiles/Phase3_dnaDamage.txt"
-# CHECKFILE="DNADamage.phsp"
-INFILE="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/simulationFiles/Phase3_dose_to_nucleus.txt"
-CHECKFILE="nucleus_dose_Ph3.csv"
+INFILE="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/simulationFiles/Phase3_dnaDamage.txt"
+CHECKFILE="DNADamage.phsp"
+# INFILE="/home/radiofisica/hector/mytopassimulations/TOPAS_CellsNPs/simulationFiles/Phase3_dose_to_nucleus.txt"
+# CHECKFILE="nucleus_dose_Ph3.csv"
 
 DOCHECK=true  # Whether to check for CHECKFILE before running simulation
 # Use basename to extract just the filename from the path
